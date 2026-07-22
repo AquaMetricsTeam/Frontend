@@ -1,0 +1,78 @@
+{
+  "error": {
+    "default": "حدث خطأ",
+    "description": "حاول مرة أخرى لاحقًا",
+    "retry": "حاول مجدداً"
+  },
+  "noData": {
+    "default": "لا توجد بيانات",
+    "description": "لا توجد سجلات للعرض"
+  },
+  "nav": {
+    "groups": {
+      "overview": "نظرة عامة",
+      "people": "الأشخاص",
+      "programs": "البرامج",
+      "operations": "العمليات",
+      "resources": "الموارد",
+      "system": "النظام"
+    },
+    "items": {
+      "dashboard": "لوحة التحكم",
+      "usersStaff": "المستخدمون والموظفون",
+      "athletes": "الرياضيون",
+      "swimming": "السباحة",
+      "fitness": "اللياقة البدنية",
+      "trainingPlans": "خطط التدريب",
+      "nutrition": "التغذية",
+      "attendance": "الحضور",
+      "coachNotes": "ملاحظات المدرب",
+      "aiRecommendations": "توصيات الذكاء الاصطناعي",
+      "knowledgeBase": "قاعدة المعرفة",
+      "notifications": "الإشعارات",
+      "reports": "التقارير والتحليلات",
+      "settings": "الإعدادات"
+    }
+  },
+  "theme": {
+    "toggle": "تبديل المظهر",
+    "light": "فاتح",
+    "dark": "داكن"
+  },
+  "lang": {
+    "toggle": "اللغة",
+    "en": "English",
+    "ar": "العربية"
+  },
+  "sidebar": {
+    "collapse": "طي الشريط الجانبي",
+    "expand": "توسيع الشريط الجانبي"
+  },
+  "pagination": {
+    "previous": "السابق",
+    "next": "التالي",
+    "page": "صفحة",
+    "of": "من"
+  },
+  "table": {
+    "search": "بحث...",
+    "noResults": "لا توجد نتائج",
+    "loading": "جارٍ التحميل..."
+  },
+  "notFound": {
+    "title": "الصفحة غير موجودة",
+    "description": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+    "backHome": "العودة إلى لوحة التحكم"
+  },
+  "error": {
+    "default": "حدث خطأ",
+    "description": "حاول مرة أخرى لاحقًا",
+    "retry": "حاول مجدداً",
+    "boundary": {
+      "title": "حدث خطأ غير متوقع",
+      "description": "يرجى تحديث الصفحة.",
+      "refresh": "تحديث الصفحة",
+      "backHome": "العودة إلى الرئيسية"
+    }
+  }
+}
