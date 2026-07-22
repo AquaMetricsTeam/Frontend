@@ -1,0 +1,73 @@
+{
+  "error": {
+    "default": "An error occurred",
+    "description": "Please try again later",
+    "retry": "Try Again",
+    "boundary": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please refresh the page.",
+      "refresh": "Refresh Page",
+      "backHome": "Back to Home"
+    }
+  },
+  "noData": {
+    "default": "No data found",
+    "description": "There are no records to display"
+  },
+  "nav": {
+    "groups": {
+      "overview": "Overview",
+      "people": "People",
+      "programs": "Programs",
+      "operations": "Operations",
+      "resources": "Resources",
+      "system": "System"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "usersStaff": "Users & Staff",
+      "athletes": "Athletes",
+      "swimming": "Swimming",
+      "fitness": "Fitness",
+      "trainingPlans": "Training Plans",
+      "nutrition": "Nutrition",
+      "attendance": "Attendance",
+      "coachNotes": "Coach Notes",
+      "aiRecommendations": "AI Recommendations",
+      "knowledgeBase": "Knowledge Base",
+      "notifications": "Notifications",
+      "reports": "Reports & Analytics",
+      "settings": "Settings"
+    }
+  },
+  "theme": {
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "lang": {
+    "toggle": "Language",
+    "en": "English",
+    "ar": "العربية"
+  },
+  "sidebar": {
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of"
+  },
+  "table": {
+    "search": "Search...",
+    "noResults": "No results found",
+    "loading": "Loading..."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has been moved.",
+    "backHome": "Back to Dashboard"
+  }
+}
