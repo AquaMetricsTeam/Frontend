@@ -5,10 +5,7 @@ import { LANG_DIR } from "@/constants/i18nConfig";
 import { SidebarHeader } from "./SidebarHeader";
 import { SidebarNav } from "./SidebarNav";
 import { SidebarFooter } from "./SidebarFooter";
-import {
-  Drawer,
-  DrawerContent,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
 
 interface SidebarProps {
   mobileOpen: boolean;
@@ -47,7 +44,7 @@ function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
           "hidden lg:flex h-full flex-col bg-sidebar",
           "border-e border-sidebar-border shrink-0",
           "transition-[width] duration-250 ease-in-out",
-          collapsed ? "w-[72px]" : "w-[260px]"
+          collapsed ? "w-[72px]" : "w-[260px]",
         )}
       >
         <SidebarHeader collapsed={collapsed} onToggle={toggleCollapse} />
@@ -60,12 +57,12 @@ function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
       {/* ── Mobile drawer (shadcn) ───────────────────────────── */}
       <Drawer
         open={mobileOpen}
-        onOpenChange={(open) => { if (!open) onMobileClose(); }}
+        onOpenChange={(open) => {
+          if (!open) onMobileClose();
+        }}
         direction={drawerDirection}
       >
-        <DrawerContent
-          className="flex h-full w-[260px] flex-col rounded-none border-e border-sidebar-border bg-sidebar p-0 outline-none"
-        >
+        <DrawerContent className="flex h-full w-[260px] flex-col rounded-none border-e border-sidebar-border bg-sidebar p-0 outline-none">
           <SidebarHeader collapsed={false} onToggle={onMobileClose} />
           <div className="flex-1 overflow-y-auto py-3">
             <SidebarNav collapsed={false} />

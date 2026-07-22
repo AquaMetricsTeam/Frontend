@@ -23,7 +23,7 @@ export function SidebarHeader({ collapsed, onToggle }: SidebarHeaderProps) {
   return (
     <div
       className={cn(
-        "flex h-[60px]  relative shrink-0 items-center border-b border-sidebar-border",
+        "flex h-[60px] z-50  relative shrink-0 items-center border-b border-sidebar-border",
         collapsed
           ? "flex-col justify-center gap-1 py-2 px-2"
           : "justify-between gap-2 px-4",
@@ -67,7 +67,7 @@ export function SidebarHeader({ collapsed, onToggle }: SidebarHeaderProps) {
           "text-muted-foreground transition-colors duration-150",
           "hover:bg-accent hover:text-foreground",
           collapsed
-            ? "size-7 absolute  inset-e-0  -translate-x-full ltr:translate-x-full bg-bg-elevated z-10"
+            ? "size-7 absolute -translate-y-1/2 -bottom-1/2  inset-e-0  -translate-x-1/2 ltr:translate-x-1/2 bg-bg-elevated z-10"
             : "size-6",
         )}
       >
