@@ -1,3 +1,4 @@
+import { useState, type ReactNode } from "react";
 import {
   type FieldValues,
   type FieldPath,
@@ -8,9 +9,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { LabelField } from "./LabelField";
 import { cn } from "@/lib/utils";
-import { MdErrorOutline } from "react-icons/md";
+import { MdErrorOutline, MdVisibility, MdVisibilityOff } from "react-icons/md";
 
-interface InputFieldProps<TFieldValues extends FieldValues = FieldValues> {
+export interface InputFieldProps<
+  TFieldValues extends FieldValues = FieldValues,
+> {
   name: FieldPath<TFieldValues>;
   label: string;
   placeholder?: string;
@@ -21,6 +24,9 @@ interface InputFieldProps<TFieldValues extends FieldValues = FieldValues> {
   disabled?: boolean;
   className?: string;
   inputClassName?: string;
+  startIcon?: ReactNode;
+  endIcon?: ReactNode;
+  autoComplete?: string;
 }
 
 export function InputField<TFieldValues extends FieldValues = FieldValues>({
@@ -34,8 +40,19 @@ export function InputField<TFieldValues extends FieldValues = FieldValues>({
   disabled,
   className,
   inputClassName,
+  startIcon,
+  endIcon,
+  autoComplete,
 }: InputFieldProps<TFieldValues>) {
   const { control } = useFormContext<TFieldValues>();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const isPasswordType = type === "password";
+  const effectiveType = isPasswordType
+    ? showPassword
+      ? "text"
+      : "password"
+    : type;
 
   return (
     <Controller
@@ -50,27 +67,59 @@ export function InputField<TFieldValues extends FieldValues = FieldValues>({
           hint={hint}
           className={className}
         >
-          <Input
-            {...field}
-            id={name}
-            type={type}
-            placeholder={placeholder}
-            disabled={disabled}
-            aria-invalid={!!error}
-            aria-describedby={error ? `${name}-error` : undefined}
-            className={cn(
-              "h-9 text-sm transition-colors duration-150",
-              "focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-0",
-              error && "border-destructive focus-visible:ring-destructive/50",
-              inputClassName
+          <div className="relative flex items-center w-full">
+            {startIcon && (
+              <div className="absolute left-3 flex items-center pointer-events-none text-muted-foreground">
+                {startIcon}
+              </div>
             )}
-          />
+
+            <Input
+              {...field}
+              id={name}
+              type={effectiveType}
+              placeholder={placeholder}
+              disabled={disabled}
+              autoComplete={autoComplete}
+              aria-invalid={!!error}
+              aria-describedby={error ? `${name}-error` : undefined}
+              className={cn(
+                "h-10 text-sm transition-all duration-150",
+                startIcon && "ps-9",
+                (endIcon || isPasswordType) && "pe-9",
+                "focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-0",
+                error && "border-destructive focus-visible:ring-destructive/50",
+                inputClassName
+              )}
+            />
+
+            {isPasswordType ? (
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 flex items-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <MdVisibilityOff className="size-4" />
+                ) : (
+                  <MdVisibility className="size-4" />
+                )}
+              </button>
+            ) : (
+              endIcon && (
+                <div className="absolute right-3 flex items-center pointer-events-none text-muted-foreground">
+                  {endIcon}
+                </div>
+              )
+            )}
+          </div>
 
           {error?.message && (
             <div
               id={`${name}-error`}
               role="alert"
-              className="flex items-center gap-1.5 text-xs text-destructive"
+              className="flex items-center gap-1.5 text-xs text-destructive mt-1"
             >
               <MdErrorOutline className="size-3.5 shrink-0" />
               <span>{error.message}</span>

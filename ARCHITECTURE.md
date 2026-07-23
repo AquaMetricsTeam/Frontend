@@ -28,23 +28,31 @@ src/
 ├── features/            # Domain-driven features
 │   ├── athletes/        # Example feature module
 │   │   ├── components/  # Feature-specific UI components
-│   │   ├── hooks/       # Feature-specific TanStack Query hooks (useAthletes, useAthleteMutations)
-│   │   ├── constants/   # Feature-specific configuration/enums
-│   │   ├── types/       # Feature-specific TypeScript declarations
-│   │   ├── services/    # Feature-specific API requests calling customFetch
-│   │   └── index.ts     # Feature public barrel export
+│   │   ├── hooks/       # Feature-specific TanStack Query hooks
+│   │   ├── constants/   # Query keys, Zod validation schemas, enums
+│   │   ├── types/       # ALL feature-specific TypeScript types (not global)
+│   │   └── services/    # One file per API endpoint, calling customFetch
 │   ├── swimming/
 │   ├── fitness/
 │   └── auth/
 ├── constants/           # Global constants (config, i18nConfig, sidebar)
-├── hooks/               # Global utility hooks (use-mobile, useIntersectionObserver)
-├── lib/                 # Utility libraries (apiClient.ts, i18n, utils, query client)
-├── pages/               # Route entry pages (thin wrappers over features)
+├── hooks/               # Global utility hooks
+├── lib/                 # Utility libraries (i18n, utils)
+├── pages/               # Route entry pages
 ├── routes/              # React Router configuration
 ├── translations/        # i18n resources (en, ar JSON files)
-├── types/               # Global TypeScript definitions
+├── types/               # Global TypeScript definitions (cross-feature only)
 └── utils/               # Pure helper functions
 ```
+
+> **No Barrel Exports**: Features do NOT use `index.ts` re-export aggregators. Always import directly from the specific source file:
+> ```ts
+> import { useLogin } from "@/features/auth/hooks/useLogin";
+> import { loginSchema } from "@/features/auth/constants/validations";
+> ```
+>
+> **Types Rule**: Feature-specific types belong in `src/features/<feature>/types/index.ts` as regular named exports. Only truly cross-feature types (e.g., `ApiResponse<T>`, `PermissionKey`) live in `src/types/`.
+
 
 ---
 
@@ -61,42 +69,63 @@ A lightweight, type-safe `customFetch` wrapper handling:
 - `BACKEND_BASE_URL` prefixing.
 - Automatic JWT Bearer token authorization header injection (`getStoredToken()`).
 - Language header synchronization (`accept-language`).
-- Standardized error throwing with status codes & token cleanup on 401.
+- Silent token refresh on 401 (skipped for auth endpoints).
+- Redirect to `/login` on refresh failure.
 
 ### API Response Type Envelope (`src/types/api.d.ts`)
-All API calls utilize the generic `ApiResponse<TData>` wrapper type to standardize backend payloads:
+All API calls use the global `ApiResponse<TData>` wrapper type:
 
 ```ts
-// Example usage in feature services:
 import { customFetch } from "@/services/customFetch";
+import type { Athlete } from "../types";
 
-export async function fetchAthletes(params?: Record<string, unknown>) {
+export async function fetchAthletes() {
   return customFetch<ApiResponse<Athlete[]>>("/athletes");
 }
 ```
 
 ### Layer 2: Feature Services (`src/features/<feature>/services/`)
-Pure async functions containing API endpoint URLs, request payload mapping, and response typings.
+- **One file per API endpoint**: `login.service.ts`, `me.service.ts`, etc.
+- Endpoint URL strings are written **directly inside** each service file — no shared endpoint constants object.
+- Import domain types from `../types`, not from global declarations.
 
 ### Layer 3: TanStack Query Hooks (`src/features/<feature>/hooks/`)
-Encapsulate `useQuery` and `useMutation` calls for components:
+Encapsulate `useQuery` and `useMutation` calls:
 
 ```ts
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchAthletes, createAthlete } from "../services/athleteService";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAthletes } from "../services/fetchAthletes.service";
+import { ATHLETE_KEYS } from "../constants/queryKeys";
 
-export const ATHLETE_KEYS = {
-  all: ["athletes"] as const,
-  list: (filters: object) => [...ATHLETE_KEYS.all, "list", filters] as const,
-};
-
-export function useAthletes(params: { page?: number; search?: string }) {
+export function useAthletes(params: { page?: number }) {
   return useQuery({
     queryKey: ATHLETE_KEYS.list(params),
     queryFn: () => fetchAthletes(params),
   });
 }
 ```
+
+### Query Keys (`src/features/<feature>/constants/queryKeys.ts`)
+Query key factories live in `constants/`, never in `hooks/`:
+
+```ts
+export const ATHLETE_KEYS = {
+  all: ["athletes"] as const,
+  list: (filters: object) => [...ATHLETE_KEYS.all, "list", filters] as const,
+};
+```
+
+### Validation (`src/features/<feature>/constants/validations.ts`)
+Use Zod schemas for all form validation. The inferred type replaces manual interface declarations:
+
+```ts
+import { z } from "zod";
+
+export const athleteSchema = z.object({ name: z.string().min(1) });
+export type AthleteFormValues = z.infer<typeof athleteSchema>;
+```
+
+Use `zodResolver` from `@hookform/resolvers/zod` with React Hook Form.
 
 ---
 
@@ -116,7 +145,7 @@ When creating or modifying UI elements, follow this priority order strictly:
 ## 5. Form Fields & Data Presentation Rules
 
 ### Form Fields Rule
-All forms must use React Hook Form + FormProvider with the shared field wrappers:
+All forms must use React Hook Form with Zod validation via `zodResolver`. Use shared field wrappers where possible:
 - `InputField` (Text, Number, Email, Password)
 - `SelectField` (Searchable Combobox)
 - `TextareaField` (Multi-line text)
@@ -131,10 +160,11 @@ All forms must use React Hook Form + FormProvider with the shared field wrappers
 
 ## 6. Coding Standards & Best Practices
 
-1. **TypeScript**: No `any`. Declare typings explicitly in `types/` or feature `types/`.
+1. **TypeScript**: No `any`. Feature types live in `src/features/<feature>/types/index.ts`. Global types only for cross-feature concerns.
 2. **Styling**: Use Tailwind v4 CSS utilities. Apply OKLCH design tokens (`bg-background`, `text-foreground`, `bg-primary`, `bg-card`).
 3. **i18n & RTL**:
    - Always use `useTranslation()` with key namespaces (`t("common:...")`).
    - Use Tailwind logical properties (`inset-s-0`, `inset-e-0`, `ms-2`, `me-2`, `ps-3`, `pe-3`).
    - Arabic font **Tajawal** is automatically applied in `[dir="rtl"]`.
 4. **Icons**: Use `react-icons/md` (Material Design) for UI consistency.
+5. **Comments**: Only comment the "why" — never narrate what the code obviously does.

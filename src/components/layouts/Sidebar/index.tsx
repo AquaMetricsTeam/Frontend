@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 import { LANG_DIR } from "@/constants/i18nConfig";
 import { SidebarHeader } from "./SidebarHeader";
 import { SidebarNav } from "./SidebarNav";
-import { SidebarFooter } from "./SidebarFooter";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 
 interface SidebarProps {
@@ -51,7 +50,6 @@ function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
         <div className="flex-1 overflow-y-auto overflow-x-hidden py-3">
           <SidebarNav collapsed={collapsed} />
         </div>
-        <SidebarFooter collapsed={collapsed} />
       </aside>
 
       {/* ── Mobile drawer (shadcn) ───────────────────────────── */}
@@ -67,7 +65,6 @@ function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
           <div className="flex-1 overflow-y-auto py-3">
             <SidebarNav collapsed={false} />
           </div>
-          <SidebarFooter collapsed={false} />
         </DrawerContent>
       </Drawer>
     </>

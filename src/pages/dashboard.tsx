@@ -15,6 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+
 
 // ── Mock data ────────────────────────────────────────────────────────────────
 
@@ -277,13 +279,11 @@ export default function Dashboard() {
                   rows={4}
                 />
 
-                <button
-                  type="submit"
-                  className="mt-1 w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-600 active:scale-[0.98]"
-                >
+                <Button type="submit" size="lg" className="mt-1 w-full">
                   Add Athlete
-                </button>
+                </Button>
               </form>
+
             </FormProvider>
           </div>
         </section>
