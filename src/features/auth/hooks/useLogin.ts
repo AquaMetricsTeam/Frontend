@@ -6,7 +6,6 @@ import { saveTokenPair } from "@/utils/authStorage";
 import { AUTH_QUERY_KEYS } from "../constants/queryKeys";
 import type { LoginPayload } from "../types";
 
-
 export function useLogin() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -37,13 +36,11 @@ export function useLogin() {
       });
 
       toast.success(response.message || "Logged in successfully!");
-      navigate("/dashboard", { replace: true });
+      navigate("/", { replace: true });
     },
-
 
     onError: (error: { message?: string }) => {
       toast.error(error?.message ?? "Login failed. Check your credentials.");
     },
   });
 }
-

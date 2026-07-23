@@ -15,7 +15,7 @@ export default function LoginPage() {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return (
@@ -25,7 +25,11 @@ export default function LoginPage() {
       <div className="flex w-full flex-col items-center justify-center px-6 lg:w-1/2 lg:px-16">
         <div className="mb-8 flex items-center gap-2.5 lg:hidden">
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-cyan-400/20 ring-1 ring-cyan-400/30">
-            <svg className="h-4 w-4 text-cyan-400" viewBox="0 0 24 24" fill="currentColor">
+            <svg
+              className="h-4 w-4 text-cyan-400"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
               <path d="M2 20c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2v-4c-2.5 0-2.5-2-5-2s-2.5 2-5 2-2.5-2-5-2-2.5 2-5 2zm0-8c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2v-4c-2.5 0-2.5-2-5-2s-2.5 2-5 2-2.5-2-5-2-2.5 2-5 2z" />
             </svg>
           </div>
@@ -39,4 +43,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
