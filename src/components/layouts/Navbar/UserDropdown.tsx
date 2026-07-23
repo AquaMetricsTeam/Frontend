@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { MdPerson, MdSettings, MdKeyboard, MdLogout } from "react-icons/md";
 import {
@@ -11,30 +10,31 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/components/Providers/AuthProvider";
+import { useLogout } from "@/features/auth/hooks/useLogout";
 
 interface UserDropdownProps {
   className?: string;
-  user?: {
-    name: string;
-    email: string;
-    role: string;
-    initials: string;
-  };
 }
 
-const DEFAULT_USER = {
-  name: "Rania Amari",
-  email: "rania@aquametrics.com",
-  role: "Administrator",
-  initials: "RA",
-};
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+}
 
-export function UserDropdown({
-  className,
-  user = DEFAULT_USER,
-}: UserDropdownProps) {
-  const { t } = useTranslation();
+export function UserDropdown({ className }: UserDropdownProps) {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { mutate: logout, isPending } = useLogout();
+
+  const displayName = user?.fullName ?? "—";
+  const displayEmail = user?.email ?? "";
+  const displayRole = user?.roles?.[0] ?? "";
+  const initials = displayName !== "—" ? getInitials(displayName) : "?";
 
   return (
     <DropdownMenu>
@@ -47,34 +47,27 @@ export function UserDropdown({
         )}
       >
         <div className="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/20 ring-2 ring-primary/30">
-          <span className="text-[11px] font-bold text-primary">
-            {user.initials}
-          </span>
+          <span className="text-[11px] font-bold text-primary">{initials}</span>
           <span className="absolute bottom-0 inset-e-0 size-2 rounded-full bg-emerald-500 ring-2 ring-background" />
         </div>
         <div className="hidden md:flex flex-col text-start min-w-0 me-1">
           <span className="truncate text-xs font-semibold leading-tight text-foreground">
-            {user.name}
+            {displayName}
           </span>
           <span className="truncate text-[10px] text-muted-foreground">
-            {user.role}
+            {displayRole}
           </span>
         </div>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-56 p-1">
-        {/* User Info Header */}
         <DropdownMenuGroup>
           <DropdownMenuLabel className="font-normal p-2">
             <div className="flex flex-col gap-0.5">
-              <p className="text-xs font-semibold text-foreground truncate">
-                {user.name}
-              </p>
-              <p className="text-[11px] text-muted-foreground truncate">
-                {user.email}
-              </p>
+              <p className="text-xs font-semibold text-foreground truncate">{displayName}</p>
+              <p className="text-[11px] text-muted-foreground truncate">{displayEmail}</p>
               <span className="mt-1 inline-flex w-fit items-center rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-primary">
-                {user.role}
+                {displayRole}
               </span>
             </div>
           </DropdownMenuLabel>
@@ -96,7 +89,7 @@ export function UserDropdown({
             className="flex items-center gap-2 cursor-pointer text-xs"
           >
             <MdSettings className="size-4 text-muted-foreground" />
-            <span>{t("common:nav.items.settings")}</span>
+            <span>Settings</span>
           </DropdownMenuItem>
 
           <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-xs">
@@ -107,10 +100,16 @@ export function UserDropdown({
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-xs text-destructive focus:text-destructive focus:bg-destructive/10">
+        <DropdownMenuItem
+          onClick={() => logout()}
+          className="flex items-center gap-2 cursor-pointer text-xs text-destructive focus:text-destructive focus:bg-destructive/10"
+        >
           <MdLogout className="size-4" />
           <span>Sign Out</span>
         </DropdownMenuItem>
+
+
+
       </DropdownMenuContent>
     </DropdownMenu>
   );
