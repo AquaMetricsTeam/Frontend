@@ -330,5 +330,70 @@
     flex-direction: column;
   }
 
+  /* ── Fix Browser Autofill / Recommendation Background, Text Color & Outline ── */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  textarea:-webkit-autofill:active,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus,
+  select:-webkit-autofill:active {
+    outline: none !important;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover {
+    -webkit-text-fill-color: var(--foreground) !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--background) inset !important;
+    border-color: var(--border) !important;
+    transition: background-color 50000s ease-in-out 0s !important;
+    caret-color: var(--foreground) !important;
+  }
+
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  textarea:-webkit-autofill:focus,
+  textarea:-webkit-autofill:active,
+  select:-webkit-autofill:focus,
+  select:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--foreground) !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--background) inset !important;
+    border-color: var(--primary) !important;
+    transition: background-color 50000s ease-in-out 0s !important;
+    caret-color: var(--foreground) !important;
+  }
+
+  .dark input:-webkit-autofill,
+  .dark input:-webkit-autofill:hover,
+  .dark textarea:-webkit-autofill,
+  .dark textarea:-webkit-autofill:hover {
+    -webkit-text-fill-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    caret-color: #ffffff !important;
+  }
+
+  .dark input:-webkit-autofill:focus,
+  .dark input:-webkit-autofill:active,
+  .dark textarea:-webkit-autofill:focus,
+  .dark textarea:-webkit-autofill:active {
+    -webkit-text-fill-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
+    border-color: var(--primary) !important;
+    caret-color: #ffffff !important;
+  }
+
+
+
   /* ── Global RTL & Arabic Font Formatting ── */
 }
+
