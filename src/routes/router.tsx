@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/dashboard";
 import LoginPage from "@/pages/login";
 import UnauthorizedPage from "@/pages/unauthorized";
+import UsersPage from "@/pages/users";
 import type { UserRole } from "@/features/auth/types";
 
 const DASHBOARD_ROLES: UserRole[] = [
@@ -39,6 +40,14 @@ const router = createBrowserRouter([
                 element: (
                   <ProtectedRoute allowedRoles={DASHBOARD_ROLES}>
                     <Dashboard />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/users",
+                element: (
+                  <ProtectedRoute allowedRoles={["Admin"]}>
+                    <UsersPage />
                   </ProtectedRoute>
                 ),
               },

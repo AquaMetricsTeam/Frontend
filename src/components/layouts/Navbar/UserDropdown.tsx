@@ -29,7 +29,7 @@ function getInitials(name: string) {
 export function UserDropdown({ className }: UserDropdownProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { mutate: logout, isPending } = useLogout();
+  const { mutate: logout } = useLogout();
 
   const displayName = user?.fullName ?? "—";
   const displayEmail = user?.email ?? "";
