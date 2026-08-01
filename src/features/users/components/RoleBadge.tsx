@@ -1,7 +1,7 @@
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { StaffRole } from "../types/index";
-import { ROLE_FILTER_LABELS } from "../constants/validations";
 
 interface RoleBadgeProps {
   role: StaffRole;
@@ -9,6 +9,8 @@ interface RoleBadgeProps {
 }
 
 export function RoleBadge({ role, className }: RoleBadgeProps) {
+  const { t } = useTranslation("users");
+
   const styles: Record<StaffRole, string> = {
     Admin: "border-sky-500/30 text-sky-500 dark:border-sky-400/20 dark:text-sky-400 bg-sky-500/5",
     SwimmingCoach: "border-teal-500/30 text-teal-600 dark:border-teal-400/20 dark:text-teal-400 bg-teal-500/5",
@@ -26,7 +28,7 @@ export function RoleBadge({ role, className }: RoleBadgeProps) {
         className
       )}
     >
-      {ROLE_FILTER_LABELS[role]}
+      {t(`users:roles.${role}`)}
     </Badge>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -13,15 +14,9 @@ import { Button } from "@/components/ui/button";
 import { InputField } from "@/components/fields/InputField";
 import { SelectField } from "@/components/fields/SelectField";
 import { useCreateUser } from "../hooks/useCreateUser";
-import { createUserSchema } from "../constants/validations";
-import { ROLE_FILTER_LABELS, staffRoleValues } from "../constants/validations";
+import { createUserSchema, staffRoleValues } from "../constants/validations";
 import type { CreateUserFormValues } from "../constants/validations";
 import type { SelectOption } from "@/components/fields/SelectField";
-
-const ROLE_OPTIONS: SelectOption[] = staffRoleValues.map((role) => ({
-  value: role,
-  label: ROLE_FILTER_LABELS[role],
-}));
 
 interface CreateUserModalProps {
   open: boolean;
@@ -29,6 +24,13 @@ interface CreateUserModalProps {
 }
 
 export function CreateUserModal({ open, onOpenChange }: CreateUserModalProps) {
+  const { t } = useTranslation("users");
+
+  const roleOptions: SelectOption[] = staffRoleValues.map((role) => ({
+    value: role,
+    label: t(`users:roles.${role}`),
+  }));
+
   const methods = useForm<CreateUserFormValues>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
@@ -43,7 +45,6 @@ export function CreateUserModal({ open, onOpenChange }: CreateUserModalProps) {
     onOpenChange(false);
   });
 
-  // Reset form whenever modal is reopened
   useEffect(() => {
     if (open) methods.reset();
   }, [open, methods]);
@@ -56,10 +57,8 @@ export function CreateUserModal({ open, onOpenChange }: CreateUserModalProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Create User</DialogTitle>
-          <DialogDescription>
-            Add a new staff member to the academy.
-          </DialogDescription>
+          <DialogTitle>{t("users:modal.title")}</DialogTitle>
+          <DialogDescription>{t("users:modal.description")}</DialogDescription>
         </DialogHeader>
 
         <FormProvider {...methods}>
@@ -71,34 +70,34 @@ export function CreateUserModal({ open, onOpenChange }: CreateUserModalProps) {
           >
             <InputField<CreateUserFormValues>
               name="fullName"
-              label="Full Name"
-              placeholder="e.g. John Smith"
+              label={t("users:modal.fullName")}
+              placeholder={t("users:modal.fullNamePlaceholder")}
               required
             />
 
             <InputField<CreateUserFormValues>
               name="email"
-              label="Email"
+              label={t("users:modal.email")}
               type="email"
-              placeholder="john@example.com"
+              placeholder={t("users:modal.emailPlaceholder")}
               required
               autoComplete="off"
             />
 
             <InputField<CreateUserFormValues>
               name="password"
-              label="Password"
+              label={t("users:modal.password")}
               type="password"
-              placeholder="Min. 8 characters"
+              placeholder={t("users:modal.passwordPlaceholder")}
               required
               autoComplete="new-password"
             />
 
             <SelectField<CreateUserFormValues>
               name="role"
-              label="Role"
-              options={ROLE_OPTIONS}
-              placeholder="Select a role"
+              label={t("users:modal.role")}
+              options={roleOptions}
+              placeholder={t("users:modal.rolePlaceholder")}
               required
             />
           </form>
@@ -111,7 +110,7 @@ export function CreateUserModal({ open, onOpenChange }: CreateUserModalProps) {
             disabled={isPending}
             className="min-w-24"
           >
-            {isPending ? "Creating…" : "Create User"}
+            {isPending ? t("users:modal.creating") : t("users:modal.submit")}
           </Button>
         </DialogFooter>
       </DialogContent>

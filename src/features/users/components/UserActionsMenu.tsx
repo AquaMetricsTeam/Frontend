@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { MdMoreHoriz } from "react-icons/md";
 import {
   DropdownMenu,
@@ -14,6 +15,7 @@ interface UserActionsMenuProps {
 }
 
 export function UserActionsMenu({ userId, isActive }: UserActionsMenuProps) {
+  const { t } = useTranslation("users");
   const { mutate: updateStatus, isPending } = useUpdateUserStatus();
 
   return (
@@ -28,7 +30,7 @@ export function UserActionsMenu({ userId, isActive }: UserActionsMenuProps) {
             onClick={() => updateStatus({ userId, payload: { isActive: false } })}
             className="text-destructive focus:bg-destructive/10 cursor-pointer"
           >
-            Deactivate
+            {t("users:actions.deactivate")}
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem
@@ -36,7 +38,7 @@ export function UserActionsMenu({ userId, isActive }: UserActionsMenuProps) {
             onClick={() => updateStatus({ userId, payload: { isActive: true } })}
             className="text-emerald-600 focus:bg-emerald-500/10 cursor-pointer"
           >
-            Activate
+            {t("users:actions.activate")}
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>

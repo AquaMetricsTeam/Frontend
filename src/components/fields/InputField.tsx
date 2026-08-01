@@ -69,7 +69,7 @@ export function InputField<TFieldValues extends FieldValues = FieldValues>({
         >
           <div className="relative flex items-center w-full">
             {startIcon && (
-              <div className="absolute left-3 flex items-center pointer-events-none text-muted-foreground">
+              <div className="absolute start-3 flex items-center pointer-events-none text-muted-foreground">
                 {startIcon}
               </div>
             )}
@@ -97,7 +97,7 @@ export function InputField<TFieldValues extends FieldValues = FieldValues>({
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute right-3 flex items-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                className="absolute end-3 flex items-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -108,7 +108,7 @@ export function InputField<TFieldValues extends FieldValues = FieldValues>({
               </button>
             ) : (
               endIcon && (
-                <div className="absolute right-3 flex items-center pointer-events-none text-muted-foreground">
+                <div className="absolute end-3 flex items-center pointer-events-none text-muted-foreground">
                   {endIcon}
                 </div>
               )

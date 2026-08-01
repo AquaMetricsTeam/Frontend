@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -7,6 +8,8 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ isActive, className }: StatusBadgeProps) {
+  const { t } = useTranslation("users");
+
   return (
     <Badge
       variant="outline"
@@ -18,7 +21,7 @@ export function StatusBadge({ isActive, className }: StatusBadgeProps) {
         className
       )}
     >
-      {isActive ? "Active" : "Inactive"}
+      {isActive ? t("users:status.active") : t("users:status.inactive")}
     </Badge>
   );
 }

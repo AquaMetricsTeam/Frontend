@@ -1,0 +1,48 @@
+{
+  "page": {
+    "description": "إدارة أعضاء الفريق والأدوار وصلاحيات النظام.",
+    "memberCount": "عضو واحد بالفريق",
+    "memberCount_plural": "{{count}} أعضاء في الفريق",
+    "createButton": "إنشاء مستخدم"
+  },
+  "search": {
+    "placeholder": "البحث بالاسم أو البريد الإلكتروني..."
+  },
+  "table": {
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "role": "الدور",
+    "status": "الحالة",
+    "actions": "الإجراءات"
+  },
+  "roles": {
+    "all": "الكل",
+    "Admin": "مدير",
+    "SwimmingCoach": "مدرب سباحة",
+    "FitnessCoach": "مدرب لياقة",
+    "NutritionSpecialist": "أخصائي تغذية",
+    "Athlete": "رياضي"
+  },
+  "status": {
+    "active": "نشط",
+    "inactive": "غير نشط"
+  },
+  "actions": {
+    "activate": "تفعيل",
+    "deactivate": "تعطيل"
+  },
+  "modal": {
+    "title": "إنشاء مستخدم",
+    "description": "إضافة عضو جديد إلى الأكاديمية.",
+    "creating": "جارٍ الإنشاء…",
+    "submit": "إنشاء مستخدم",
+    "fullName": "الاسم الكامل",
+    "fullNamePlaceholder": "مثال: أحمد محمد",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "ahmed@example.com",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "٨ أحرف على الأقل",
+    "role": "الدور",
+    "rolePlaceholder": "اختر دوراً"
+  }
+}
