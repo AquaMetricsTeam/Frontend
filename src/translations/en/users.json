@@ -1,0 +1,48 @@
+{
+  "page": {
+    "description": "Manage team members, roles, and system access.",
+    "memberCount": "{{count}} team member",
+    "memberCount_plural": "{{count}} team members",
+    "createButton": "Create user"
+  },
+  "search": {
+    "placeholder": "Search by name or email..."
+  },
+  "table": {
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "roles": {
+    "all": "All",
+    "Admin": "Administrator",
+    "SwimmingCoach": "Swimming Coach",
+    "FitnessCoach": "Fitness Coach",
+    "NutritionSpecialist": "Nutrition Specialist",
+    "Athlete": "Athlete"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "actions": {
+    "activate": "Activate",
+    "deactivate": "Deactivate"
+  },
+  "modal": {
+    "title": "Create User",
+    "description": "Add a new staff member to the academy.",
+    "creating": "Creating…",
+    "submit": "Create User",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "e.g. John Smith",
+    "email": "Email",
+    "emailPlaceholder": "john@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Min. 8 characters",
+    "role": "Role",
+    "rolePlaceholder": "Select a role"
+  }
+}

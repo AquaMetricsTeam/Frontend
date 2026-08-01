@@ -1,31 +1,29 @@
-import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { ROLE_FILTER_LABELS, type RoleFilter, staffRoleValues } from "../constants/validations";
+import { staffRoleValues } from "../constants/validations";
+import type { RoleFilter } from "../constants/validations";
 
-export function RoleFilterTabs() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const currentRole = (searchParams.get("role") as RoleFilter) || "all";
+interface RoleFilterTabsProps {
+  currentRole: string | undefined;
+  onRoleChange: (role: string | undefined) => void;
+}
 
+export function RoleFilterTabs({
+  currentRole,
+  onRoleChange,
+}: RoleFilterTabsProps) {
+  const { t } = useTranslation("users");
+  const activeFilter = currentRole || "all";
   const filters: RoleFilter[] = ["all", ...staffRoleValues];
 
   function handleFilterChange(role: RoleFilter) {
-    setSearchParams((prev) => {
-      const next = new URLSearchParams(prev);
-      if (role === "all") {
-        next.delete("role");
-      } else {
-        next.set("role", role);
-      }
-      // Reset page when filter changes
-      next.delete("page");
-      return next;
-    });
+    onRoleChange(role === "all" ? undefined : role);
   }
 
   return (
     <div className="flex flex-wrap items-center gap-2">
       {filters.map((role) => {
-        const isActive = currentRole === role;
+        const isActive = activeFilter === role;
         return (
           <Button
             key={role}
@@ -34,7 +32,7 @@ export function RoleFilterTabs() {
             onClick={() => handleFilterChange(role)}
             className="rounded-full text-xs px-4 cursor-pointer"
           >
-            {ROLE_FILTER_LABELS[role]}
+            {t(`users:roles.${role}`)}
           </Button>
         );
       })}

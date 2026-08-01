@@ -28,7 +28,7 @@ i18n.use(initReactI18next).init({
 i18n.on("languageChanged", (lang) => {
   try {
     localStorage.setItem(LANG_STORAGE_KEY, lang);
-  } catch {}
+  } catch { }
 });
 
 export default i18n;
