@@ -11,6 +11,7 @@ import { useUserFilters } from "@/features/users/hooks/useUserFilters";
 import { UsersTable } from "@/features/users/components/UsersTable";
 import { RoleFilterTabs } from "@/features/users/components/RoleFilterTabs";
 import { CreateUserModal } from "@/features/users/components/CreateUserModal";
+import Box from "@/components/layouts/Box";
 
 export default function UsersPage() {
   const { t } = useTranslation("users");
@@ -34,6 +35,8 @@ export default function UsersPage() {
   return (
     <PageWrapper>
       {/* Page Header */}
+
+      {/* Main Content Card */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-2.5">
@@ -51,7 +54,7 @@ export default function UsersPage() {
                 totalCount === 1
                   ? "users:page.memberCount"
                   : "users:page.memberCount_plural",
-                { count: totalCount }
+                { count: totalCount },
               )}
             </Badge>
           </div>
@@ -60,9 +63,7 @@ export default function UsersPage() {
           </p>
         </div>
       </div>
-
-      {/* Main Content Card */}
-      <div className="flex flex-col gap-6 rounded-2xl border border-border bg-card p-5 shadow-xs">
+      <Box>
         {/* Controls Row: Search, Filters, and Create Action */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-1 flex-col gap-4 sm:flex-row sm:items-center">
@@ -94,7 +95,7 @@ export default function UsersPage() {
             onRetry={refetch}
           />
         </WithPagination>
-      </div>
+      </Box>
 
       <CreateUserModal open={isModalOpen} onOpenChange={setIsModalOpen} />
     </PageWrapper>

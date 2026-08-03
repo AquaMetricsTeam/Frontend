@@ -1,0 +1,58 @@
+{
+  "page": {
+    "title": "الرياضيون",
+    "description": "إدارة الرياضيين المسجلين والمدربين المعينين لهم",
+    "count": "رياضي {{count}}",
+    "count_plural": "{{count}} رياضيين",
+    "createButton": "إضافة رياضي"
+  },
+  "search": {
+    "placeholder": "البحث عن الرياضيين بالاسم أو البريد الإلكتروني..."
+  },
+  "table": {
+    "name": "الرياضي",
+    "email": "البريد / التواصل",
+    "coaches": "المدربون المعينون",
+    "status": "الحالة",
+    "joinedAt": "تاريخ الانضمام",
+    "actions": "الإجراءات",
+    "noCoaches": "لا يوجد مدربون معينون",
+    "assignCoach": "تعيين مدرب",
+    "manageCoaches": "إدارة المدربين",
+    "gender": "الجنس",
+    "age": "العمر",
+    "groups": "المجموعات",
+    "registrationStatus": "الحالة"
+  },
+  "status": {
+    "active": "نشط",
+    "inactive": "غير نشط"
+  },
+  "gender": {
+    "male": "ذكر",
+    "female": "أنثى",
+    "unknown": "غير محدد"
+  },
+  "registrationStatus": {
+    "active": "نشط",
+    "pending": "قيد الانتظار",
+    "inactive": "غير نشط"
+  },
+  "modal": {
+    "assignTitle": "تعيينات المدربين",
+    "assignDescription": "إدارة المدربين المعينين للرياضي {{name}}",
+    "currentCoaches": "المدربون الحاليون",
+    "noAssignedCoaches": "لم يتم تعيين أي مدرب لهذا الرياضي بعد.",
+    "assignNewCoach": "تعيين مدرب جديد",
+    "selectCoach": "اختر مدرباً...",
+    "searchCoach": "ابحث عن مدرب...",
+    "noCoachFound": "لا يوجد مدرب.",
+    "loadingCoaches": "جارٍ التحميل...",
+    "assigning": "جارٍ التعيين...",
+    "assign": "تعيين",
+    "remove": "إزالة",
+    "removing": "جارٍ الإزالة...",
+    "assignedSuccess": "تم تعيين المدرب بنجاح",
+    "removedSuccess": "تمت إزالة تعيين المدرب بنجاح"
+  }
+}

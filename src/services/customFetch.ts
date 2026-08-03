@@ -5,17 +5,21 @@ import { clearAllTokens, getStoredToken, saveToken } from "@/utils/authStorage";
 
 let refreshAttemptInProgress: Promise<string> | null = null;
 
-const AUTH_SKIP_REFRESH_PATHS = ["/Auth/login", "/Auth/refresh", "/Auth/logout"];
+const AUTH_SKIP_REFRESH_PATHS = [
+  "/Auth/login",
+  "/Auth/refresh",
+  "/Auth/logout",
+];
 
 async function getRefreshedToken(): Promise<string> {
   if (!refreshAttemptInProgress) {
-    refreshAttemptInProgress = import(
-      "@/features/auth/hooks/useRefreshToken"
-    ).then(({ attemptTokenRefresh }) =>
-      attemptTokenRefresh().finally(() => {
-        refreshAttemptInProgress = null;
-      }),
-    );
+    refreshAttemptInProgress =
+      import("@/features/auth/hooks/useRefreshToken").then(
+        ({ attemptTokenRefresh }) =>
+          attemptTokenRefresh().finally(() => {
+            refreshAttemptInProgress = null;
+          }),
+      );
   }
   return refreshAttemptInProgress;
 }
@@ -40,7 +44,9 @@ export async function customFetch<T>(
 ): Promise<T> {
   const token = getStoredToken();
   const url = `${BACKEND_BASE_URL}${endpoint}`;
-  const skipRefresh = AUTH_SKIP_REFRESH_PATHS.some((p) => endpoint.startsWith(p));
+  const skipRefresh = AUTH_SKIP_REFRESH_PATHS.some((p) =>
+    endpoint.startsWith(p),
+  );
 
   const makeRequest = async (accessToken: string | null) =>
     fetch(url, {

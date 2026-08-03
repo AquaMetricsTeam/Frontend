@@ -1,0 +1,58 @@
+{
+  "page": {
+    "title": "Athletes",
+    "description": "Manage registered athletes and their assigned coaches",
+    "count": "{{count}} athlete",
+    "count_plural": "{{count}} athletes",
+    "createButton": "Add Athlete"
+  },
+  "search": {
+    "placeholder": "Search athletes by name or email..."
+  },
+  "table": {
+    "name": "Athlete",
+    "email": "Email / Contact",
+    "coaches": "Assigned Coaches",
+    "status": "Status",
+    "joinedAt": "Joined Date",
+    "actions": "Actions",
+    "noCoaches": "No coaches assigned",
+    "assignCoach": "Assign Coach",
+    "manageCoaches": "Manage Coaches",
+    "gender": "Gender",
+    "age": "Age",
+    "groups": "Groups",
+    "registrationStatus": "Status"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "gender": {
+    "male": "Male",
+    "female": "Female",
+    "unknown": "Unknown"
+  },
+  "registrationStatus": {
+    "active": "Active",
+    "pending": "Pending",
+    "inactive": "Inactive"
+  },
+  "modal": {
+    "assignTitle": "Coach Assignments",
+    "assignDescription": "Manage assigned coaches for {{name}}",
+    "currentCoaches": "Current Coaches",
+    "noAssignedCoaches": "This athlete has no assigned coaches yet.",
+    "assignNewCoach": "Assign New Coach",
+    "selectCoach": "Select a coach...",
+    "searchCoach": "Search coaches...",
+    "noCoachFound": "No coach found.",
+    "loadingCoaches": "Loading coaches...",
+    "assigning": "Assigning...",
+    "assign": "Assign",
+    "remove": "Remove",
+    "removing": "Removing...",
+    "assignedSuccess": "Coach assigned successfully",
+    "removedSuccess": "Coach assignment removed successfully"
+  }
+}

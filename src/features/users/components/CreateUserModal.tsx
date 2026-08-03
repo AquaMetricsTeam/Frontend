@@ -16,15 +16,24 @@ import { SelectField } from "@/components/fields/SelectField";
 import { useCreateUser } from "../hooks/useCreateUser";
 import { createUserSchema, staffRoleValues } from "../constants/validations";
 import type { CreateUserFormValues } from "../constants/validations";
+import type { StaffRole } from "../types/index";
 import type { SelectOption } from "@/components/fields/SelectField";
 
 interface CreateUserModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  defaultRole?: StaffRole;
+  fixedRole?: StaffRole;
 }
 
-export function CreateUserModal({ open, onOpenChange }: CreateUserModalProps) {
+export function CreateUserModal({
+  open,
+  onOpenChange,
+  defaultRole,
+  fixedRole,
+}: CreateUserModalProps) {
   const { t } = useTranslation("users");
+  const effectiveRole = fixedRole || defaultRole;
 
   const roleOptions: SelectOption[] = staffRoleValues.map((role) => ({
     value: role,
@@ -37,7 +46,7 @@ export function CreateUserModal({ open, onOpenChange }: CreateUserModalProps) {
       fullName: "",
       email: "",
       password: "",
-      role: undefined,
+      role: effectiveRole,
     },
   });
 
@@ -46,8 +55,15 @@ export function CreateUserModal({ open, onOpenChange }: CreateUserModalProps) {
   });
 
   useEffect(() => {
-    if (open) methods.reset();
-  }, [open, methods]);
+    if (open) {
+      methods.reset({
+        fullName: "",
+        email: "",
+        password: "",
+        role: effectiveRole,
+      });
+    }
+  }, [open, methods, effectiveRole]);
 
   function onSubmit(values: CreateUserFormValues) {
     createUser(values);
@@ -57,7 +73,11 @@ export function CreateUserModal({ open, onOpenChange }: CreateUserModalProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{t("users:modal.title")}</DialogTitle>
+          <DialogTitle>
+            {fixedRole === "Athlete"
+              ? t("athletes:page.createButton", { defaultValue: "Add Athlete" })
+              : t("users:modal.title")}
+          </DialogTitle>
           <DialogDescription>{t("users:modal.description")}</DialogDescription>
         </DialogHeader>
 
@@ -93,13 +113,15 @@ export function CreateUserModal({ open, onOpenChange }: CreateUserModalProps) {
               autoComplete="new-password"
             />
 
-            <SelectField<CreateUserFormValues>
-              name="role"
-              label={t("users:modal.role")}
-              options={roleOptions}
-              placeholder={t("users:modal.rolePlaceholder")}
-              required
-            />
+            {!fixedRole && (
+              <SelectField<CreateUserFormValues>
+                name="role"
+                label={t("users:modal.role")}
+                options={roleOptions}
+                placeholder={t("users:modal.rolePlaceholder")}
+                required
+              />
+            )}
           </form>
         </FormProvider>
 
