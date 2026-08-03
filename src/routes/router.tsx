@@ -6,6 +6,10 @@ import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/dashboard";
 import LoginPage from "@/pages/login";
 import UnauthorizedPage from "@/pages/unauthorized";
+import UsersPage from "@/pages/users";
+import AthletesPage from "@/pages/athletes";
+import GroupsPage from "@/pages/groups";
+import ExercisesPage from "@/pages/exercises";
 import type { UserRole } from "@/features/auth/types";
 
 const DASHBOARD_ROLES: UserRole[] = [
@@ -39,6 +43,50 @@ const router = createBrowserRouter([
                 element: (
                   <ProtectedRoute allowedRoles={DASHBOARD_ROLES}>
                     <Dashboard />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/users",
+                element: (
+                  <ProtectedRoute allowedRoles={["Admin"]}>
+                    <UsersPage />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/athletes",
+                element: (
+                  <ProtectedRoute allowedRoles={DASHBOARD_ROLES}>
+                    <AthletesPage />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/groups",
+                element: (
+                  <ProtectedRoute
+                    allowedRoles={[
+                      "SwimmingCoach",
+                      "FitnessCoach",
+                      "NutritionSpecialist",
+                    ]}
+                  >
+                    <GroupsPage />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/exercises",
+                element: (
+                  <ProtectedRoute
+                    allowedRoles={[
+                      "SwimmingCoach",
+                      "FitnessCoach",
+                      "NutritionSpecialist",
+                    ]}
+                  >
+                    <ExercisesPage />
                   </ProtectedRoute>
                 ),
               },

@@ -13,6 +13,8 @@ import {
   MdNotifications,
   MdBarChart,
   MdSettings,
+  MdGroup,
+  MdSportsGymnastics,
 } from "react-icons/md";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -37,12 +39,26 @@ export const NAV_GROUPS: NavGroup[] = [
         labelKey: "common:nav.items.usersStaff",
         icon: MdPeople,
         path: "/users",
+        allowedRoles: ["Admin"],
       },
       {
         key: "athletes",
         labelKey: "common:nav.items.athletes",
         icon: MdDirectionsRun,
         path: "/athletes",
+        allowedRoles: [
+          "Admin",
+          "SwimmingCoach",
+          "FitnessCoach",
+          "NutritionSpecialist",
+        ],
+      },
+      {
+        key: "groups",
+        labelKey: "common:nav.items.groups",
+        icon: MdGroup,
+        path: "/groups",
+        allowedRoles: ["SwimmingCoach", "FitnessCoach", "NutritionSpecialist"],
       },
     ],
   },
@@ -61,6 +77,13 @@ export const NAV_GROUPS: NavGroup[] = [
         labelKey: "common:nav.items.fitness",
         icon: MdFitnessCenter,
         path: "/fitness",
+      },
+      {
+        key: "exercises",
+        labelKey: "common:nav.items.exercises",
+        icon: MdSportsGymnastics,
+        path: "/exercises",
+        allowedRoles: ["SwimmingCoach", "FitnessCoach", "NutritionSpecialist"],
       },
       {
         key: "trainingPlans",

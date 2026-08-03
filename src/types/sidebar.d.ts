@@ -1,3 +1,5 @@
+import type { UserRole } from "@/features/auth/types";
+
 declare global {
   type NavItem = {
     key: string;
@@ -5,6 +7,7 @@ declare global {
     icon: React.ElementType;
     path: string;
     badge?: number;
+    allowedRoles?: UserRole[];
   };
 
   type NavGroup = {

@@ -1,0 +1,48 @@
+{
+  "page": {
+    "title": "Exercises",
+    "description": "Create and manage training exercises for your athletes.",
+    "createButton": "New Exercise",
+    "exerciseCount": "{{count}} exercise",
+    "exerciseCount_plural": "{{count}} exercises"
+  },
+  "search": {
+    "placeholder": "Search exercises..."
+  },
+  "table": {
+    "title": "Title",
+    "description": "Description",
+    "body": "Instructions",
+    "createdAt": "Created",
+    "actions": "Actions"
+  },
+  "actions": {
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "createModal": {
+    "title": "Create Exercise",
+    "description": "Add a new exercise to the library.",
+    "titleLabel": "Title",
+    "titlePlaceholder": "e.g. Freestyle Sprint",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Brief summary of the exercise...",
+    "bodyLabel": "Instructions",
+    "bodyPlaceholder": "Step-by-step exercise instructions...",
+    "creating": "Creating…",
+    "submit": "Create Exercise"
+  },
+  "editModal": {
+    "title": "Edit Exercise",
+    "description": "Update this exercise's details.",
+    "saving": "Saving…",
+    "submit": "Save Changes"
+  },
+  "deleteDialog": {
+    "title": "Delete Exercise",
+    "description": "Are you sure you want to delete \"{{title}}\"? This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Delete",
+    "deleting": "Deleting…"
+  }
+}
