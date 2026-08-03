@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { createUser } from "../services/createUser.service";
 import { USER_KEYS } from "../constants/queryKeys";
+import { ATHLETE_QUERY_KEYS } from "@/features/athletes/constants/queryKeys";
 import type { CreateUserPayload, StaffUser, UsersPaginatedResponse } from "../types/index";
 
 const OPTIMISTIC_ID = "__optimistic_new_user__";
@@ -57,8 +58,11 @@ export function useCreateUser(onSuccess: () => void) {
       toast.error(_error?.message ?? "Failed to create user.");
     },
 
-    onSuccess: (response) => {
+    onSuccess: (response, variables) => {
       queryClient.invalidateQueries({ queryKey: USER_KEYS.all });
+      if (variables.role === "Athlete") {
+        queryClient.invalidateQueries({ queryKey: ATHLETE_QUERY_KEYS.all });
+      }
       toast.success(response.message ?? "User created successfully.");
       onSuccess();
     },

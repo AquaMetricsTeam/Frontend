@@ -1,0 +1,68 @@
+{
+  "page": {
+    "title": "المجموعات",
+    "description": "تنظيم الرياضيين في مجموعات تدريبية وإدارة الأعضاء.",
+    "createButton": "مجموعة جديدة",
+    "groupCount": "مجموعة واحدة",
+    "groupCount_plural": "{{count}} مجموعات"
+  },
+  "search": {
+    "placeholder": "البحث في المجموعات..."
+  },
+  "filter": {
+    "archived": "المؤرشفة فقط"
+  },
+  "table": {
+    "name": "اسم المجموعة",
+    "description": "الوصف",
+    "members": "الأعضاء",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "noDescription": "لا يوجد وصف",
+    "athletes": "رياضيين"
+  },
+  "status": {
+    "active": "نشطة",
+    "archived": "مؤرشفة"
+  },
+  "actions": {
+    "edit": "تعديل",
+    "delete": "حذف",
+    "manageMembers": "إدارة الأعضاء"
+  },
+  "createModal": {
+    "title": "إنشاء مجموعة",
+    "description": "إضافة مجموعة تدريب رياضيين جديدة.",
+    "name": "اسم المجموعة",
+    "namePlaceholder": "مثال: فريق الصباح",
+    "descriptionLabel": "الوصف",
+    "descriptionPlaceholder": "اكتب وصفاً مختصراً للمجموعة...",
+    "creating": "جارٍ الإنشاء…",
+    "submit": "إنشاء المجموعة"
+  },
+  "editModal": {
+    "title": "تعديل المجموعة",
+    "description": "تحديث تفاصيل المجموعة.",
+    "saving": "جارٍ الحفظ…",
+    "submit": "حفظ التغييرات"
+  },
+  "deleteDialog": {
+    "title": "حذف المجموعة",
+    "description": "هل أنت متأكد من حذف \"{{name}}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+    "cancel": "إلغاء",
+    "confirm": "حذف",
+    "deleting": "جارٍ الحذف…"
+  },
+  "drawer": {
+    "subtitle": "إدارة أعضاء المجموعة",
+    "currentMembers": "الأعضاء الحاليون",
+    "assignAthletes": "إضافة رياضيين",
+    "searchAthletes": "البحث عن الرياضيين المتاحين...",
+    "noMembers": "لا يوجد أعضاء بعد. أضف رياضيين أدناه.",
+    "noAthletes": "لا يوجد رياضيون متاحون.",
+    "removeMember": "إزالة من المجموعة",
+    "assignButton": "إضافة {{count}} رياضي",
+    "assigning": "جارٍ الإضافة…",
+    "clearAll": "مسح الكل"
+  }
+}

@@ -16,6 +16,7 @@ export type StaffRole =
   | "NutritionSpecialist"
   | "Athlete";
 
+
 export interface UsersPaginatedResponse {
   items: StaffUser[];
   pageNumber: number;

@@ -1,11 +1,18 @@
 import { z } from "zod";
 
-export const staffRoleValues = [
+export const allRoleValues = [
   "Admin",
   "SwimmingCoach",
   "FitnessCoach",
   "NutritionSpecialist",
   "Athlete",
+] as const;
+
+export const staffRoleValues = [
+  "Admin",
+  "SwimmingCoach",
+  "FitnessCoach",
+  "NutritionSpecialist",
 ] as const;
 
 export const roleFilterSchema = z.enum(["all", ...staffRoleValues]);
@@ -17,7 +24,6 @@ export const ROLE_FILTER_LABELS: Record<RoleFilter, string> = {
   SwimmingCoach: "Swimming Coach",
   FitnessCoach: "Fitness Coach",
   NutritionSpecialist: "Nutrition Specialist",
-  Athlete: "Athlete",
 };
 
 export const createUserSchema = z.object({
@@ -30,8 +36,7 @@ export const createUserSchema = z.object({
     .string()
     .min(1, "Password is required")
     .min(8, "Password must be at least 8 characters"),
-  role: z.enum(staffRoleValues, { message: "Role is required" }),
+  role: z.enum(allRoleValues, { message: "Role is required" }),
 });
 
 export type CreateUserFormValues = z.infer<typeof createUserSchema>;
-

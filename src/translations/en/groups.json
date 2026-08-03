@@ -1,0 +1,68 @@
+{
+  "page": {
+    "title": "Athlete Groups",
+    "description": "Organize athletes into training groups and manage memberships.",
+    "createButton": "New Group",
+    "groupCount": "{{count}} group",
+    "groupCount_plural": "{{count}} groups"
+  },
+  "search": {
+    "placeholder": "Search groups..."
+  },
+  "filter": {
+    "archived": "Archived only"
+  },
+  "table": {
+    "name": "Group Name",
+    "description": "Description",
+    "members": "Members",
+    "status": "Status",
+    "actions": "Actions",
+    "noDescription": "No description",
+    "athletes": "athletes"
+  },
+  "status": {
+    "active": "Active",
+    "archived": "Archived"
+  },
+  "actions": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "manageMembers": "Manage Members"
+  },
+  "createModal": {
+    "title": "Create Group",
+    "description": "Add a new athlete training group.",
+    "name": "Group Name",
+    "namePlaceholder": "e.g. Morning Squad",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Briefly describe the group's focus...",
+    "creating": "Creating…",
+    "submit": "Create Group"
+  },
+  "editModal": {
+    "title": "Edit Group",
+    "description": "Update the group details.",
+    "saving": "Saving…",
+    "submit": "Save Changes"
+  },
+  "deleteDialog": {
+    "title": "Delete Group",
+    "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Delete",
+    "deleting": "Deleting…"
+  },
+  "drawer": {
+    "subtitle": "Manage group members",
+    "currentMembers": "Current Members",
+    "assignAthletes": "Assign Athletes",
+    "searchAthletes": "Search available athletes...",
+    "noMembers": "No members yet. Assign athletes below.",
+    "noAthletes": "No available athletes found.",
+    "removeMember": "Remove from group",
+    "assignButton": "Assign {{count}} athlete(s)",
+    "assigning": "Assigning…",
+    "clearAll": "Clear all"
+  }
+}

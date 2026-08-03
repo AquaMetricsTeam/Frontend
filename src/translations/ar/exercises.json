@@ -1,0 +1,48 @@
+{
+  "page": {
+    "title": "التمارين",
+    "description": "إنشاء وإدارة تمارين التدريب لرياضييك.",
+    "createButton": "تمرين جديد",
+    "exerciseCount": "تمرين واحد",
+    "exerciseCount_plural": "{{count}} تمارين"
+  },
+  "search": {
+    "placeholder": "البحث في التمارين..."
+  },
+  "table": {
+    "title": "العنوان",
+    "description": "الوصف",
+    "body": "التعليمات",
+    "createdAt": "تاريخ الإنشاء",
+    "actions": "الإجراءات"
+  },
+  "actions": {
+    "edit": "تعديل",
+    "delete": "حذف"
+  },
+  "createModal": {
+    "title": "إنشاء تمرين",
+    "description": "إضافة تمرين جديد إلى المكتبة.",
+    "titleLabel": "العنوان",
+    "titlePlaceholder": "مثال: سباحة حرة سريعة",
+    "descriptionLabel": "الوصف",
+    "descriptionPlaceholder": "ملخص مختصر عن التمرين...",
+    "bodyLabel": "التعليمات",
+    "bodyPlaceholder": "خطوات تنفيذ التمرين...",
+    "creating": "جارٍ الإنشاء…",
+    "submit": "إنشاء التمرين"
+  },
+  "editModal": {
+    "title": "تعديل التمرين",
+    "description": "تحديث تفاصيل هذا التمرين.",
+    "saving": "جارٍ الحفظ…",
+    "submit": "حفظ التغييرات"
+  },
+  "deleteDialog": {
+    "title": "حذف التمرين",
+    "description": "هل أنت متأكد من حذف \"{{title}}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+    "cancel": "إلغاء",
+    "confirm": "حذف",
+    "deleting": "جارٍ الحذف…"
+  }
+}

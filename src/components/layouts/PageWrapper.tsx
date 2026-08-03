@@ -7,11 +7,15 @@ type PageWrapperProps = {
   titleKey?: PageTitleKey;
 };
 
-function PageWrapper({ children, className, titleKey: _titleKey }: PageWrapperProps) {
+function PageWrapper({
+  children,
+  className,
+  titleKey: _titleKey,
+}: PageWrapperProps) {
   return (
     <main
       className={cn(
-        "animate-fade-up flex flex-1 flex-col px-7.5 py-5",
+        "animate-fade-up h-full flex  flex-col px-7.5 py-5",
         className,
       )}
     >
