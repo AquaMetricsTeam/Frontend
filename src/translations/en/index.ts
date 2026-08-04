@@ -3,6 +3,7 @@ import users from "./users.json";
 import groups from "./groups.json";
 import exercises from "./exercises.json";
 import athletes from "./athletes.json";
+import training from "./training.json";
 
 export const en = {
   common,
@@ -10,4 +11,5 @@ export const en = {
   groups,
   exercises,
   athletes,
+  training,
 } as const;

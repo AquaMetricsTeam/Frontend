@@ -1,0 +1,349 @@
+import { useState, useEffect } from "react";
+import { MdPerson, MdGroup, MdCheck, MdDeleteOutline } from "react-icons/md";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import FullPageLoading from "@/components/feedbacks/FullPageLoading";
+import { cn } from "@/lib/utils";
+import { useAthletesLookup } from "@/features/lookups/hooks/useAthletesLookup";
+import { useGroupsLookup } from "@/features/lookups/hooks/useGroupsLookup";
+import { useAssignments } from "../../hooks/useAssignments";
+import { useCreateAssignment } from "../../hooks/useCreateAssignment";
+import { useDeleteAssignment } from "../../hooks/useDeleteAssignment";
+import type { TrainingPlan } from "../../types/index";
+
+type AssignTarget = "athletes" | "groups";
+
+interface AssignPlanSheetProps {
+  plan: TrainingPlan | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function AssignPlanSheet({
+  plan,
+  open,
+  onOpenChange,
+}: AssignPlanSheetProps) {
+  const [target, setTarget] = useState<AssignTarget>("athletes");
+  const [selectedAthletes, setSelectedAthletes] = useState<string[]>([]);
+  const [selectedGroups, setSelectedGroups] = useState<number[]>([]);
+
+  const planId = plan?.id ?? 0;
+
+  // Prefetch both lookups when drawer opens
+  const { data: athleteRes, isLoading: athletesLoading } =
+    useAthletesLookup(open);
+  const { data: groupRes, isLoading: groupsLoading } = useGroupsLookup(open);
+
+  // Fetch current assignments for default status & unassigning
+  const { data: assignmentsRes, isLoading: assignmentsLoading } =
+    useAssignments(planId, open && planId > 0);
+
+  const athletes = athleteRes?.data ?? [];
+  const groups = groupRes?.data ?? [];
+  const existingAssignments = assignmentsRes?.data ?? [];
+
+  useEffect(() => {
+    if (!open) {
+      setSelectedAthletes([]);
+      setSelectedGroups([]);
+      setTarget("athletes");
+    }
+  }, [open]);
+
+  const assignMutation = useCreateAssignment(planId, () => {
+    onOpenChange(false);
+    setSelectedAthletes([]);
+    setSelectedGroups([]);
+  });
+
+  const deleteMutation = useDeleteAssignment(planId);
+
+  function toggleAthlete(id: string) {
+    setSelectedAthletes((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+    );
+  }
+
+  function toggleGroup(id: number) {
+    setSelectedGroups((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+    );
+  }
+
+  const canAssign = selectedAthletes.length > 0 || selectedGroups.length > 0;
+
+  const getConfirmLabel = () => {
+    const parts: string[] = [];
+    if (selectedGroups.length > 0) {
+      parts.push(`${selectedGroups.length} group${selectedGroups.length !== 1 ? "s" : ""}`);
+    }
+    if (selectedAthletes.length > 0) {
+      parts.push(`${selectedAthletes.length} athlete${selectedAthletes.length !== 1 ? "s" : ""}`);
+    }
+    return `Assign to ${parts.join(" & ")}`;
+  };
+
+  function handleAssign() {
+    if (!plan) return;
+    assignMutation.mutate({
+      trainingPlanId: plan.id,
+      athleteIds: selectedAthletes,
+      groupIds: selectedGroups,
+    });
+  }
+
+  const isLoadingData =
+    assignmentsLoading ||
+    (target === "athletes" ? athletesLoading : groupsLoading);
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="w-full sm:max-w-md flex flex-col gap-0 p-0">
+        <SheetHeader className="px-6 pt-6 pb-4 border-b border-border">
+          <SheetTitle className="text-base font-semibold">
+            Assign Training Plan
+          </SheetTitle>
+          {plan && (
+            <SheetDescription className="text-sm text-muted-foreground">
+              &quot;{plan.title}&quot;
+            </SheetDescription>
+          )}
+        </SheetHeader>
+
+        <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-5">
+          {/* Separated Tabs for Athletes & Groups */}
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setTarget("athletes")}
+              className={cn(
+                "flex items-center justify-between rounded-xl border-2 px-3.5 py-2.5 text-xs font-semibold transition-all duration-200 cursor-pointer",
+                target === "athletes"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground hover:text-foreground hover:bg-muted/40",
+              )}
+            >
+              <span className="flex items-center gap-1.5 truncate">
+                <MdPerson className="size-4 shrink-0" />
+                Athletes
+              </span>
+              {selectedAthletes.length > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="text-[10px] px-1.5 py-0 h-4 bg-primary text-primary-foreground font-bold shrink-0"
+                >
+                  {selectedAthletes.length}
+                </Badge>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setTarget("groups")}
+              className={cn(
+                "flex items-center justify-between rounded-xl border-2 px-3.5 py-2.5 text-xs font-semibold transition-all duration-200 cursor-pointer",
+                target === "groups"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground hover:text-foreground hover:bg-muted/40",
+              )}
+            >
+              <span className="flex items-center gap-1.5 truncate">
+                <MdGroup className="size-4 shrink-0" />
+                Groups
+              </span>
+              {selectedGroups.length > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="text-[10px] px-1.5 py-0 h-4 bg-primary text-primary-foreground font-bold shrink-0"
+                >
+                  {selectedGroups.length}
+                </Badge>
+              )}
+            </button>
+          </div>
+
+          {isLoadingData ? (
+            <div className="py-12 flex items-center justify-center">
+              <FullPageLoading />
+            </div>
+          ) : (
+            <>
+              {/* Athletes Tab List */}
+              {target === "athletes" && (
+                <div className="flex flex-col gap-2">
+                  {athletes.map((athlete) => {
+                    const existing = existingAssignments.find(
+                      (a) =>
+                        a.athlete?.athleteId === athlete.athleteId ||
+                        (a.assignedTo ?? "").toLowerCase() ===
+                          (athlete.fullName ?? "").toLowerCase(),
+                    );
+                    const isSelected = selectedAthletes.includes(
+                      athlete.athleteId,
+                    );
+
+                    return (
+                      <div
+                        key={athlete.athleteId}
+                        className={cn(
+                          "flex items-center gap-3 rounded-xl p-2.5 border transition-all duration-150",
+                          existing
+                            ? "border-emerald-500/40 bg-emerald-500/10"
+                            : isSelected
+                              ? "border-primary bg-primary/10"
+                              : "border-border hover:bg-accent/50",
+                        )}
+                      >
+                        <Avatar className="size-8 shrink-0">
+                          <AvatarImage
+                            src={athlete.profilePictureUrl ?? undefined}
+                          />
+                          <AvatarFallback className="text-xs font-semibold">
+                            {athlete.fullName.slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="flex-1 text-xs font-medium text-foreground truncate">
+                          {athlete.fullName}
+                        </span>
+
+                        {existing ? (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="h-7 text-xs px-2.5 gap-1.5 bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-destructive/15 hover:text-destructive hover:border-destructive/30 transition-all duration-150 group/unassign"
+                            title="Click to unassign athlete"
+                            disabled={deleteMutation.isPending}
+                            onClick={() => deleteMutation.mutate(existing.id)}
+                          >
+                            <MdCheck className="size-3.5 group-hover/unassign:hidden" />
+                            <MdDeleteOutline className="size-3.5 hidden group-hover/unassign:inline-block" />
+                            <span className="group-hover/unassign:hidden">Assigned</span>
+                            <span className="hidden group-hover/unassign:inline-block">Unassign</span>
+                          </Button>
+                        ) : (
+                          <Button
+                            type="button"
+                            variant={isSelected ? "default" : "outline"}
+                            size="sm"
+                            className="h-7 text-xs px-2.5 cursor-pointer"
+                            onClick={() => toggleAthlete(athlete.athleteId)}
+                          >
+                            {isSelected ? (
+                              <>
+                                <MdCheck className="size-3.5 me-1" /> Selected
+                              </>
+                            ) : (
+                              "Select"
+                            )}
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Groups Tab List */}
+              {target === "groups" && (
+                <div className="flex flex-col gap-2">
+                  {groups.map((group) => {
+                    const existing = existingAssignments.find(
+                      (a) =>
+                        a.group?.id === group.id ||
+                        (a.assignedTo ?? "").toLowerCase() ===
+                          (group.name ?? "").toLowerCase(),
+                    );
+                    const isSelected = selectedGroups.includes(group.id);
+
+                    return (
+                      <div
+                        key={group.id}
+                        className={cn(
+                          "flex items-center gap-3 rounded-xl p-2.5 border transition-all duration-150",
+                          existing
+                            ? "border-emerald-500/40 bg-emerald-500/10"
+                            : isSelected
+                              ? "border-primary bg-primary/10"
+                              : "border-border hover:bg-accent/50",
+                        )}
+                      >
+                        <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+                          <MdGroup className="size-4 text-primary" />
+                        </div>
+                        <span className="flex-1 text-xs font-medium text-foreground truncate">
+                          {group.name}
+                        </span>
+                        {group.athleteCount !== undefined && (
+                          <Badge variant="secondary" className="text-[10px]">
+                            {group.athleteCount} athletes
+                          </Badge>
+                        )}
+
+                        {existing ? (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="h-7 text-xs px-2.5 gap-1.5 bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-destructive/15 hover:text-destructive hover:border-destructive/30 transition-all duration-150 group/unassign"
+                            title="Click to unassign group"
+                            disabled={deleteMutation.isPending}
+                            onClick={() => deleteMutation.mutate(existing.id)}
+                          >
+                            <MdCheck className="size-3.5 group-hover/unassign:hidden" />
+                            <MdDeleteOutline className="size-3.5 hidden group-hover/unassign:inline-block" />
+                            <span className="group-hover/unassign:hidden">Assigned</span>
+                            <span className="hidden group-hover/unassign:inline-block">Unassign</span>
+                          </Button>
+                        ) : (
+                          <Button
+                            type="button"
+                            variant={isSelected ? "default" : "outline"}
+                            size="sm"
+                            className="h-7 text-xs px-2.5 cursor-pointer"
+                            onClick={() => toggleGroup(group.id)}
+                          >
+                            {isSelected ? (
+                              <>
+                                <MdCheck className="size-3.5 me-1" /> Selected
+                              </>
+                            ) : (
+                              "Select"
+                            )}
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className="px-6 pb-6 pt-4 border-t border-border">
+          <Button
+            onClick={handleAssign}
+            disabled={!canAssign || assignMutation.isPending}
+            className="w-full cursor-pointer"
+          >
+            {assignMutation.isPending
+              ? "Assigning..."
+              : canAssign
+                ? getConfirmLabel()
+                : "Select targets to assign"}
+          </Button>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}

@@ -1,0 +1,119 @@
+{
+  "page": {
+    "title": "التدريب السباحي",
+    "description": "إدارة خطط التدريب والتكليفات والجلسات اليومية"
+  },
+  "views": {
+    "templates": "القوالب",
+    "assignments": "الخطط المكلفة",
+    "sessions": "الجلسات"
+  },
+  "templates": {
+    "table": {
+      "plan": "الخطة",
+      "details": "التفاصيل",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "actions": {
+      "edit": "تعديل",
+      "assign": "تكليف",
+      "archive": "أرشفة",
+      "restore": "استعادة",
+      "new": "خطة تدريب جديدة"
+    },
+    "filter": {
+      "active": "نشطة",
+      "archived": "مؤرشفة"
+    },
+    "archive": {
+      "confirmTitle": "أرشفة خطة التدريب؟",
+      "confirmDescription": "ستُخفى هذه الخطة من القوالب النشطة ويمكن استعادتها لاحقًا.",
+      "confirmAction": "أرشفة"
+    },
+    "emptyActive": {
+      "title": "لا توجد خطط تدريب بعد",
+      "description": "أنشئ أول قالب خطة تدريب قابل لإعادة الاستخدام."
+    },
+    "emptyArchived": {
+      "title": "لا توجد خطط مؤرشفة"
+    }
+  },
+  "wizard": {
+    "title": "خطة تدريب جديدة",
+    "steps": {
+      "info": "المعلومات",
+      "exercises": "التمارين",
+      "assignment": "التكليف",
+      "confirm": "تأكيد"
+    },
+    "step1": {
+      "titleLabel": "عنوان الخطة",
+      "titlePlaceholder": "مثال: أسبوع تطوير السرعة 1",
+      "descriptionLabel": "الأهداف / الوصف",
+      "descriptionPlaceholder": "اوصف أهداف ومحاور هذه الخطة التدريبية...",
+      "next": "التالي: إضافة تمارين"
+    },
+    "step2": {
+      "exerciseLabel": "التمرين",
+      "sets": "مجموعات",
+      "reps": "تكرارات",
+      "minutes": "دقيقة",
+      "rest": "راحة",
+      "addExercise": "إضافة تمرين",
+      "next": "التالي: التكليف",
+      "back": "رجوع"
+    },
+    "step3": {
+      "question": "كيف تريد تكليف هذه الخطة؟",
+      "draft": "حفظ كمسودة",
+      "athletes": "رياضيون",
+      "groups": "مجموعات",
+      "next": "التالي: مراجعة",
+      "back": "رجوع"
+    },
+    "step4": {
+      "save": "حفظ القالب",
+      "saving": "جارٍ الحفظ...",
+      "back": "رجوع"
+    }
+  },
+  "assign": {
+    "title": "تكليف الخطة",
+    "athletes": "رياضيون فرديون",
+    "groups": "مجموعات الرياضيين",
+    "selectTargets": "حدد المستهدفين للتكليف",
+    "assigning": "جارٍ التكليف..."
+  },
+  "sessions": {
+    "table": {
+      "session": "الجلسة",
+      "plan": "الخطة",
+      "dateTime": "التاريخ والوقت",
+      "location": "الموقع"
+    },
+    "new": "جلسة جديدة",
+    "form": {
+      "title": "جلسة تدريبية جديدة",
+      "titleLabel": "عنوان الجلسة",
+      "titlePlaceholder": "مثال: جلسة قوة صباحية",
+      "planLabel": "خطة التدريب",
+      "planPlaceholder": "اختر خطة...",
+      "dateLabel": "التاريخ",
+      "locationLabel": "الموقع",
+      "locationPlaceholder": "مثال: الحوض الرئيسي",
+      "startTime": "وقت البدء",
+      "endTime": "وقت الانتهاء",
+      "notes": "ملاحظات (اختياري)",
+      "notesPlaceholder": "أي تعليمات أو تذكيرات للجلسة...",
+      "submit": "إنشاء الجلسة",
+      "submitting": "جارٍ الإنشاء..."
+    },
+    "attendance": {
+      "title": "الحضور",
+      "comingSoon": "قريبًا",
+      "placeholderTitle": "تسجيل الحضور قادم قريبًا",
+      "placeholderDescription": "ستتمكن من تسجيل حضور الرياضيين بمجرد توفر هذه الميزة."
+    }
+  }
+}
