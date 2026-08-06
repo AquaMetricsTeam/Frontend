@@ -1,0 +1,125 @@
+{
+  "page": {
+    "title": "Swimming Training",
+    "description": "Manage training plans, assignments, and daily sessions"
+  },
+  "views": {
+    "templates": "Templates",
+    "assignments": "Assigned Plans",
+    "sessions": "Sessions"
+  },
+  "templates": {
+    "table": {
+      "plan": "Plan",
+      "details": "Details",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "edit": "Edit",
+      "assign": "Assign",
+      "archive": "Archive",
+      "restore": "Restore",
+      "new": "New Training Plan"
+    },
+    "filter": {
+      "active": "Active",
+      "archived": "Archived"
+    },
+    "archive": {
+      "confirmTitle": "Archive training plan?",
+      "confirmDescription": "This plan will be hidden from active templates. You can restore it later.",
+      "confirmAction": "Archive"
+    },
+    "emptyActive": {
+      "title": "No training plans yet",
+      "description": "Create your first reusable training plan template. Build once, assign to any athlete or group."
+    },
+    "emptyArchived": {
+      "title": "No archived training plans"
+    }
+  },
+  "wizard": {
+    "title": "New Training Plan",
+    "steps": {
+      "info": "Info",
+      "exercises": "Exercises",
+      "assignment": "Assignment",
+      "confirm": "Confirm"
+    },
+    "step1": {
+      "titleLabel": "Plan Title",
+      "titlePlaceholder": "e.g. Sprint Development Week 1",
+      "descriptionLabel": "Objectives / Description",
+      "descriptionPlaceholder": "Describe the goals and focus of this training plan...",
+      "next": "Next: Add Exercises"
+    },
+    "step2": {
+      "exerciseLabel": "Exercise",
+      "sets": "Sets",
+      "reps": "Reps",
+      "minutes": "Min",
+      "rest": "Rest",
+      "addExercise": "Add Exercise",
+      "next": "Next: Assignment",
+      "back": "Back"
+    },
+    "step3": {
+      "question": "How would you like to assign this plan?",
+      "draft": "Save as Draft",
+      "athletes": "Athletes",
+      "groups": "Groups",
+      "next": "Next: Review",
+      "back": "Back"
+    },
+    "step4": {
+      "save": "Save Template",
+      "saving": "Saving...",
+      "back": "Back",
+      "assignedTo": "Plan will be assigned to {{target}} immediately after saving.",
+      "draftNote": "Plan will be saved as a draft. You can assign it later from the templates list."
+    }
+  },
+  "assign": {
+    "title": "Assign Plan",
+    "athletes": "Individual Athletes",
+    "groups": "Athlete Groups",
+    "confirm": "Assign to {{count}} athlete",
+    "confirm_plural": "Assign to {{count}} athletes",
+    "confirmGroups": "Assign to {{count}} group",
+    "confirmGroups_plural": "Assign to {{count}} groups",
+    "selectTargets": "Select targets to assign",
+    "assigning": "Assigning..."
+  },
+  "sessions": {
+    "table": {
+      "session": "Session",
+      "plan": "Plan",
+      "dateTime": "Date & Time",
+      "location": "Location"
+    },
+    "new": "New Session",
+    "form": {
+      "title": "New Training Session",
+      "titleLabel": "Session Title",
+      "titlePlaceholder": "e.g. Morning Strength Session",
+      "planLabel": "Training Plan",
+      "planPlaceholder": "Select a plan...",
+      "dateLabel": "Date",
+      "locationLabel": "Location",
+      "locationPlaceholder": "e.g. Main Pool",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "notes": "Notes (optional)",
+      "notesPlaceholder": "Any instructions or reminders...",
+      "submit": "Create Session",
+      "submitting": "Creating..."
+    },
+    "attendance": {
+      "title": "Attendance",
+      "comingSoon": "Coming soon",
+      "placeholderTitle": "Attendance recording is coming soon",
+      "placeholderDescription": "You'll be able to mark athletes as Present, Absent, Late, or Excused once this feature is live."
+    }
+  }
+}

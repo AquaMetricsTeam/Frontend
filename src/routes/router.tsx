@@ -10,6 +10,7 @@ import UsersPage from "@/pages/users";
 import AthletesPage from "@/pages/athletes";
 import GroupsPage from "@/pages/groups";
 import ExercisesPage from "@/pages/exercises";
+import TrainingPage from "@/pages/training";
 import type { UserRole } from "@/features/auth/types";
 
 const DASHBOARD_ROLES: UserRole[] = [
@@ -87,6 +88,14 @@ const router = createBrowserRouter([
                     ]}
                   >
                     <ExercisesPage />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/training",
+                element: (
+                  <ProtectedRoute allowedRoles={["SwimmingCoach", "Admin"]}>
+                    <TrainingPage />
                   </ProtectedRoute>
                 ),
               },
