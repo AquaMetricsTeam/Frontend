@@ -128,7 +128,7 @@ export function AssignPlanSheet({
               className={cn(
                 "flex items-center justify-between rounded-xl border-2 px-3.5 py-2.5 text-xs font-semibold transition-all duration-200 cursor-pointer",
                 target === "athletes"
-                  ? "border-primary bg-primary/10 text-primary"
+                  ? "border-blue-500 bg-blue-500/10 text-blue-500"
                   : "border-border text-muted-foreground hover:text-foreground hover:bg-muted/40",
               )}
             >
@@ -139,7 +139,7 @@ export function AssignPlanSheet({
               {selectedAthletes.length > 0 && (
                 <Badge
                   variant="secondary"
-                  className="text-[10px] px-1.5 py-0 h-4 bg-primary text-primary-foreground font-bold shrink-0"
+                  className="text-[10px] px-1.5 py-0 h-4 bg-blue-500 text-white font-bold shrink-0"
                 >
                   {selectedAthletes.length}
                 </Badge>
@@ -152,7 +152,7 @@ export function AssignPlanSheet({
               className={cn(
                 "flex items-center justify-between rounded-xl border-2 px-3.5 py-2.5 text-xs font-semibold transition-all duration-200 cursor-pointer",
                 target === "groups"
-                  ? "border-primary bg-primary/10 text-primary"
+                  ? "border-amber-500 bg-amber-500/10 text-amber-500"
                   : "border-border text-muted-foreground hover:text-foreground hover:bg-muted/40",
               )}
             >
@@ -163,7 +163,7 @@ export function AssignPlanSheet({
               {selectedGroups.length > 0 && (
                 <Badge
                   variant="secondary"
-                  className="text-[10px] px-1.5 py-0 h-4 bg-primary text-primary-foreground font-bold shrink-0"
+                  className="text-[10px] px-1.5 py-0 h-4 bg-amber-500 text-white font-bold shrink-0"
                 >
                   {selectedGroups.length}
                 </Badge>
@@ -277,8 +277,8 @@ export function AssignPlanSheet({
                               : "border-border hover:bg-accent/50",
                         )}
                       >
-                        <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 shrink-0">
-                          <MdGroup className="size-4 text-primary" />
+                        <div className="flex size-8 items-center justify-center rounded-lg bg-amber-500/15 shrink-0">
+                          <MdGroup className="size-4 text-amber-600 dark:text-amber-400" />
                         </div>
                         <span className="flex-1 text-xs font-medium text-foreground truncate">
                           {group.name}

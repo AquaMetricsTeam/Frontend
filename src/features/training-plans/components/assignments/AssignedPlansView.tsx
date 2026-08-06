@@ -26,7 +26,7 @@ import { useTrainingPlans } from "../../hooks/useTrainingPlans";
 import { useAssignments } from "../../hooks/useAssignments";
 import { useDeleteAssignment } from "../../hooks/useDeleteAssignment";
 import { AssignPlanSheet } from "./AssignPlanSheet";
-import type { TrainingPlan } from "../../types/index";
+import { calculatePlanDuration, type TrainingPlan } from "../../types/index";
 
 export function AssignedPlansView() {
   const [search, setSearch] = useState("");
@@ -162,7 +162,7 @@ export function AssignedPlansView() {
                             </span>
                             <span className="flex items-center gap-1">
                               <MdTimer className="size-3.5" />~
-                              {plan.estimatedDurationMinutes ?? 0}m
+                              {calculatePlanDuration(plan)}m
                             </span>
                           </div>
                         </TableCell>
@@ -227,15 +227,14 @@ export function AssignedPlansView() {
                 ) : (
                   <div className="space-y-2.5">
                     {assignments.map((item) => {
+                      const isGroup =
+                        item.assignedToType === 1 ||
+                        !!item.group;
                       const targetName =
                         item.athlete?.fullName ??
                         item.group?.name ??
                         item.assignedTo ??
                         "Assignment";
-                      const isGroup =
-                        !!item.group ||
-                        item.assignedToType === 2 ||
-                        targetName.toLowerCase().includes("group");
 
                       return (
                         <div
@@ -244,14 +243,22 @@ export function AssignedPlansView() {
                         >
                           <div className="flex items-center gap-3 min-w-0">
                             <Avatar className="size-9">
-                              <AvatarImage
-                                src={
-                                  item.athlete?.profilePictureUrl ?? undefined
-                                }
-                              />
-                              <AvatarFallback className="text-xs bg-primary/10 text-primary font-semibold">
-                                {getInitials(targetName)}
-                              </AvatarFallback>
+                              {isGroup ? (
+                                <AvatarFallback className="text-xs bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-semibold">
+                                  <MdPeople className="size-4" />
+                                </AvatarFallback>
+                              ) : (
+                                <>
+                                  <AvatarImage
+                                    src={
+                                      item.athlete?.profilePictureUrl ?? undefined
+                                    }
+                                  />
+                                  <AvatarFallback className="text-xs bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 font-semibold">
+                                    {getInitials(targetName)}
+                                  </AvatarFallback>
+                                </>
+                              )}
                             </Avatar>
                             <div className="flex flex-col min-w-0">
                               <div className="flex items-center gap-2">
@@ -260,16 +267,16 @@ export function AssignedPlansView() {
                                 </span>
                                 {isGroup ? (
                                   <Badge
-                                    variant="outline"
-                                    className="gap-1 text-[10px] py-0 h-4"
+                                    variant="secondary"
+                                    className="gap-1 text-[10px] py-0 h-4 bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/25"
                                   >
                                     <MdPeople className="size-3" />
                                     Group
                                   </Badge>
                                 ) : (
                                   <Badge
-                                    variant="outline"
-                                    className="gap-1 text-[10px] py-0 h-4"
+                                    variant="secondary"
+                                    className="gap-1 text-[10px] py-0 h-4 bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30 hover:bg-blue-500/25"
                                   >
                                     <MdPerson className="size-3" />
                                     Athlete

@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useArchiveTrainingPlan } from "../../hooks/useArchiveTrainingPlan";
 import { useRestoreTrainingPlan } from "../../hooks/useRestoreTrainingPlan";
-import type { TrainingPlan } from "../../types/index";
+import { calculatePlanDuration, type TrainingPlan } from "../../types/index";
 
 interface TemplateTableRowProps {
   plan: TrainingPlan;
@@ -46,6 +46,7 @@ export function TemplateTableRow({
   const [confirmArchive, setConfirmArchive] = useState(false);
   const archiveMutation = useArchiveTrainingPlan();
   const restoreMutation = useRestoreTrainingPlan();
+  const totalDuration = calculatePlanDuration(plan);
 
   return (
     <>
@@ -69,7 +70,7 @@ export function TemplateTableRow({
             </span>
             <span className="flex items-center gap-1">
               <MdTimer className="size-3.5" />
-              ~{plan.estimatedDurationMinutes ?? 0} min
+              ~{totalDuration} min
             </span>
           </div>
         </TableCell>

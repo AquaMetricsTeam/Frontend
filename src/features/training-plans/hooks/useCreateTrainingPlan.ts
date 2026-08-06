@@ -7,13 +7,13 @@ export function useCreateTrainingPlan(onSuccess?: () => void) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: createTrainingPlan,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: TRAINING_PLAN_KEYS.all });
-      toast.success("Training plan created successfully");
+      toast.success(data.message);
       onSuccess?.();
     },
-    onError: () => {
-      toast.error("Failed to create training plan");
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 }

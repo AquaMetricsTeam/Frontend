@@ -61,7 +61,14 @@ export function EditTemplateSheet({
                 sets: ex.sets,
                 reps: ex.reps,
                 duration: ex.duration,
-                intensity: ex.intensity ?? 2,
+                intensity:
+                  typeof ex.intensity === "number"
+                    ? ex.intensity
+                    : ex.intensity === "High"
+                      ? 3
+                      : ex.intensity === "Low"
+                        ? 1
+                        : 2,
                 notes: ex.notes ?? "",
               }))
             : [

@@ -14,3 +14,9 @@ export const SESSION_KEYS = {
   list: (params: object) => [...SESSION_KEYS.all, "list", params] as const,
   detail: (id: number) => [...SESSION_KEYS.all, "detail", id] as const,
 } as const;
+
+export const ATTENDANCE_KEYS = {
+  all: ["attendance"] as const,
+  bySession: (sessionId: number) =>
+    [...ATTENDANCE_KEYS.all, "by-session", sessionId] as const,
+} as const;
