@@ -29,17 +29,21 @@ export function calculatePlanDuration(plan: Partial<TrainingPlan>): number {
   );
 }
 
-export enum AssignedToType {
-  Group = 1,
-  Athlete = 2,
-}
+export const AssignedToType = {
+  Group: 1,
+  Athlete: 2,
+} as const;
+export type AssignedToType =
+  (typeof AssignedToType)[keyof typeof AssignedToType];
 
-export enum AttendanceStatusEnum {
-  Present = 1,
-  Absent = 2,
-  Late = 3,
-  Excused = 4,
-}
+export const AttendanceStatusEnum = {
+  Present: 1,
+  Absent: 2,
+  Late: 3,
+  Excused: 4,
+} as const;
+export type AttendanceStatusEnum =
+  (typeof AttendanceStatusEnum)[keyof typeof AttendanceStatusEnum];
 
 export interface AttendanceRecord {
   id?: number;
@@ -79,6 +83,14 @@ export interface TrainingPlanAssignment {
   } | null;
 }
 
+export interface SessionAthlete {
+  athleteId: string;
+  fullName: string;
+  groupId?: number | null;
+  groupName?: string | null;
+  profilePictureUrl?: string | null;
+}
+
 export interface TrainingSession {
   id: number;
   title: string;
@@ -90,6 +102,8 @@ export interface TrainingSession {
   endTime: string;
   location: string;
   notes?: string;
+  groupNames?: string[];
+  athletes?: SessionAthlete[];
 }
 
 // ─── Paginated Wrappers ────────────────────────────────────────────────────────

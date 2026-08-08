@@ -9,7 +9,7 @@ import {
 import { MdInfoOutline } from "react-icons/md";
 
 interface LabelFieldProps {
-  htmlFor: string;
+  htmlFor?: string;
   label: string;
   required?: boolean;
   hint?: string;

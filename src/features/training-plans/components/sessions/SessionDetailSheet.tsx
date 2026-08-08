@@ -8,11 +8,9 @@ import {
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SearchInput } from "@/components/common/SearchInput";
 import { SegmentedControl } from "@/components/common/SegmentedControl";
-import { toast } from "sonner";
 import {
   MdCalendarToday,
   MdAccessTime,
@@ -24,9 +22,11 @@ import {
   MdSchedule,
   MdNotes,
 } from "react-icons/md";
-import { useAthletesLookup } from "@/features/lookups/hooks/useAthletesLookup";
+import { useTrainingSession } from "../../hooks/useTrainingSession";
+import { useSessionAttendance } from "../../hooks/useSessionAttendance";
+import { useMarkAttendance } from "../../hooks/useMarkAttendance";
 import { useTrainingPlan } from "../../hooks/useTrainingPlan";
-import type { TrainingSession } from "../../types/index";
+import { AttendanceStatusEnum, type TrainingSession } from "../../types/index";
 import { cn } from "@/lib/utils";
 
 type AttendanceStatus = "Present" | "Late" | "Absent";
@@ -58,7 +58,6 @@ export function SessionDetailSheet({
   const [attendance, setAttendance] = useState<
     Record<string, AttendanceStatus>
   >({});
-  const [isSaving, setIsSaving] = useState(false);
 
   const sessionId = session?.id ?? 0;
   const planId = session?.trainingPlanId ?? 0;
@@ -67,10 +66,19 @@ export function SessionDetailSheet({
   const { data: planRes } = useTrainingPlan(planId, open && planId > 0);
   const planExercises = planRes?.data?.planExercises ?? [];
 
-  // Fetch athletes for attendance tracking
-  const { data: athletesRes, isLoading: athletesLoading } =
-    useAthletesLookup(open);
-  const athletes = athletesRes?.data ?? [];
+  // Fetch single session detail (includes athletes via GET /api/training-sessions/{id})
+  const { data: sessionDetailRes } =
+    useTrainingSession(sessionId, open && sessionId > 0);
+  const athletes = sessionDetailRes?.data?.athletes ?? session?.athletes ?? [];
+
+  // Fetch session attendance records
+  const { data: attendanceRes } = useSessionAttendance(
+    sessionId,
+    open && sessionId > 0,
+  );
+  const backendRecords = attendanceRes?.data ?? [];
+
+  const markMutation = useMarkAttendance(sessionId);
 
   // Initialize attendance state for athletes
   useEffect(() => {
@@ -79,9 +87,18 @@ export function SessionDetailSheet({
       athletes.forEach((a) => {
         initial[a.athleteId] = "Present";
       });
+
+      if (backendRecords.length > 0) {
+        backendRecords.forEach((rec) => {
+          if (rec.status === AttendanceStatusEnum.Late) initial[rec.athleteId] = "Late";
+          else if (rec.status === AttendanceStatusEnum.Absent) initial[rec.athleteId] = "Absent";
+          else initial[rec.athleteId] = "Present";
+        });
+      }
+
       setAttendance(initial);
     }
-  }, [athletes]);
+  }, [athletes, backendRecords]);
 
   if (!session) return null;
 
@@ -104,11 +121,20 @@ export function SessionDetailSheet({
   }
 
   function handleSaveAttendance() {
-    setIsSaving(true);
-    setTimeout(() => {
-      setIsSaving(false);
-      toast.success("Session attendance saved successfully");
-    }, 600);
+    if (!sessionId) return;
+    const payloadItems = Object.entries(attendance).map(
+      ([athleteId, statusStr]) => {
+        let statusNum: AttendanceStatusEnum = AttendanceStatusEnum.Present;
+        if (statusStr === "Late") statusNum = AttendanceStatusEnum.Late;
+        if (statusStr === "Absent") statusNum = AttendanceStatusEnum.Absent;
+        return { athleteId, status: statusNum };
+      },
+    );
+
+    markMutation.mutate({
+      trainingSessionId: sessionId,
+      attendance: payloadItems,
+    });
   }
 
   return (
@@ -137,7 +163,7 @@ export function SessionDetailSheet({
           <SegmentedControl
             options={TAB_OPTIONS}
             value={tab}
-            onChange={setTab}
+            onChange={(v) => setTab(v)}
             className="w-full"
           />
         </div>
@@ -384,10 +410,10 @@ export function SessionDetailSheet({
           <div className="px-6 pb-6 pt-4 border-t border-border shrink-0">
             <Button
               onClick={handleSaveAttendance}
-              disabled={isSaving}
+              disabled={markMutation.isPending}
               className="w-full cursor-pointer"
             >
-              {isSaving ? "Saving Attendance..." : "Save Attendance Log"}
+              {markMutation.isPending ? "Saving Attendance..." : "Save Attendance Log"}
             </Button>
           </div>
         )}
