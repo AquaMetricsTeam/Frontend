@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { createAssignment } from "../services/createAssignment.service";
 import { ASSIGNMENT_KEYS } from "../constants/queryKeys";
 
-export function useCreateAssignment(planId: number, onSuccess?: () => void) {
+export function useCreateAssignment(_planId?: number, onSuccess?: () => void) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: createAssignment,
