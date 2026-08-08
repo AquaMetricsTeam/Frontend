@@ -151,10 +151,17 @@ export function AssignCoachModal({
   function handleRemove(assignmentId: number) {
     if (!athlete) return;
     setRemovingAssignmentId(assignmentId);
-    removeMutation.mutate({
-      athleteId: athlete.athleteId,
-      assignmentId,
-    });
+    removeMutation.mutate(
+      {
+        athleteId: athlete.athleteId,
+        assignmentId,
+      },
+      {
+        onSuccess: () => {
+          onOpenChange(false);
+        },
+      },
+    );
   }
 
   return (

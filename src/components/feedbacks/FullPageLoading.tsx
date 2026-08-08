@@ -12,7 +12,7 @@ const FullPageLoading = ({ className }: { className?: string }) => {
     >
       <Spinner />
     </div>,
-    document.getElementById("portal") as HTMLElement,
+    document.getElementById("portal") || (document.body as HTMLElement),
   );
 };
 

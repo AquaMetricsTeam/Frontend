@@ -46,3 +46,9 @@ Before building any new component, check and reuse existing components in this o
 - Only add a comment when the "why" is non-obvious (e.g., a workaround, a gotcha, or a deliberate trade-off).
 - Never narrate what the code obviously does (e.g., `// save token`, `// return response`).
 
+## 6. Automatic Code Simplification (Simplify Skill)
+- ALWAYS apply `simplify` skill principles after writing/modifying code in every chat.
+- Eliminate dead code, unused imports, redundant logic, nested ternaries, and unnecessary nesting.
+- Maintain project standards and component hierarchy while keeping functionality 100% intact.
+
+
