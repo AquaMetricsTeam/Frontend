@@ -12,6 +12,7 @@ import {
   MdSettings,
   MdGroup,
   MdSportsGymnastics,
+  MdFitnessCenter,
 } from "react-icons/md";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -63,18 +64,20 @@ export const NAV_GROUPS: NavGroup[] = [
     groupKey: "programs",
     labelKey: "common:nav.groups.programs",
     items: [
-      // {
-      //   key: "swimming",
-      //   labelKey: "common:nav.items.swimming",
-      //   icon: MdPool,
-      //   path: "/swimming",
-      // },
-      // {
-      //   key: "fitness",
-      //   labelKey: "common:nav.items.fitness",
-      //   icon: MdFitnessCenter,
-      //   path: "/fitness",
-      // },
+      {
+        key: "swimming",
+        labelKey: "common:nav.items.swimming",
+        icon: MdPool,
+        path: "/swimming",
+        allowedRoles: ["SwimmingCoach", "Admin"],
+      },
+      {
+        key: "fitness",
+        labelKey: "common:nav.items.fitness",
+        icon: MdFitnessCenter,
+        path: "/fitness",
+        allowedRoles: ["FitnessCoach", "Admin"],
+      },
       {
         key: "exercises",
         labelKey: "common:nav.items.exercises",
@@ -101,12 +104,6 @@ export const NAV_GROUPS: NavGroup[] = [
     groupKey: "operations",
     labelKey: "common:nav.groups.operations",
     items: [
-      {
-        key: "attendance",
-        labelKey: "common:nav.items.attendance",
-        icon: MdEventNote,
-        path: "/attendance",
-      },
       {
         key: "coachNotes",
         labelKey: "common:nav.items.coachNotes",

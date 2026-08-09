@@ -27,7 +27,7 @@ export default function GroupsPage() {
 
   const { data, isLoading, isError, refetch } = useGroups({
     pageNumber,
-    pageSize: 10,
+    pageSize: 15,
     search: debouncedSearch,
     onlyArchived,
   });
