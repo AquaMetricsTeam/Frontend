@@ -1,0 +1,205 @@
+{
+  "page": {
+    "title": "Nutrition Management",
+    "description": "Create and manage nutrition plans for your athletes."
+  },
+  "tab": {
+    "plans": "Plans",
+    "assignments": "Assignments"
+  },
+  "list": {
+    "title": "Nutrition Plans",
+    "createButton": "+ Create Plan",
+    "searchPlaceholder": "Search plans by name...",
+    "duplicate": "Duplicate",
+    "assign": "Assign",
+    "emptyState": {
+      "title": "No nutrition plans yet",
+      "description": "Start by creating your first nutrition plan to manage athlete diets.",
+      "createCta": "+ Create Plan"
+    },
+    "table": {
+      "name": "Plan Name",
+      "objective": "Objective",
+      "mealCount": "Meals",
+      "dailyCalories": "Daily Calories",
+      "actions": "Actions"
+    },
+    "noResults": {
+      "message": "No plans found matching your search"
+    }
+  },
+  "assignments": {
+    "title": "Assignments",
+    "assignmentsCount": "assignments",
+    "selectPlan": "Select a plan to view its assignments",
+    "selectPlanFilter": "Filter by Plan", 
+    "selectPlanOption": "-- All Plans --",
+    "searchPlaceholder": "Search assignments...",
+    "noAssignments": "No assignments found",
+    "table": {
+      "athlete": "Athlete",
+      "assignedVia": "Assigned Via",
+      "dateRange": "Date Range",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "upcoming": "Upcoming",
+      "ended": "Ended"
+    },
+    "filters": {
+      "allPlans": "All plans",
+      "allSources": "All sources", 
+      "allStatuses": "All statuses",
+      "groupOnly": "Group assignments",
+      "individualOnly": "Individual assignments"
+    },
+    "viaGroup": "Group: {{groupId}}",
+    "viaIndividual": "Individual"
+  },
+  "wizard": {
+    "titles": {
+      "create": "Create nutrition plan",
+      "edit": "Edit nutrition plan",
+      "duplicate": "Duplicate nutrition plan"
+    },
+    "progress": {
+      "info": "Info",
+      "meals": "Meals", 
+      "done": "Done"
+    },
+    "step1": {
+      "title": "Plan Information",
+      "nameLabel": "Plan Name",
+      "namePlaceholder": "e.g., High Performance Diet",
+      "objectiveLabel": "Nutritional Objective",
+      "objectivePlaceholder": "Describe the purpose of this nutrition plan...",
+      "objectiveOptional": "Optional.",
+      "scheduleLabel": "Schedule",
+      "schedulePlaceholder": "e.g., Weekly plan",
+      "nextButton": "Next: Add Meals"
+    },
+    "step2": {
+      "title": "Add Meals",
+      "mealTypeLabel": "Meal Type",
+      "mealLabel": "Meal Type",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "e.g., Oatmeal with banana, whey protein and almond butter",
+      "caloriesLabel": "Calories (kcal)",
+      "proteinLabel": "Protein (g)",
+      "carbsLabel": "Carbs (g)",
+      "fatLabel": "Fat (g)",
+      "dietaryNotesLabel": "Dietary Notes (Optional)",
+      "dietaryNotesPlaceholder": "e.g., Swap whey for pea protein if lactose intolerant",
+      "addMeal": "+ Add Meal",
+      "useMealLibrary": "📚 Use Existing Meal",
+      "noMeals": "No meals added yet. Add one to get started.",
+      "validationError": "At least one meal is required to proceed.",
+      "nextButton": "Next: Review"
+    },
+    "step3": {
+      "title": "Review & Confirm",
+      "planDetails": "Plan Summary",
+      "planName": "Plan Name",
+      "mealCount": "Total Meals",
+      "dailyCalories": "Daily Calories",
+      "proteinTotal": "Total Protein (g)",
+      "carbsTotal": "Total Carbs (g)",
+      "fatTotal": "Total Fat (g)",
+      "confirmMessage": "Review the details below and click Save to create this plan.",
+      "saveButton": "Save Plan"
+    }
+  },
+  "assign": {
+    "title": "Assign Nutrition Plan",
+    "subtitle": "Assign to athletes or groups",
+    "planLabel": "Plan",
+    "targetMode": "Assignment Target",
+    "mode": {
+      "athlete": "Individual Athletes",
+      "group": "Group"
+    },
+    "athleteSearch": "Search athletes...",
+    "athleteCount_one": "{{count}} athlete selected",
+    "athleteCount_other": "{{count}} athletes selected",
+    "noAthletesFound": "No athletes match your search",
+    "noAthletesAvailable": "No athletes available",
+    "selectAthlete": "Select Athletes",
+    "selectAthleteOption": "-- Choose an athlete --",
+    "selectGroup": "Select Group",
+    "selectGroupOption": "-- Choose a group --",
+    "groupAthleteCount": "{{count}} athletes",
+    "dateRange": "Assignment Duration",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "endDateOptional": "Optional — leave blank for ongoing",
+    "ongoing": "Ongoing",
+    "endDateError": "End date must be on or after the start date",
+    "conflictError": "This athlete already has an active plan for this date range",
+    "conflictWarning": "Overlap Detected",
+    "conflictDescription": "The following athletes already have an active assignment during the selected dates. The server will skip them automatically.",
+    "noConflicts": "No conflicts detected",
+    "summary": {
+      "title": "Assignment Summary",
+      "assigning": "Assigning",
+      "to": "to",
+      "athletes_one": "{{count}} athlete",
+      "athletes_other": "{{count}} athletes",
+      "dateRange": "{{start}} – {{end}}",
+      "dateOngoing": "{{start}} – ongoing",
+      "group": "Group"
+    },
+    "confirmButton": "Confirm Assignment",
+    "validation": {
+      "selectAtLeastOne": "Select at least one athlete",
+      "selectGroup": "Select a group",
+      "startDateRequired": "Start date is required"
+    }
+  },
+  "modal": {
+    "warningDialog": {
+      "editTitle": "Update Active Plan",
+      "deleteTitle": "Delete Active Plan",
+      "warningMessage": "This plan is currently assigned to {{count}} athlete",
+      "warningMessage_plural": "This plan is currently assigned to {{count}} athletes",
+      "editWarning": "Saving changes will update their nutrition plan immediately.",
+      "deleteWarning": "Deleting this plan will remove all active assignments."
+    },
+    "assignmentResult": {
+      "title": "Assignment Results",
+      "description": "Review which athletes were assigned and which were skipped.",
+      "assigned": "Successfully Assigned ✓",
+      "skipped": "Skipped ⚠",
+      "closeButton": "Done"
+    },
+    "mealLibrary": {
+      "title": "Meal Library",
+      "description": "Select an existing meal to add to your plan",
+      "searchPlaceholder": "Search meals...",
+      "filterLabel": "Filter by Meal Type",
+      "noResults": "No meals found matching your criteria",
+      "selectButton": "Use This Meal"
+    }
+  },
+  "macro": {
+    "summaryTitle": "RUNNING DAILY TOTAL",
+    "calories": "CALORIES",
+    "protein": "PROTEIN",
+    "carbs": "CARBS",
+    "fat": "FAT"
+  },
+  "roleSwitcher": {
+    "viewingAs": "VIEWING AS",
+    "nutritionSpecialist": "Nutrition Specialist",
+    "administrator": "Administrator"
+  },
+  "adminBanner": {
+    "message": " Administrator view — nutrition plans and assignments are read-only."
+  },
+  "assignmentDetail": {
+    "planSnapshot": "Plan Snapshot",
+    "meals": "Meals",
+    "viewFullPlan": "View full plan"
+  }
+}
