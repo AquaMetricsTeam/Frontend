@@ -3,9 +3,6 @@ import {
   MdPeople,
   MdDirectionsRun,
   MdPool,
-  MdFitnessCenter,
-  MdAssignment,
-  MdRestaurant,
   MdEventNote,
   MdStickyNote2,
   MdAutoAwesome,
@@ -15,6 +12,7 @@ import {
   MdSettings,
   MdGroup,
   MdSportsGymnastics,
+  MdRestaurant,
 } from "react-icons/md";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -92,12 +90,13 @@ export const NAV_GROUPS: NavGroup[] = [
         path: "/training",
         allowedRoles: ["SwimmingCoach", "FitnessCoach"],
       },
-      // {
-      //   key: "nutrition",
-      //   labelKey: "common:nav.items.nutrition",
-      //   icon: MdRestaurant,
-      //   path: "/nutrition",
-      // },
+      {
+        key: "nutrition",
+        labelKey: "common:nav.items.nutrition",
+        icon: MdRestaurant,
+        path: "/nutrition",
+        allowedRoles: ["NutritionSpecialist", "Admin"],
+      },
     ],
   },
   {
