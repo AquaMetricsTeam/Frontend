@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { MdClose, MdCalendarToday, MdPerson, MdGroup } from "react-icons/md";
+import { MdClose } from "react-icons/md";
 import {
   Drawer,
   DrawerContent,
@@ -12,7 +12,7 @@ import { useAthletesLookup } from "@/features/lookups/hooks/useAthletesLookup";
 import { useGroupsLookup } from "@/features/lookups/hooks/useGroupsLookup";
 import { useNutritionPlan } from "../hooks/useNutritionPlan";
 import { MealType } from "../types/index";
-import type { NutritionPlanAssignment, NutritionPlan } from "../types/index";
+import type { NutritionPlanAssignment } from "../types/index";
 
 interface AssignmentDetailSlideOverProps {
   open: boolean;

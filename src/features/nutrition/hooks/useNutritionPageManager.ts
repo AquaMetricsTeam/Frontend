@@ -5,7 +5,7 @@ import { useCreateNutritionPlan } from "./useCreateNutritionPlan";
 import { useUpdateNutritionPlan } from "./useUpdateNutritionPlan";
 import { useDeleteNutritionPlan } from "./useDeleteNutritionPlan";
 import { usePlanAssignments } from "./usePlanAssignments";
-import type { NutritionPlan, NutritionPlanMeal, NutritionPlanFormValues } from "../types/index";
+import type { NutritionPlan, NutritionPlanMeal, NutritionPlanFormValues, MealType } from "../types/index";
 
 type Tab = "plans" | "assignments";
 
@@ -88,12 +88,14 @@ export function useNutritionPageManager() {
         targetCalories: 0,
         meals: (plan.meals || []).map((m) => ({
           id: m.id != null ? String(m.id) : undefined,
-          mealType: Number(m.mealType) as NutritionPlanMeal["mealType"],
+          // Ensure mealType is a valid enum/value number
+          mealType: Number(m.mealType) as MealType,
           description: m.description ?? "",
-          calories: m.calories != null ? Number(m.calories) : undefined,
-          proteinGrams: m.proteinGrams != null ? Number(m.proteinGrams) : undefined,
-          carbGrams: m.carbGrams != null ? Number(m.carbGrams) : undefined,
-          fatGrams: m.fatGrams != null ? Number(m.fatGrams) : undefined,
+          // Numeric macro fields must be numbers (default 0) to satisfy schema
+          calories: m.calories != null ? Number(m.calories) : 0,
+          proteinGrams: m.proteinGrams != null ? Number(m.proteinGrams) : 0,
+          carbGrams: m.carbGrams != null ? Number(m.carbGrams) : 0,
+          fatGrams: m.fatGrams != null ? Number(m.fatGrams) : 0,
           dietaryNotes: m.dietaryNotes ?? "",
         })),
       };
@@ -136,7 +138,8 @@ export function useNutritionPageManager() {
         targetCalories: 0,
         meals: (plan.meals || []).map((m) => ({
           id: undefined, // duplicate meals get fresh ids from the server
-          mealType: Number(m.mealType) as NutritionPlanMeal["mealType"],
+          // Ensure mealType is a valid enum/value number
+          mealType: Number(m.mealType) as MealType,
           description: m.description ?? "",
           calories: Number(m.calories) || 0,
           proteinGrams: Number(m.proteinGrams) || 0,

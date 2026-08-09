@@ -17,7 +17,6 @@ import type { NutritionPlan } from "../types/index";
 
 interface PlansListProps {
   search?: string;
-  onSearchChange?: (v: string) => void;
   selectedPlanId?: string;
   onSelectPlan?: (plan: NutritionPlan | null) => void;
   onEditPlan?: (plan: NutritionPlan) => void;
@@ -45,7 +44,6 @@ function getMealTypeLabel(mealType: MealType): string {
 
 export function PlansList({
   search: searchProp,
-  onSearchChange,
   selectedPlanId,
   onSelectPlan,
   onEditPlan,

@@ -91,8 +91,8 @@ export function PlanWizardSlideOver({
 
   // watchedMeals reflects every keystroke so banners/totals stay accurate.
   const rawWatchedMeals = watch("meals");
-  const watchedMeals = useMemo(
-    () => (Array.isArray(rawWatchedMeals) ? rawWatchedMeals : []),
+  const watchedMeals = useMemo<NutritionPlanMeal[]>(
+    () => (Array.isArray(rawWatchedMeals) ? (rawWatchedMeals as NutritionPlanMeal[]) : []),
     [rawWatchedMeals]
   );
 
@@ -221,7 +221,7 @@ export function PlanWizardSlideOver({
   }
 
   function handleFinalSubmit() {
-    handleSubmit((formData) => {
+    handleSubmit((formData: NutritionPlanFormValues) => {
       onSubmit(formData);
     })();
   }

@@ -64,7 +64,7 @@ export default function NutritionPage() {
     setAssignmentDetailOpen(true);
   };
 
-  const handleViewFullPlan = (planId: string) => {
+  const handleViewFullPlan = () => {
     // Switch to plans tab and select the plan
     setCurrentTab("plans");
     // TODO: Find and select the plan by ID
@@ -146,7 +146,7 @@ export default function NutritionPage() {
             <div className="rounded-xl border border-slate-800 bg-[#111827]">
               <PlansList
                 search={plansSearch}
-                onSearchChange={setPlansSearch}
+
                 selectedPlanId={selectedPlan?.id}
                 onSelectPlan={setSelectedPlan}
                 onEditPlan={canEdit ? handleEditPlan : undefined}
