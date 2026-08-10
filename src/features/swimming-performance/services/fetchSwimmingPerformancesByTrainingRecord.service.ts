@@ -1,10 +1,10 @@
 import { customFetch } from "@/services/customFetch";
-import type { SwimmingPerformanceResponse } from "../types";
+import type { SwimmingPerformance } from "../types";
 
 export async function fetchSwimmingPerformancesByTrainingRecord(
   trainingRecordId: number,
-): Promise<ApiResponse<SwimmingPerformanceResponse[]>> {
-  return customFetch<ApiResponse<SwimmingPerformanceResponse[]>>(
-    `/swimming-performance/training-record/${trainingRecordId}`,
+): Promise<ApiResponse<SwimmingPerformance[]>> {
+  return customFetch<ApiResponse<SwimmingPerformance[]>>(
+    `/swimming-performance/Training-Record/${trainingRecordId}`,
   );
 }

@@ -7,16 +7,24 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  MdMoreVert,
+  MdVisibility,
+  MdEdit,
+  MdCheckCircle,
+  MdCancel,
+  MdWarning,
+} from "react-icons/md";
 import TableLoadingAndError from "@/components/HOCs/TableLoadingAndError";
 import type { TrainingRecordResponse } from "@/features/training-record/types";
 import { cn } from "@/lib/utils";
-
-interface FitnessRecordsTableProps {
-  records: TrainingRecordResponse[];
-  isLoading: boolean;
-  isError: boolean;
-  onRetry: () => void;
-}
 
 function RatingBar({ value, max = 10 }: { value: number; max?: number }) {
   const pct = (value / max) * 100;
@@ -38,11 +46,22 @@ function RatingBar({ value, max = 10 }: { value: number; max?: number }) {
   );
 }
 
+interface FitnessRecordsTableProps {
+  records: TrainingRecordResponse[];
+  isLoading: boolean;
+  isError: boolean;
+  onRetry: () => void;
+  onViewDetails: (record: TrainingRecordResponse) => void;
+  onEdit: (record: TrainingRecordResponse) => void;
+}
+
 export function FitnessRecordsTable({
   records,
   isLoading,
   isError,
   onRetry,
+  onViewDetails,
+  onEdit,
 }: FitnessRecordsTableProps) {
   return (
     <div className="rounded-xl border border-border bg-card overflow-hidden">
@@ -67,13 +86,16 @@ export function FitnessRecordsTable({
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
               Status
             </TableHead>
+            <TableHead className="text-xs font-semibold text-muted-foreground uppercase text-end">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           <TableLoadingAndError
             isLoading={isLoading}
             isError={isError}
-            columnCount={6}
+            columnCount={7}
             rowCount={5}
             onRetry={onRetry}
             isEmpty={records.length === 0}
@@ -83,9 +105,11 @@ export function FitnessRecordsTable({
             {records.map((r) => (
               <TableRow key={r.id} className="hover:bg-muted/30 transition-colors">
                 <TableCell>
-                  <span className="text-sm font-semibold text-foreground">
-                    {r.athleteName}
-                  </span>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-foreground">
+                      {r.athleteName}
+                    </span>
+                  </div>
                 </TableCell>
                 <TableCell>
                   <span className="text-xs text-muted-foreground">
@@ -108,23 +132,63 @@ export function FitnessRecordsTable({
                     <Badge
                       variant="outline"
                       className={cn(
-                        "text-[10px] font-semibold",
+                        "text-[10px] font-semibold px-2 py-0.5 flex items-center gap-1 w-fit",
                         r.sessionCompleted
                           ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-                          : "bg-amber-500/10 text-amber-600 border-amber-500/20",
+                          : "bg-rose-500/10 text-rose-600 border-rose-500/20",
                       )}
                     >
-                      {r.sessionCompleted ? "Completed" : "Partial"}
+                      {r.sessionCompleted ? (
+                        <>
+                          <MdCheckCircle className="size-3" />
+                          Completed
+                        </>
+                      ) : (
+                        <>
+                          <MdCancel className="size-3" />
+                          Incomplete
+                        </>
+                      )}
                     </Badge>
                     {r.injuryOccurred && (
                       <Badge
                         variant="outline"
-                        className="text-[10px] font-semibold bg-rose-500/10 text-rose-600 border-rose-500/20"
+                        className="text-[10px] font-semibold bg-rose-500/10 text-rose-600 border-rose-500/20 px-2 py-0.5 flex items-center gap-1 w-fit"
                       >
+                        <MdWarning className="size-3" />
                         Injury
                       </Badge>
                     )}
                   </div>
+                </TableCell>
+                <TableCell className="text-end">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8 rounded-lg cursor-pointer text-muted-foreground hover:text-foreground"
+                      >
+                        <MdMoreVert className="size-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem
+                        onClick={() => onViewDetails(r)}
+                        className="gap-2 cursor-pointer text-xs"
+                      >
+                        <MdVisibility className="size-4 text-primary" />
+                        View Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => onEdit(r)}
+                        className="gap-2 cursor-pointer text-xs"
+                      >
+                        <MdEdit className="size-4 text-amber-500" />
+                        Edit Record
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
             ))}

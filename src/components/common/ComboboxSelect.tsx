@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MdUnfoldMore, MdCheck } from "react-icons/md";
+import { MdUnfoldMore, MdCheck, MdErrorOutline } from "react-icons/md";
 import {
   Popover,
   PopoverContent,
@@ -34,6 +34,7 @@ interface ComboboxSelectProps {
   className?: string;
   /** Optional clear option label — if set, adds an "all" entry */
   clearLabel?: string;
+  error?: string;
 }
 
 /**
@@ -52,6 +53,7 @@ export function ComboboxSelect({
   disabled,
   className,
   clearLabel,
+  error,
 }: ComboboxSelectProps) {
   const [open, setOpen] = useState(false);
 
@@ -79,6 +81,7 @@ export function ComboboxSelect({
             "disabled:cursor-not-allowed disabled:opacity-50",
             !selectedLabel && "text-muted-foreground",
             hasValue && "border-primary/50 bg-primary/5 font-medium text-foreground",
+            error && "border-destructive focus:ring-destructive/50",
           )}
         >
           <span className="truncate text-xs">{selectedLabel ?? placeholder}</span>
@@ -110,13 +113,12 @@ export function ComboboxSelect({
                 {options.map((opt) => (
                   <CommandItem
                     key={opt.value}
-                    value={opt.value}
-                    keywords={[opt.label]}
-                    onSelect={(val) => {
-                      onValueChange(val === value ? "" : val);
+                    value={`${opt.label} ${opt.value}`}
+                    onSelect={() => {
+                      onValueChange(opt.value === value ? "" : opt.value);
                       setOpen(false);
                     }}
-                    className="flex items-center justify-between text-xs"
+                    className="flex items-center justify-between text-xs cursor-pointer"
                   >
                     {opt.label}
                     {value === opt.value && (
@@ -129,6 +131,16 @@ export function ComboboxSelect({
           </Command>
         </PopoverContent>
       </Popover>
+
+      {error && (
+        <div
+          role="alert"
+          className="flex items-center gap-1.5 text-xs text-destructive mt-0.5"
+        >
+          <MdErrorOutline className="size-3.5 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
     </div>
   );
 }

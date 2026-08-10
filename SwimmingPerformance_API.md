@@ -38,13 +38,74 @@ All endpoints require authentication.
 
 # Endpoints
 
+# 1. Get Paged Training Records for swimming coach
+
+### Request
+
+```http
+GET /api/Swimming-Performance/trainingRecord
+```
+
+### Description
+
+Returns paginated training records with optional filtering, searching, and sorting.
+
+### Query Parameters
+
+| Parameter              | Type                   | Description                         |
+| ---------------------- | ---------------------- | ----------------------------------- |
+| `PageIndex`            | `int`                  | Page number                         |
+| `PageSize`             | `int`                  | Number of records per page          |
+| `AthleteId`            | `Guid?`                | Filter by athlete                   |
+| `TrainingSessionId`    | `int?`                 | Filter by training session          |
+| `InjuryOccurred`       | `bool?`                | Filter records by injury occurrence |
+| `SessionCompleted`     | `bool?`                | Filter by completion status         |
+| `MinPerformanceRating` | `int?`                 | Minimum performance rating          |
+| `MaxPerformanceRating` | `int?`                 | Maximum performance rating          |
+| `FromDate`             | `DateOnly?`            | Start session date                  |
+| `ToDate`               | `DateOnly?`            | End session date                    |
+| `Search`               | `string?`              | Search/filter text                  |
+| `SortBy`               | `TrainingRecordSortBy` | Field used for sorting              |
+| `Descending`           | `bool`                 | Sort descending when `true`         |
+
+### Example
+
+```http
+GET /api/training-record?PageIndex=1&PageSize=10&MinPerformanceRating=7&MaxPerformanceRating=10&SessionCompleted=true&SortBy=Date&Descending=true
+```
+
+### Response
+
+Returns:
+
+```text
+ApiResponse<PagedResponse<TrainingRecordResponse>>
+```
+
+Each record contains:
+
+````json
+{
+  "id": 1,
+  "athleteId": "2d166dff-5101-4278-f6bc-08deefecdca4",
+  "athleteName": "Ahmed Ali",
+  "trainingSessionId": 2,
+  "sessionDate": "2026-08-15",
+  "sessionTitle": "Training Session Test One",
+  "performanceRating": 9,
+  "fatigueLevel": 5,
+  "sessionCompleted": true,
+  "injuryOccurred": false
+}
+
+
 # 2. Update Swimming Performance
 
 ### Request
 
 ```http
 PUT /api/Swimming-Performance/{id}
-```
+````
 
 ### Example
 
@@ -136,44 +197,6 @@ This endpoint is useful when displaying the swimming details of a completed trai
 
 ```text
 ApiResponse<List<SwimmingPerformanceResponse>>
-```
-
----
-
-# 5. Get All Swimming Performances
-
-### Request
-
-```http
-GET /api/Swimming-Performance
-```
-
-### Description
-
-Returns a paginated list of swimming performances with optional filtering.
-
-### Query Parameters
-
-| Parameter           | Type                 | Description                  |
-| ------------------- | -------------------- | ---------------------------- |
-| `PageIndex`         | `int`                | Page number                  |
-| `PageSize`          | `int`                | Number of records per page   |
-| `AthleteId`         | `Guid?`              | Filter by athlete            |
-| `TrainingSessionId` | `int?`               | Filter by training session   |
-| `Stroke`            | `StrokeType?`        | Filter by stroke/drill type  |
-| `Status`            | `PerformanceStatus?` | Filter by performance status |
-| `Descending`        | `bool`               | Sort descending when `true`  |
-
-### Example
-
-```http
-GET /api/Swimming-Performance?PageIndex=1&PageSize=10&AthleteId=2d166dff-5101-4278-f6bc-08deefecdca4&Stroke=1&Status=1&Descending=true
-```
-
-### Response
-
-```text
-ApiResponse<PagedResponse<SwimmingPerformanceResponse>>
 ```
 
 ---

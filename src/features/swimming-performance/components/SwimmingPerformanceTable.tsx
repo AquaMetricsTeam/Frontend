@@ -8,30 +8,26 @@ import {
 } from "@/components/ui/table";
 import TableLoadingAndError from "@/components/HOCs/TableLoadingAndError";
 import { SwimmingPerformanceTableRow } from "./SwimmingPerformanceTableRow";
-import type { SwimmingPerformance } from "../types";
+import type { TrainingRecordResponse } from "@/features/training-record/types";
 
 interface SwimmingPerformanceTableProps {
-  performances: SwimmingPerformance[];
+  records: TrainingRecordResponse[];
   isLoading: boolean;
   isError: boolean;
   onRetry: () => void;
-  onViewDetails: (item: SwimmingPerformance) => void;
-  onEdit: (item: SwimmingPerformance) => void;
-  onArchiveToggle: (item: SwimmingPerformance) => void;
+  onViewDetails: (item: TrainingRecordResponse) => void;
+  onEdit: (item: TrainingRecordResponse) => void;
   canManage: boolean;
-  isArchivedView?: boolean;
 }
 
 export function SwimmingPerformanceTable({
-  performances,
+  records,
   isLoading,
   isError,
   onRetry,
   onViewDetails,
   onEdit,
-  onArchiveToggle,
   canManage,
-  isArchivedView = false,
 }: SwimmingPerformanceTableProps) {
   const { t } = useTranslation("swimming");
 
@@ -44,22 +40,19 @@ export function SwimmingPerformanceTable({
               {t("table.athlete")}
             </TableHead>
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
-              {t("table.stroke")}
+              {t("table.sessionDate")}
             </TableHead>
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
-              {t("table.distanceReps")}
+              {t("table.performanceRating")}
             </TableHead>
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
-              {t("table.splitTimes")}
+              {t("table.fatigueLevel")}
             </TableHead>
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
-              {t("table.technicalRating")}
+              {t("table.sessionStatus")}
             </TableHead>
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
-              {t("table.rpe")}
-            </TableHead>
-            <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
-              {t("table.status")}
+              {t("table.injury")}
             </TableHead>
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase text-end">
               {t("table.actions")}
@@ -71,22 +64,20 @@ export function SwimmingPerformanceTable({
           <TableLoadingAndError
             isLoading={isLoading}
             isError={isError}
-            columnCount={8}
+            columnCount={7}
             rowCount={5}
             onRetry={onRetry}
-            isEmpty={performances.length === 0}
+            isEmpty={records.length === 0}
             emptyTitle={t("table.noRecords")}
             emptyDescription={t("table.noRecordsDesc")}
           >
-            {performances.map((item) => (
+            {records.map((item) => (
               <SwimmingPerformanceTableRow
                 key={item.id}
-                performance={item}
+                record={item}
                 onViewDetails={onViewDetails}
                 onEdit={onEdit}
-                onArchiveToggle={onArchiveToggle}
                 canManage={canManage}
-                isArchivedView={isArchivedView}
               />
             ))}
           </TableLoadingAndError>

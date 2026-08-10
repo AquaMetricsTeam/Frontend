@@ -3,9 +3,7 @@ import { SearchInput } from "@/components/common/SearchInput";
 import { ComboboxSelect } from "@/components/common/ComboboxSelect";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MdSortByAlpha, MdArchive, MdAdd, MdFilterAlt } from "react-icons/md";
-import { StrokeType, PerformanceStatus } from "../types";
-import { STROKE_METADATA, STATUS_METADATA } from "../constants/enums";
+import { MdSortByAlpha, MdAdd, MdFilterAlt } from "react-icons/md";
 import { useAthletesLookup } from "@/features/lookups/hooks/useAthletesLookup";
 import { cn } from "@/lib/utils";
 
@@ -14,12 +12,10 @@ interface SwimmingPerformanceFiltersBarProps {
   onSearchChange: (value: string) => void;
   athleteId?: string;
   onAthleteChange: (id?: string) => void;
-  stroke?: StrokeType;
-  onStrokeChange: (stroke?: StrokeType) => void;
-  status?: PerformanceStatus;
-  onStatusChange: (status?: PerformanceStatus) => void;
-  showArchived: boolean;
-  onShowArchivedChange: (show: boolean) => void;
+  sessionCompleted?: boolean;
+  onSessionCompletedChange: (val?: boolean) => void;
+  injuryOccurred?: boolean;
+  onInjuryChange: (val?: boolean) => void;
   descending: boolean;
   onSortChange: (desc: boolean) => void;
   onLogClick: () => void;
@@ -31,12 +27,10 @@ export function SwimmingPerformanceFiltersBar({
   onSearchChange,
   athleteId,
   onAthleteChange,
-  stroke,
-  onStrokeChange,
-  status,
-  onStatusChange,
-  showArchived,
-  onShowArchivedChange,
+  sessionCompleted,
+  onSessionCompletedChange,
+  injuryOccurred,
+  onInjuryChange,
   descending,
   onSortChange,
   onLogClick,
@@ -51,17 +45,21 @@ export function SwimmingPerformanceFiltersBar({
     label: "fullName" in a ? a.fullName : (a as { name: string }).name,
   }));
 
-  const strokeOptions = Object.values(STROKE_METADATA).map((s) => ({
-    value: String(s.value),
-    label: t(s.labelKey),
-  }));
+  const completedOptions = [
+    { value: "true", label: t("filters.completed") },
+    { value: "false", label: t("filters.notCompleted") },
+  ];
 
-  const statusOptions = Object.values(STATUS_METADATA).map((st) => ({
-    value: String(st.value),
-    label: t(st.labelKey),
-  }));
+  const injuryOptions = [
+    { value: "true", label: t("filters.injuryYes") },
+    { value: "false", label: t("filters.injuryNo") },
+  ];
 
-  const filterCount = [athleteId, stroke !== undefined, status !== undefined, showArchived].filter(Boolean).length;
+  const filterCount = [
+    athleteId,
+    sessionCompleted !== undefined,
+    injuryOccurred !== undefined,
+  ].filter(Boolean).length;
 
   return (
     <div className="space-y-3 mb-4">
@@ -109,55 +107,34 @@ export function SwimmingPerformanceFiltersBar({
         />
 
         <ComboboxSelect
-          label={t("filters.strokeLabel")}
-          placeholder={t("filters.allStrokes")}
-          searchPlaceholder="Search strokes..."
-          clearLabel={t("filters.allStrokes")}
-          options={strokeOptions}
-          value={stroke !== undefined ? String(stroke) : ""}
+          label={t("filters.sessionCompletedLabel")}
+          placeholder={t("filters.allSessions")}
+          searchPlaceholder="Filter..."
+          clearLabel={t("filters.allSessions")}
+          options={completedOptions}
+          value={sessionCompleted !== undefined ? String(sessionCompleted) : ""}
           onValueChange={(val) =>
-            onStrokeChange(val ? (Number(val) as StrokeType) : undefined)
+            onSessionCompletedChange(val !== "" ? val === "true" : undefined)
           }
-          hasValue={stroke !== undefined}
-          className="w-full sm:w-40"
+          hasValue={sessionCompleted !== undefined}
+          className="w-full sm:w-44"
         />
 
         <ComboboxSelect
-          label={t("filters.statusLabel")}
-          placeholder={t("filters.allStatuses")}
-          searchPlaceholder="Search status..."
-          clearLabel={t("filters.allStatuses")}
-          options={statusOptions}
-          value={status !== undefined ? String(status) : ""}
+          label={t("filters.injuryLabel")}
+          placeholder={t("filters.allInjury")}
+          searchPlaceholder="Filter..."
+          clearLabel={t("filters.allInjury")}
+          options={injuryOptions}
+          value={injuryOccurred !== undefined ? String(injuryOccurred) : ""}
           onValueChange={(val) =>
-            onStatusChange(val ? (Number(val) as PerformanceStatus) : undefined)
+            onInjuryChange(val !== "" ? val === "true" : undefined)
           }
-          hasValue={status !== undefined}
+          hasValue={injuryOccurred !== undefined}
           className="w-full sm:w-40"
         />
 
         <div className="hidden sm:block h-9 w-px bg-border self-end" />
-
-        {/* Archive toggle */}
-        <div className="flex flex-col gap-1">
-          <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/80 px-0.5">
-            {t("filters.archivedLabel")}
-          </span>
-          <Button
-            type="button"
-            variant={showArchived ? "secondary" : "outline"}
-            size="sm"
-            onClick={() => onShowArchivedChange(!showArchived)}
-            className={cn(
-              "h-9 rounded-lg gap-1.5 text-xs cursor-pointer",
-              showArchived &&
-                "border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20",
-            )}
-          >
-            <MdArchive className="size-4" />
-            {showArchived ? t("filters.showingArchived") : t("filters.showArchived")}
-          </Button>
-        </div>
 
         {/* Sort toggle */}
         <div className="flex flex-col gap-1">
@@ -169,7 +146,9 @@ export function SwimmingPerformanceFiltersBar({
             variant="outline"
             size="sm"
             onClick={() => onSortChange(!descending)}
-            className="h-9 rounded-lg gap-1.5 text-xs cursor-pointer text-muted-foreground hover:text-foreground"
+            className={cn(
+              "h-9 rounded-lg gap-1.5 text-xs cursor-pointer text-muted-foreground hover:text-foreground",
+            )}
           >
             <MdSortByAlpha className="size-4" />
             {descending ? t("filters.sortDescending") : t("filters.sortAscending")}

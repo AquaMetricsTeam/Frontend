@@ -19,6 +19,7 @@ import { ExercisePerformanceCard } from "./ExercisePerformanceCard";
 import { useCreateTrainingRecord } from "@/features/training-record/hooks/useCreateTrainingRecord";
 import { useTrainingSessions } from "@/features/training-plans/hooks/useTrainingSessions";
 import { useTrainingSession } from "@/features/training-plans/hooks/useTrainingSession";
+import { useTrainingPlan } from "@/features/training-plans/hooks/useTrainingPlan";
 import {
   createFitnessRecordSchema,
   type CreateFitnessRecordFormValues,
@@ -47,7 +48,7 @@ export function LogFitnessRecordDrawer({
 }: LogFitnessRecordDrawerProps) {
   const createMutation = useCreateTrainingRecord();
 
-  // 1. Fetch available training sessions first
+  // 1. All sessions list
   const { data: sessionsRes } = useTrainingSessions({ pageSize: 100 });
   const sessions = sessionsRes?.data?.items ?? [];
 
@@ -77,18 +78,27 @@ export function LogFitnessRecordDrawer({
 
   const selectedSessionId = form.watch("trainingSessionId");
 
-  // 2. Fetch session details strictly to check assigned athletes
+  // 2. Session detail → athletes + trainingPlanId
   const { data: sessionDetailRes, isLoading: sessionAthletesLoading } =
     useTrainingSession(Number(selectedSessionId), !!selectedSessionId);
 
-  const sessionAthletes = sessionDetailRes?.data?.athletes ?? [];
+  const sessionDetail = sessionDetailRes?.data;
+  const sessionAthletes = sessionDetail?.athletes ?? [];
+  const trainingPlanId = sessionDetail?.trainingPlanId ?? 0;
 
   const athleteOptions = sessionAthletes.map((a) => ({
     value: a.athleteId,
     label: a.fullName,
   }));
 
-  // Reset form when dialog opens fresh
+  // 3. Training plan → plan exercises (the ones athletes should perform)
+  const { data: planRes, isLoading: planLoading } = useTrainingPlan(
+    trainingPlanId,
+    !!trainingPlanId,
+  );
+  const planExercises = planRes?.data?.planExercises ?? [];
+
+  // Reset form on open, and reset exercise cards when session changes
   useEffect(() => {
     if (open) {
       form.reset({
@@ -104,20 +114,31 @@ export function LogFitnessRecordDrawer({
     }
   }, [open, form]);
 
+  // When session changes: clear athlete + reset exercise planExerciseId choices
+  useEffect(() => {
+    if (selectedSessionId) {
+      form.setValue("athleteId", "");
+      form.setValue(
+        "exercisePerformances",
+        form
+          .getValues("exercisePerformances")
+          .map(() => ({ ...DEFAULT_EXERCISE })),
+      );
+    }
+  }, [selectedSessionId, form]);
+
   function handleAddExercise() {
     append({ ...DEFAULT_EXERCISE });
   }
 
   function onSubmit(values: CreateFitnessRecordFormValues) {
     if (!values.athleteId || !values.trainingSessionId) {
-      if (!values.athleteId) {
+      if (!values.athleteId)
         form.setError("athleteId", { message: "Athlete is required" });
-      }
-      if (!values.trainingSessionId) {
+      if (!values.trainingSessionId)
         form.setError("trainingSessionId", {
           message: "Training session is required",
         });
-      }
       return;
     }
 
@@ -131,7 +152,8 @@ export function LogFitnessRecordDrawer({
         injuryOccurred: values.injuryOccurred,
         overallComment: values.overallComment || null,
         exercisePerformances: values.exercisePerformances.map((ep) => ({
-          planExerciseId: Number(ep.planExerciseId),
+          // planExerciseId: Number(ep.planExerciseId),
+          planExerciseId: 73,
           completedSets: Number(ep.completedSets || 0),
           completedReps: Number(ep.completedReps || 0),
           completedDuration: ep.completedDuration
@@ -187,7 +209,7 @@ export function LogFitnessRecordDrawer({
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* 1. Session Combobox */}
+                {/* 1. Session */}
                 <ComboboxSelect
                   label="Training Session *"
                   placeholder="Select session..."
@@ -198,19 +220,19 @@ export function LogFitnessRecordDrawer({
                     form.setValue("trainingSessionId", Number(val), {
                       shouldValidate: true,
                     });
-                    form.setValue("athleteId", "", { shouldValidate: true });
                   }}
                   hasValue={!!selectedSessionId}
+                  error={form.formState.errors.trainingSessionId?.message}
                 />
 
-                {/* 2. Athlete Combobox */}
+                {/* 2. Athlete — gated on session */}
                 <ComboboxSelect
                   label="Athlete *"
                   placeholder={
                     !selectedSessionId
                       ? "Select session first..."
                       : sessionAthletesLoading
-                        ? "Loading session athletes..."
+                        ? "Loading athletes..."
                         : sessionAthletes.length === 0
                           ? "No athletes in this session"
                           : "Select athlete..."
@@ -228,8 +250,35 @@ export function LogFitnessRecordDrawer({
                     sessionAthletes.length === 0
                   }
                   hasValue={!!athleteId}
+                  error={form.formState.errors.athleteId?.message}
                 />
               </div>
+
+              {/* Plan exercises hint */}
+              {selectedSessionId && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  {planLoading ? (
+                    <span className="animate-pulse">
+                      Loading plan exercises…
+                    </span>
+                  ) : planExercises.length > 0 ? (
+                    <>
+                      <Badge
+                        variant="secondary"
+                        className="bg-primary/10 text-primary border-primary/20 text-xs font-semibold"
+                      >
+                        {planExercises.length} plan exercise
+                        {planExercises.length !== 1 ? "s" : ""} available
+                      </Badge>
+                      <span>from this session's training plan</span>
+                    </>
+                  ) : (
+                    <span className="text-amber-600">
+                      ⚠ No exercises found in this session's training plan
+                    </span>
+                  )}
+                </div>
+              )}
 
               {/* Rating & Fatigue */}
               <div className="grid grid-cols-2 gap-4">
@@ -328,6 +377,7 @@ export function LogFitnessRecordDrawer({
                   key={fieldItem.id}
                   index={index}
                   totalExercises={fields.length}
+                  planExercises={planExercises}
                   prefix={`exercisePerformances.${index}`}
                   onRemove={() => remove(index)}
                 />

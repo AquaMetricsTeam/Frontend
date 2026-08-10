@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useDebounce } from "@/hooks/useDebounce";
-import { StrokeType, PerformanceStatus } from "../types";
 
 export function useSwimmingPerformanceFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -12,13 +11,12 @@ export function useSwimmingPerformanceFilters() {
   const trainingSessionId = searchParams.get("sessionId")
     ? Number(searchParams.get("sessionId"))
     : undefined;
-  const stroke = searchParams.get("stroke")
-    ? (Number(searchParams.get("stroke")) as StrokeType)
+  const sessionCompleted = searchParams.get("completed")
+    ? searchParams.get("completed") === "true"
     : undefined;
-  const status = searchParams.get("status")
-    ? (Number(searchParams.get("status")) as PerformanceStatus)
+  const injuryOccurred = searchParams.get("injury")
+    ? searchParams.get("injury") === "true"
     : undefined;
-  const showArchived = searchParams.get("archived") === "true";
   const descending = searchParams.get("sort") !== "asc";
 
   const [localSearch, setLocalSearch] = useState(initialSearch);
@@ -78,12 +76,12 @@ export function useSwimmingPerformanceFilters() {
     );
   }
 
-  function setStrokeFilter(strokeType?: StrokeType) {
+  function setSessionCompletedFilter(val?: boolean) {
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
-        if (strokeType !== undefined) next.set("stroke", String(strokeType));
-        else next.delete("stroke");
+        if (val !== undefined) next.set("completed", String(val));
+        else next.delete("completed");
         next.delete("page");
         return next;
       },
@@ -91,25 +89,12 @@ export function useSwimmingPerformanceFilters() {
     );
   }
 
-  function setStatusFilter(statusVal?: PerformanceStatus) {
+  function setInjuryFilter(val?: boolean) {
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
-        if (statusVal !== undefined) next.set("status", String(statusVal));
-        else next.delete("status");
-        next.delete("page");
-        return next;
-      },
-      { replace: true },
-    );
-  }
-
-  function setShowArchived(archived: boolean) {
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        if (archived) next.set("archived", "true");
-        else next.delete("archived");
+        if (val !== undefined) next.set("injury", String(val));
+        else next.delete("injury");
         next.delete("page");
         return next;
       },
@@ -138,12 +123,10 @@ export function useSwimmingPerformanceFilters() {
     setAthleteFilter,
     trainingSessionId,
     setSessionFilter,
-    stroke,
-    setStrokeFilter,
-    status,
-    setStatusFilter,
-    showArchived,
-    setShowArchived,
+    sessionCompleted,
+    setSessionCompletedFilter,
+    injuryOccurred,
+    setInjuryFilter,
     descending,
     setSortDescending,
   };

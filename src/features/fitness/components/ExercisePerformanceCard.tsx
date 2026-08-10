@@ -6,7 +6,7 @@ import { InputField } from "@/components/fields/InputField";
 import { TextareaField } from "@/components/fields/TextareaField";
 import { MdDeleteOutline, MdFitnessCenter } from "react-icons/md";
 import { ComboboxSelect } from "@/components/common/ComboboxSelect";
-import { useExercisesLookup } from "@/features/lookups/hooks/useExercisesLookup";
+import type { PlanExercise } from "@/features/training-plans/types";
 import { cn } from "@/lib/utils";
 
 const STATUS_OPTIONS = [
@@ -39,6 +39,7 @@ const STATUS_OPTIONS = [
 interface ExercisePerformanceCardProps {
   index: number;
   totalExercises: number;
+  planExercises: PlanExercise[];
   prefix?: string;
   onRemove: () => void;
 }
@@ -46,15 +47,16 @@ interface ExercisePerformanceCardProps {
 export function ExercisePerformanceCard({
   index,
   totalExercises,
+  planExercises,
   prefix = `exercisePerformances.${index}`,
   onRemove,
 }: ExercisePerformanceCardProps) {
-  const { control, setValue } = useFormContext();
+  const { control, setValue, formState: { errors } } = useFormContext();
 
   const getFieldName = (field: string) =>
     prefix ? `${prefix}.${field}` : field;
 
-  const setFieldValue = (field: string, val: any) =>
+  const setFieldValue = (field: string, val: unknown) =>
     setValue(getFieldName(field), val, {
       shouldValidate: true,
       shouldDirty: true,
@@ -68,20 +70,39 @@ export function ExercisePerformanceCard({
   });
   const rpeVal = useWatch({ control, name: getFieldName("rpe") });
 
-  const { data } = useExercisesLookup();
-  const exercises = data?.data ?? [];
+  const getExerciseId = (ex: PlanExercise) =>
+    ex.id ?? (ex as { planExerciseId?: number }).planExerciseId ?? ex.exerciseId;
+
+  const exerciseOptions = planExercises.map((ex) => {
+    const id = getExerciseId(ex);
+    return {
+      value: String(id),
+      label: ex.exerciseName ?? `Exercise #${ex.exerciseId ?? id}`,
+    };
+  });
+
+  const selectedExercise = planExercises.find(
+    (ex) => getExerciseId(ex) === Number(currentPlanExerciseId),
+  );
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5 space-y-4 shadow-xs">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border pb-3">
-        <Badge
-          variant="secondary"
-          className="text-xs font-bold bg-primary/10 text-primary border-primary/20 gap-1.5"
-        >
-          <MdFitnessCenter className="size-3" />
-          Exercise {index + 1}
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="secondary"
+            className="text-xs font-bold bg-primary/10 text-primary border-primary/20 gap-1.5"
+          >
+            <MdFitnessCenter className="size-3" />
+            Exercise {index + 1}
+          </Badge>
+          {selectedExercise && (
+            <span className="text-xs text-muted-foreground font-medium">
+              {selectedExercise.sets}×{selectedExercise.reps} planned
+            </span>
+          )}
+        </div>
 
         {totalExercises > 1 && (
           <Button
@@ -98,41 +119,45 @@ export function ExercisePerformanceCard({
       </div>
 
       <div className="space-y-4">
-        {/* Exercise Selector */}
+        {/* Plan Exercise Selector */}
         <ComboboxSelect
-          label="Exercise *"
-          placeholder="Select exercise..."
+          label="Plan Exercise *"
+          placeholder={
+            planExercises.length === 0
+              ? "Select a session first..."
+              : "Select exercise..."
+          }
           searchPlaceholder="Search exercise..."
-          options={exercises.map((ex) => ({
-            value: String(ex.id),
-            label: ex.title,
-          }))}
+          emptyMessage="No exercises in this plan."
+          options={exerciseOptions}
           value={currentPlanExerciseId ? String(currentPlanExerciseId) : ""}
           onValueChange={(val) => setFieldValue("planExerciseId", Number(val))}
-          hasValue={!!currentPlanExerciseId}
+          hasValue={!!currentPlanExerciseId && Number(currentPlanExerciseId) > 0}
+          disabled={planExercises.length === 0}
+          error={(errors.exercisePerformances as any)?.[index]?.planExerciseId?.message}
         />
 
         <div className="grid grid-cols-2 gap-3">
           <InputField
-            name={getFieldName("completedSets") as any}
+            name={getFieldName("completedSets") as never}
             label="Completed Sets *"
             type="number"
             inputClassName="h-9 text-xs font-semibold"
           />
           <InputField
-            name={getFieldName("completedReps") as any}
+            name={getFieldName("completedReps") as never}
             label="Completed Reps *"
             type="number"
             inputClassName="h-9 text-xs font-semibold"
           />
           <InputField
-            name={getFieldName("weightUsed") as any}
+            name={getFieldName("weightUsed") as never}
             label="Weight Used (kg)"
             type="number"
             inputClassName="h-9 text-xs font-semibold"
           />
           <InputField
-            name={getFieldName("completedDuration") as any}
+            name={getFieldName("completedDuration") as never}
             label="Duration (min)"
             type="number"
             inputClassName="h-9 text-xs font-semibold"
@@ -191,7 +216,7 @@ export function ExercisePerformanceCard({
 
         {/* Coach Comment */}
         <TextareaField
-          name={getFieldName("coachComment") as any}
+          name={getFieldName("coachComment") as never}
           label="Coach Comment"
           placeholder="Optional note…"
           rows={2}

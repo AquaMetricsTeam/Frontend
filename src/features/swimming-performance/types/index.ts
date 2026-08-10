@@ -66,6 +66,39 @@ export interface SwimmingPerformance {
 export type SwimmingPerformanceResponse = SwimmingPerformance;
 export type SwimmingPerformanceDetailsResponse = SwimmingPerformance;
 
+export interface ExercisePerformanceItem {
+  id: number;
+  planExerciseId?: number;
+  exerciseId?: number;
+  exerciseTitle?: string;
+  plannedSets?: number;
+  plannedReps?: number;
+  plannedDuration?: number;
+  completedSets?: number;
+  completedReps?: number;
+  completedDuration?: number | null;
+  weightUsed?: number | null;
+  rpe?: number | null;
+  status?: number;
+  coachComment?: string | null;
+}
+
+export interface SwimmingTrainingRecordDetailsResponse {
+  id: number;
+  athleteId: string;
+  athleteName: string;
+  trainingSessionId: number;
+  sessionTitle: string;
+  sessionDate: string;
+  performanceRating: number;
+  fatigueLevel: number;
+  sessionCompleted: boolean;
+  injuryOccurred: boolean;
+  overallComment?: string | null;
+  swimmingPerformances?: SwimmingPerformance[];
+  exercisePerformances?: ExercisePerformanceItem[];
+}
+
 // ─── Payloads & Requests ─────────────────────────────────────────────────────
 
 export interface SwimmingDrillRequest {

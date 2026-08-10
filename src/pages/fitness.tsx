@@ -9,6 +9,9 @@ import { useFitnessRecordFilters } from "@/features/fitness/hooks/useFitnessReco
 import { FitnessFiltersBar } from "@/features/fitness/components/FitnessFiltersBar";
 import { LogFitnessRecordDrawer } from "@/features/fitness/components/LogFitnessRecordDrawer";
 import { FitnessRecordsTable } from "@/features/fitness/components/FitnessRecordsTable";
+import { FitnessRecordDetailSheet } from "@/features/fitness/components/FitnessRecordDetailSheet";
+import { EditFitnessRecordModal } from "@/features/fitness/components/EditFitnessRecordModal";
+import type { TrainingRecordResponse } from "@/features/training-record/types";
 
 export default function FitnessPage() {
   const {
@@ -38,7 +41,26 @@ export default function FitnessPage() {
   const totalCount = recordsResponse?.totalCount ?? records.length;
   const totalPages = recordsResponse?.totalPages ?? 1;
 
+  // Drawers / Modals state
   const [isLogDrawerOpen, setIsLogDrawerOpen] = useState(false);
+
+  const [selectedForDetail, setSelectedForDetail] =
+    useState<TrainingRecordResponse | null>(null);
+  const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
+
+  const [selectedForEdit, setSelectedForEdit] =
+    useState<TrainingRecordResponse | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  function handleViewDetails(record: TrainingRecordResponse) {
+    setSelectedForDetail(record);
+    setIsDetailSheetOpen(true);
+  }
+
+  function handleEdit(record: TrainingRecordResponse) {
+    setSelectedForEdit(record);
+    setIsEditModalOpen(true);
+  }
 
   return (
     <PageWrapper>
@@ -87,6 +109,8 @@ export default function FitnessPage() {
             isLoading={isLoading}
             isError={isError}
             onRetry={refetch}
+            onViewDetails={handleViewDetails}
+            onEdit={handleEdit}
           />
         </WithPagination>
       </Box>
@@ -94,6 +118,19 @@ export default function FitnessPage() {
       <LogFitnessRecordDrawer
         open={isLogDrawerOpen}
         onOpenChange={setIsLogDrawerOpen}
+      />
+
+      <FitnessRecordDetailSheet
+        record={selectedForDetail}
+        open={isDetailSheetOpen}
+        onOpenChange={setIsDetailSheetOpen}
+        onEdit={handleEdit}
+      />
+
+      <EditFitnessRecordModal
+        record={selectedForEdit}
+        open={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
       />
     </PageWrapper>
   );

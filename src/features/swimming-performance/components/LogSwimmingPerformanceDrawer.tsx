@@ -216,6 +216,7 @@ export function LogSwimmingPerformanceDrawer({
                     form.setValue("athleteId", "", { shouldValidate: true });
                   }}
                   hasValue={!!selectedSessionId}
+                  error={form.formState.errors.trainingSessionId?.message}
                 />
 
                 {/* 2. Athlete Combobox (Strictly athletes in selected session) */}
@@ -243,6 +244,7 @@ export function LogSwimmingPerformanceDrawer({
                     sessionAthletes.length === 0
                   }
                   hasValue={!!athleteId}
+                  error={form.formState.errors.athleteId?.message}
                 />
               </div>
 

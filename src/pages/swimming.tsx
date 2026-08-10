@@ -12,10 +12,9 @@ import { useSwimmingPerformanceFilters } from "@/features/swimming-performance/h
 import { SwimmingPerformanceFiltersBar } from "@/features/swimming-performance/components/SwimmingPerformanceFiltersBar";
 import { SwimmingPerformanceTable } from "@/features/swimming-performance/components/SwimmingPerformanceTable";
 import { LogSwimmingPerformanceDrawer } from "@/features/swimming-performance/components/LogSwimmingPerformanceDrawer";
-import { EditSwimmingPerformanceModal } from "@/features/swimming-performance/components/EditSwimmingPerformanceModal";
+import { EditTrainingRecordModal } from "@/features/swimming-performance/components/EditTrainingRecordModal";
 import { SwimmingPerformanceDetailSheet } from "@/features/swimming-performance/components/SwimmingPerformanceDetailSheet";
-import { ArchiveSwimmingPerformanceDialog } from "@/features/swimming-performance/components/ArchiveSwimmingPerformanceDialog";
-import type { SwimmingPerformance } from "@/features/swimming-performance/types";
+import type { TrainingRecordResponse } from "@/features/training-record/types";
 
 export default function SwimmingPage() {
   const { t } = useTranslation("swimming");
@@ -34,60 +33,48 @@ export default function SwimmingPage() {
     athleteId,
     setAthleteFilter,
     trainingSessionId,
-    setSessionFilter,
-    stroke,
-    setStrokeFilter,
-    status,
-    setStatusFilter,
-    showArchived,
-    setShowArchived,
+    sessionCompleted,
+    setSessionCompletedFilter,
+    injuryOccurred,
+    setInjuryFilter,
     descending,
     setSortDescending,
   } = useSwimmingPerformanceFilters();
 
-  // Query API
+  // Query API - GET /Swimming-Performance/trainingRecord
   const { data, isLoading, isError, refetch } = useSwimmingPerformances({
     pageIndex: page,
     pageSize: 15,
     search: debouncedSearch,
     athleteId,
     trainingSessionId,
-    stroke,
-    status,
-    isArchived: showArchived ? true : undefined,
+    sessionCompleted,
+    injuryOccurred,
     descending,
   });
 
   const performancesResponse = data?.data;
-  const performances = performancesResponse?.items ?? [];
-  const totalCount = performancesResponse?.totalCount ?? performances.length;
+  const records = performancesResponse?.items ?? [];
+  const totalCount = performancesResponse?.totalCount ?? records.length;
   const totalPages = performancesResponse?.totalPages ?? 1;
 
   // Drawers & Modals State
   const [isLogDrawerOpen, setIsLogDrawerOpen] = useState(false);
   const [selectedForDetail, setSelectedForDetail] =
-    useState<SwimmingPerformance | null>(null);
+    useState<TrainingRecordResponse | null>(null);
   const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
   const [selectedForEdit, setSelectedForEdit] =
-    useState<SwimmingPerformance | null>(null);
+    useState<TrainingRecordResponse | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedForArchive, setSelectedForArchive] =
-    useState<SwimmingPerformance | null>(null);
-  const [isArchiveDialogOpen, setIsArchiveDialogOpen] = useState(false);
 
-  function handleViewDetails(item: SwimmingPerformance) {
+  function handleViewDetails(item: TrainingRecordResponse) {
     setSelectedForDetail(item);
     setIsDetailSheetOpen(true);
   }
 
-  function handleEdit(item: SwimmingPerformance) {
+  function handleEdit(item: TrainingRecordResponse) {
     setSelectedForEdit(item);
     setIsEditModalOpen(true);
-  }
-
-  function handleArchiveToggle(item: SwimmingPerformance) {
-    setSelectedForArchive(item);
-    setIsArchiveDialogOpen(true);
   }
 
   return (
@@ -128,12 +115,10 @@ export default function SwimmingPage() {
           onSearchChange={setLocalSearch}
           athleteId={athleteId}
           onAthleteChange={setAthleteFilter}
-          stroke={stroke}
-          onStrokeChange={setStrokeFilter}
-          status={status}
-          onStatusChange={setStatusFilter}
-          showArchived={showArchived}
-          onShowArchivedChange={setShowArchived}
+          sessionCompleted={sessionCompleted}
+          onSessionCompletedChange={setSessionCompletedFilter}
+          injuryOccurred={injuryOccurred}
+          onInjuryChange={setInjuryFilter}
           descending={descending}
           onSortChange={setSortDescending}
           onLogClick={() => setIsLogDrawerOpen(true)}
@@ -142,15 +127,13 @@ export default function SwimmingPage() {
 
         <WithPagination pageCount={totalPages}>
           <SwimmingPerformanceTable
-            performances={performances}
+            records={records}
             isLoading={isLoading}
             isError={isError}
             onRetry={refetch}
             onViewDetails={handleViewDetails}
             onEdit={handleEdit}
-            onArchiveToggle={handleArchiveToggle}
             canManage={canManage}
-            isArchivedView={showArchived}
           />
         </WithPagination>
       </Box>
@@ -162,22 +145,16 @@ export default function SwimmingPage() {
       />
 
       <SwimmingPerformanceDetailSheet
-        performance={selectedForDetail}
+        record={selectedForDetail}
         open={isDetailSheetOpen}
         onOpenChange={setIsDetailSheetOpen}
+        canManage={canManage}
       />
 
-      <EditSwimmingPerformanceModal
-        performance={selectedForEdit}
+      <EditTrainingRecordModal
+        record={selectedForEdit}
         open={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
-      />
-
-      <ArchiveSwimmingPerformanceDialog
-        performance={selectedForArchive}
-        open={isArchiveDialogOpen}
-        onOpenChange={setIsArchiveDialogOpen}
-        isArchivedView={showArchived}
       />
     </PageWrapper>
   );

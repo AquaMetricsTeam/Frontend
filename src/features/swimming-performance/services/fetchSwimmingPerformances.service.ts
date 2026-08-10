@@ -1,12 +1,24 @@
 import { customFetch } from "@/services/customFetch";
-import type {
-  SwimmingPerformanceQueryParameters,
-  SwimmingPerformancesPaginatedResponse,
-} from "../types";
+import type { TrainingRecordPaginatedResponse } from "@/features/training-record/types";
+
+export interface SwimmingTrainingRecordQueryParams {
+  pageIndex?: number;
+  pageSize?: number;
+  athleteId?: string;
+  trainingSessionId?: number;
+  injuryOccurred?: boolean;
+  sessionCompleted?: boolean;
+  minPerformanceRating?: number;
+  maxPerformanceRating?: number;
+  fromDate?: string;
+  toDate?: string;
+  search?: string;
+  descending?: boolean;
+}
 
 export async function fetchSwimmingPerformances(
-  params: SwimmingPerformanceQueryParameters = {},
-): Promise<ApiResponse<SwimmingPerformancesPaginatedResponse>> {
+  params: SwimmingTrainingRecordQueryParams = {},
+): Promise<ApiResponse<TrainingRecordPaginatedResponse>> {
   const query = new URLSearchParams();
 
   if (params.pageIndex !== undefined)
@@ -16,18 +28,22 @@ export async function fetchSwimmingPerformances(
   if (params.athleteId) query.set("AthleteId", params.athleteId);
   if (params.trainingSessionId)
     query.set("TrainingSessionId", String(params.trainingSessionId));
-  if (params.stroke !== undefined) query.set("Stroke", String(params.stroke));
-  if (params.status !== undefined) query.set("Status", String(params.status));
+  if (params.injuryOccurred !== undefined)
+    query.set("InjuryOccurred", String(params.injuryOccurred));
+  if (params.sessionCompleted !== undefined)
+    query.set("SessionCompleted", String(params.sessionCompleted));
+  if (params.minPerformanceRating !== undefined)
+    query.set("MinPerformanceRating", String(params.minPerformanceRating));
+  if (params.maxPerformanceRating !== undefined)
+    query.set("MaxPerformanceRating", String(params.maxPerformanceRating));
+  if (params.fromDate) query.set("FromDate", params.fromDate);
+  if (params.toDate) query.set("ToDate", params.toDate);
+  if (params.search) query.set("Search", params.search);
   if (params.descending !== undefined)
     query.set("Descending", String(params.descending));
-  if (params.isArchived !== undefined)
-    query.set("onlyArchived", String(params.isArchived));
-  if (params.search) query.set("Search", params.search);
 
   const queryString = query.toString();
-  const endpoint = `/swimming-performance${queryString ? `?${queryString}` : ""}`;
+  const endpoint = `/swimming-performance/trainingRecord${queryString ? `?${queryString}` : ""}`;
 
-  return customFetch<ApiResponse<SwimmingPerformancesPaginatedResponse>>(
-    endpoint,
-  );
+  return customFetch<ApiResponse<TrainingRecordPaginatedResponse>>(endpoint);
 }
