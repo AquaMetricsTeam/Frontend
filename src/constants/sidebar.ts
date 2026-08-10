@@ -11,11 +11,8 @@ import {
   MdSettings,
   MdGroup,
   MdSportsGymnastics,
-<<<<<<< HEAD
   MdRestaurant,
-=======
   MdFitnessCenter,
->>>>>>> origin/develop
 } from "react-icons/md";
 
 export const NAV_GROUPS: NavGroup[] = [

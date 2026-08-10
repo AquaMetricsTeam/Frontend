@@ -11,12 +11,9 @@ import AthletesPage from "@/pages/athletes";
 import GroupsPage from "@/pages/groups";
 import ExercisesPage from "@/pages/exercises";
 import TrainingPage from "@/pages/training";
-<<<<<<< HEAD
 import NutritionPage from "@/pages/nutrition";
-=======
 import SwimmingPage from "@/pages/swimming";
 import FitnessPage from "@/pages/fitness";
->>>>>>> origin/develop
 import type { UserRole } from "@/features/auth/types";
 
 const DASHBOARD_ROLES: UserRole[] = [
@@ -113,12 +110,13 @@ const router = createBrowserRouter([
                 ),
               },
               {
-<<<<<<< HEAD
                 path: "/nutrition",
                 element: (
                   <ProtectedRoute allowedRoles={NUTRITION_ROLES}>
                     <NutritionPage />
-=======
+                  </ProtectedRoute>)
+              },
+              {
                 path: "/swimming",
                 element: (
                   <ProtectedRoute allowedRoles={["SwimmingCoach", "Admin"]}>
@@ -131,7 +129,6 @@ const router = createBrowserRouter([
                 element: (
                   <ProtectedRoute allowedRoles={["FitnessCoach", "Admin"]}>
                     <FitnessPage />
->>>>>>> origin/develop
                   </ProtectedRoute>
                 ),
               },

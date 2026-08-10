@@ -4,11 +4,8 @@ import groups from "./groups.json";
 import exercises from "./exercises.json";
 import athletes from "./athletes.json";
 import training from "./training.json";
-<<<<<<< HEAD
 import nutrition from "./nutrition.json";
-=======
 import swimming from "./swimming.json";
->>>>>>> origin/develop
 
 export const ar = {
   common,
@@ -17,12 +14,8 @@ export const ar = {
   exercises,
   athletes,
   training,
-<<<<<<< HEAD
   nutrition,
-} as const;
-=======
   swimming,
 } as const;
 
 
->>>>>>> origin/develop
