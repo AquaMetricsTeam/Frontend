@@ -1,14 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export function useAthleteFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const page = Number(searchParams.get("page")) || 1;
+  const page = Math.max(1, Number(searchParams.get("page")) || 1);
   const searchParam = searchParams.get("search") || "";
 
   const [localSearch, setLocalSearch] = useState(searchParam);
   const [debouncedSearch, setDebouncedSearch] = useState(searchParam);
+
+  useEffect(() => {
+    setLocalSearch(searchParam);
+  }, [searchParam]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -18,7 +22,16 @@ export function useAthleteFilters() {
     return () => clearTimeout(timer);
   }, [localSearch]);
 
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (debouncedSearch === searchParam) return;
+
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
@@ -29,12 +42,12 @@ export function useAthleteFilters() {
           next.delete("search");
         }
 
-        next.set("page", "1");
+        next.delete("page");
         return next;
       },
       { replace: true },
     );
-  }, [debouncedSearch, setSearchParams]);
+  }, [debouncedSearch, searchParam, setSearchParams]);
 
   return {
     localSearch,

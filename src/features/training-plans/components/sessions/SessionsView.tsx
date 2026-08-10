@@ -21,10 +21,7 @@ import { useSessionAttendance } from "../../hooks/useSessionAttendance";
 import { useMarkAttendance } from "../../hooks/useMarkAttendance";
 import { CreateSessionSheet } from "./CreateSessionSheet";
 import { SessionDetailSheet } from "./SessionDetailSheet";
-import {
-  AttendanceStatusEnum,
-  type TrainingSession,
-} from "../../types/index";
+import { AttendanceStatusEnum, type TrainingSession } from "../../types/index";
 import { cn } from "@/lib/utils";
 
 const STATUS_OPTIONS = [
@@ -64,7 +61,9 @@ export function SessionsView() {
   const [searchSessions, setSearchSessions] = useState("");
 
   // Attendance local state map: athleteId -> status
-  const [attendanceMap, setAttendanceMap] = useState<Record<string, number>>({});
+  const [attendanceMap, setAttendanceMap] = useState<Record<string, number>>(
+    {},
+  );
   const [initialAttendanceMap, setInitialAttendanceMap] = useState<
     Record<string, number>
   >({});
@@ -72,8 +71,12 @@ export function SessionsView() {
   const sessionId = selectedSession?.id ?? 0;
 
   // 1. Fetch Sessions List
-  const { data: sessionsRes, isLoading: sessionsLoading, isError: sessionsError, refetch: refetchSessions } =
-    useTrainingSessions({ pageNumber: 1, pageSize: 50 });
+  const {
+    data: sessionsRes,
+    isLoading: sessionsLoading,
+    isError: sessionsError,
+    refetch: refetchSessions,
+  } = useTrainingSessions({ pageNumber: 1, pageSize: 50 });
   const sessions = sessionsRes?.data?.items ?? [];
 
   // Auto-select first session if none selected
@@ -86,7 +89,8 @@ export function SessionsView() {
   // 2. Fetch Single Session Detail (includes athletes via GET /api/training-sessions/{id})
   const { data: sessionDetailRes, isLoading: sessionDetailLoading } =
     useTrainingSession(sessionId, sessionId > 0);
-  const sessionAthletes = sessionDetailRes?.data?.athletes ?? selectedSession?.athletes ?? [];
+  const sessionAthletes =
+    sessionDetailRes?.data?.athletes ?? selectedSession?.athletes ?? [];
 
   // 3. Fetch Session Attendance Records
   const { data: attendanceRes, isLoading: attendanceLoading } =
@@ -236,10 +240,10 @@ export function SessionsView() {
               isLoading={sessionsLoading}
               isError={sessionsError}
               hasNoData={filteredSessions.length === 0}
-              skeletonProps={{ columns: 1, rows: 4 }}
+              skeletonProps={{ columns: 3, rows: 4 }}
               errorMessageProps={{ onRetry: refetchSessions }}
             >
-              <div className="divide-y divide-border/60 max-h-[600px] overflow-y-auto">
+              <div className="divide-y divide-border/60 max-h-[600px] w-full overflow-y-auto">
                 {filteredSessions.map((session) => {
                   const isSelected = selectedSession?.id === session.id;
                   return (
@@ -377,7 +381,8 @@ export function SessionsView() {
                         AttendanceStatusEnum.Present;
                       const isModified =
                         initialAttendanceMap[athlete.athleteId] !== undefined &&
-                        initialAttendanceMap[athlete.athleteId] !== currentStatus;
+                        initialAttendanceMap[athlete.athleteId] !==
+                          currentStatus;
 
                       return (
                         <div
@@ -426,7 +431,10 @@ export function SessionsView() {
                                   key={opt.value}
                                   type="button"
                                   onClick={() =>
-                                    handleSetStatus(athlete.athleteId, opt.value)
+                                    handleSetStatus(
+                                      athlete.athleteId,
+                                      opt.value,
+                                    )
                                   }
                                   className={cn(
                                     "px-2.5 py-1 text-[11px] font-medium rounded-md transition-all cursor-pointer",
@@ -471,8 +479,8 @@ export function SessionsView() {
                     Attendance Tracker
                   </h3>
                   <p className="text-xs">
-                    Select a session from the list on the left to mark attendance
-                    and log workout status.
+                    Select a session from the list on the left to mark
+                    attendance and log workout status.
                   </p>
                 </div>
               </div>

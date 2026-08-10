@@ -9,7 +9,7 @@ export function useExerciseFilters() {
   const urlSearch = searchParams.get("search") || "";
 
   const [localSearch, setLocalSearch] = useState(urlSearch);
-  const isMounted = useRef(false);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     setLocalSearch(urlSearch);
@@ -18,13 +18,15 @@ export function useExerciseFilters() {
   const debouncedSearch = useDebounce(localSearch, 300);
 
   useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
       return;
     }
+    const trimmed = debouncedSearch.trim();
+    if (trimmed === urlSearch) return;
+
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
-      const trimmed = debouncedSearch.trim();
       if (trimmed) {
         next.set("search", trimmed);
       } else {
@@ -33,7 +35,7 @@ export function useExerciseFilters() {
       next.delete("page");
       return next;
     });
-  }, [debouncedSearch, setSearchParams]);
+  }, [debouncedSearch, urlSearch, setSearchParams]);
 
   const resetPage = useCallback(() => {
     setSearchParams((prev) => {

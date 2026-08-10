@@ -5,12 +5,15 @@ import { useDebounce } from "@/hooks/useDebounce";
 export function useGroupFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const pageNumber = Math.max(1, Number(searchParams.get("pageNumber") || "1"));
+  const pageNumber = Math.max(
+    1,
+    Number(searchParams.get("pageNumber") || searchParams.get("page") || "1"),
+  );
   const urlSearch = searchParams.get("search") || "";
   const onlyArchived = searchParams.get("onlyArchived") === "true";
 
   const [localSearch, setLocalSearch] = useState(urlSearch);
-  const isMounted = useRef(false);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     setLocalSearch(urlSearch);
@@ -19,22 +22,25 @@ export function useGroupFilters() {
   const debouncedSearch = useDebounce(localSearch, 300);
 
   useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
       return;
     }
+    const trimmed = debouncedSearch.trim();
+    if (trimmed === urlSearch) return;
+
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
-      const trimmed = debouncedSearch.trim();
       if (trimmed) {
         next.set("search", trimmed);
       } else {
         next.delete("search");
       }
       next.delete("pageNumber");
+      next.delete("page");
       return next;
     });
-  }, [debouncedSearch, setSearchParams]);
+  }, [debouncedSearch, urlSearch, setSearchParams]);
 
   const setOnlyArchived = useCallback(
     (value: boolean) => {
@@ -46,6 +52,7 @@ export function useGroupFilters() {
           next.delete("onlyArchived");
         }
         next.delete("pageNumber");
+        next.delete("page");
         return next;
       });
     },

@@ -392,6 +392,20 @@
     caret-color: #ffffff !important;
   }
 
+  /* ── Input Native Icons in Dark Mode (Calendar, Time Picker, Clear Buttons) ── */
+  .dark {
+    color-scheme: dark;
+  }
+
+  .dark input::-webkit-calendar-picker-indicator {
+    filter: invert(36%) sepia(88%) saturate(2680%) hue-rotate(338deg) brightness(105%) contrast(100%);
+    cursor: pointer;
+  }
+
+  .dark input::-webkit-calendar-picker-indicator:hover {
+    filter: invert(45%) sepia(95%) saturate(3500%) hue-rotate(340deg) brightness(120%) contrast(100%);
+  }
+
 
 
   /* ── Global RTL & Arabic Font Formatting ── */

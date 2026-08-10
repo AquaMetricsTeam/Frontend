@@ -29,9 +29,17 @@ import { useTrainingPlan } from "../../hooks/useTrainingPlan";
 import { AttendanceStatusEnum, type TrainingSession } from "../../types/index";
 import { cn } from "@/lib/utils";
 
+import { MdPool } from "react-icons/md";
+import { useSwimmingPerformancesByTrainingRecord } from "@/features/swimming-performance/hooks/useSwimmingPerformancesByTrainingRecord";
+import { LogSwimmingPerformanceDrawer } from "@/features/swimming-performance/components/LogSwimmingPerformanceDrawer";
+import { SwimmingPerformanceDetailSheet } from "@/features/swimming-performance/components/SwimmingPerformanceDetailSheet";
+import { STROKE_METADATA, STATUS_METADATA } from "@/features/swimming-performance/constants/enums";
+import { formatTimeSpanDisplay } from "@/features/swimming-performance/components/MmSsInput";
+import type { SwimmingPerformance } from "@/features/swimming-performance/types";
+
 type AttendanceStatus = "Present" | "Late" | "Absent";
 
-type SessionTab = "overview" | "attendance";
+type SessionTab = "overview" | "attendance" | "swimming";
 
 const TAB_OPTIONS: {
   value: SessionTab;
@@ -40,6 +48,7 @@ const TAB_OPTIONS: {
 }[] = [
   { value: "overview", label: "Details & Plan", icon: MdFitnessCenter },
   { value: "attendance", label: "Attendance Tracker", icon: MdFactCheck },
+  { value: "swimming", label: "Swimming Drills", icon: MdPool },
 ];
 
 interface SessionDetailSheetProps {
@@ -61,6 +70,17 @@ export function SessionDetailSheet({
 
   const sessionId = session?.id ?? 0;
   const planId = session?.trainingPlanId ?? 0;
+
+  const [isLogDrawerOpen, setIsLogDrawerOpen] = useState(false);
+  const [selectedSwimmingDetail, setSelectedSwimmingDetail] =
+    useState<SwimmingPerformance | null>(null);
+  const [isSwimmingDetailOpen, setIsSwimmingDetailOpen] = useState(false);
+
+  const { data: swimmingRes } = useSwimmingPerformancesByTrainingRecord(
+    sessionId,
+    open && sessionId > 0,
+  );
+  const swimmingPerformances = swimmingRes?.data ?? [];
 
   // Fetch plan details for exercises breakdown
   const { data: planRes } = useTrainingPlan(planId, open && planId > 0);
@@ -403,7 +423,126 @@ export function SessionDetailSheet({
               </div>
             </div>
           )}
+
+          {tab === "swimming" && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                  <MdPool className="size-4 text-primary" />
+                  Logged Swimming Performances ({swimmingPerformances.length})
+                </h4>
+                <Button
+                  size="sm"
+                  onClick={() => setIsLogDrawerOpen(true)}
+                  className="h-8 text-xs rounded-lg gap-1.5 cursor-pointer"
+                >
+                  + Log Drill
+                </Button>
+              </div>
+
+              {swimmingPerformances.length === 0 ? (
+                <div className="p-8 rounded-xl border border-dashed border-border text-center space-y-2">
+                  <MdPool className="size-8 text-muted-foreground/40 mx-auto" />
+                  <p className="text-xs font-semibold text-foreground">
+                    No swimming drills logged for this session record yet.
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">
+                    Click &quot;+ Log Drill&quot; to record swimming sets, split lap times, and technical ratings.
+                  </p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setIsLogDrawerOpen(true)}
+                    className="mt-2 text-xs rounded-lg cursor-pointer"
+                  >
+                    + Log Drill Set
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  {swimmingPerformances.map((item) => {
+                    const strokeMeta = STROKE_METADATA[item.stroke];
+                    const statusMeta = STATUS_METADATA[item.status];
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() => {
+                          setSelectedSwimmingDetail(item);
+                          setIsSwimmingDetailOpen(true);
+                        }}
+                        className="p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-all cursor-pointer space-y-2 shadow-xs"
+                      >
+                        <div className="flex items-center justify-between">
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "text-[10px] font-bold px-2 py-0.5",
+                              strokeMeta?.badgeClass,
+                            )}
+                          >
+                            {strokeMeta?.shortLabel || "Free"}
+                          </Badge>
+
+                          <span className="text-xs font-bold text-primary">
+                            {item.distanceMeters}m × {item.repetitions} reps
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs font-mono">
+                          <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                            Best: {formatTimeSpanDisplay(item.bestRepTime)}
+                          </span>
+                          <span className="text-foreground">
+                            Avg: {formatTimeSpanDisplay(item.averageRepTime)}
+                          </span>
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "text-[10px] font-semibold px-1.5 py-0",
+                              statusMeta?.badgeClass,
+                            )}
+                          >
+                            {statusMeta?.labelKey ? statusMeta.badgeClass : "Completed"}
+                          </Badge>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
         </div>
+
+        {/* Drawers */}
+        <LogSwimmingPerformanceDrawer
+          open={isLogDrawerOpen}
+          onOpenChange={setIsLogDrawerOpen}
+        />
+
+        <SwimmingPerformanceDetailSheet
+          record={
+            selectedSwimmingDetail
+              ? {
+                  id: selectedSwimmingDetail.trainingRecordId || sessionId,
+                  athleteId: selectedSwimmingDetail.athleteId || "",
+                  athleteName:
+                    selectedSwimmingDetail.athleteName ||
+                    session?.title ||
+                    "Athlete",
+                  trainingSessionId: sessionId,
+                  sessionTitle: session?.title || "Training Session",
+                  sessionDate: session?.sessionDate || "",
+                  performanceRating: 8,
+                  fatigueLevel: 5,
+                  sessionCompleted: true,
+                  injuryOccurred: false,
+                }
+              : null
+          }
+          open={isSwimmingDetailOpen}
+          onOpenChange={setIsSwimmingDetailOpen}
+        />
 
         {/* Footer */}
         {tab === "attendance" && (
