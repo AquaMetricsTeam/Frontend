@@ -21,7 +21,7 @@ export default function ExercisesPage() {
 
   const { data, isLoading, isError, refetch } = useExercises({
     page,
-    pageSize: 10,
+    pageSize: 15,
     search: debouncedSearch,
   });
 

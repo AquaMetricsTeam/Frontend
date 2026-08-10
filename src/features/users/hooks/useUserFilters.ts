@@ -10,7 +10,7 @@ export function useUserFilters() {
   const role = searchParams.get("role") || undefined;
 
   const [localSearch, setLocalSearch] = useState(urlSearch);
-  const isMounted = useRef(false);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     setLocalSearch(urlSearch);
@@ -19,13 +19,15 @@ export function useUserFilters() {
   const debouncedSearch = useDebounce(localSearch, 300);
 
   useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
       return;
     }
+    const trimmed = debouncedSearch.trim();
+    if (trimmed === urlSearch) return;
+
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
-      const trimmed = debouncedSearch.trim();
       if (trimmed) {
         next.set("search", trimmed);
       } else {
@@ -34,7 +36,7 @@ export function useUserFilters() {
       next.delete("page");
       return next;
     });
-  }, [debouncedSearch, setSearchParams]);
+  }, [debouncedSearch, urlSearch, setSearchParams]);
 
   const setRole = useCallback(
     (newRole: string | undefined) => {

@@ -26,7 +26,9 @@ export default function AthletesPage() {
   // Only determine role once meRes has loaded
   const roleKnown = !isMeLoading && userRoles.length > 0;
 
-  const [selectedAthlete, setSelectedAthlete] = useState<AdminAthlete | null>(null);
+  const [selectedAthlete, setSelectedAthlete] = useState<AdminAthlete | null>(
+    null,
+  );
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
@@ -35,7 +37,7 @@ export default function AthletesPage() {
 
   const queryParams = {
     pageNumber: page,
-    pageSize: 10,
+    pageSize: 15,
     search: debouncedSearch,
   };
 
@@ -72,10 +74,9 @@ export default function AthletesPage() {
               variant="secondary"
               className="rounded-full px-2.5 py-0.5 text-xs font-semibold text-primary bg-primary/10 border-primary/20"
             >
-              {t(
-                totalCount === 1 ? "page.count" : "page.count_plural",
-                { count: totalCount },
-              )}
+              {t(totalCount === 1 ? "page.count" : "page.count_plural", {
+                count: totalCount,
+              })}
             </Badge>
           </div>
           <p className="mt-1 text-sm text-muted-foreground">

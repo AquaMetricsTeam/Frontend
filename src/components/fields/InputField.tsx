@@ -76,6 +76,7 @@ export function InputField<TFieldValues extends FieldValues = FieldValues>({
 
             <Input
               {...field}
+              value={field.value ?? ""}
               id={name}
               type={effectiveType}
               placeholder={placeholder}
