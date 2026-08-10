@@ -5,6 +5,7 @@ import exercises from "./exercises.json";
 import athletes from "./athletes.json";
 import training from "./training.json";
 import swimming from "./swimming.json";
+import coachNotes from "./coachNotes.json";
 
 export const en = {
   common,
@@ -14,5 +15,6 @@ export const en = {
   athletes,
   training,
   swimming,
+  coachNotes,
 } as const;
 

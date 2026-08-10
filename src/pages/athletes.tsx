@@ -15,12 +15,14 @@ import { AdminAthletesTable } from "@/features/athletes/components/AdminAthletes
 import { CoachAthletesTable } from "@/features/athletes/components/CoachAthletesTable";
 import { AssignCoachModal } from "@/features/athletes/components/AssignCoachModal";
 import { CreateUserModal } from "@/features/users/components/CreateUserModal";
+import { AthleteNotesSheet } from "@/features/coach-notes/components/AthleteNotesSheet";
 import type { AdminAthlete } from "@/features/athletes/types/index";
 
 export default function AthletesPage() {
   const { t } = useTranslation("athletes");
   const { data: meRes, isLoading: isMeLoading } = useMe();
 
+  const currentUserId = meRes?.data?.userId;
   const userRoles = meRes?.data?.roles || [];
   const isAdmin = userRoles.includes("Admin");
   // Only determine role once meRes has loaded
@@ -31,6 +33,13 @@ export default function AthletesPage() {
   );
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // Coach notes sheet state
+  const [notesAthlete, setNotesAthlete] = useState<{
+    id: string;
+    fullName: string;
+    email?: string;
+  } | null>(null);
 
   const { localSearch, setLocalSearch, debouncedSearch, page } =
     useAthleteFilters();
@@ -115,6 +124,7 @@ export default function AthletesPage() {
               isError={adminQuery.isError}
               onRetry={adminQuery.refetch}
               onOpenAssignModal={handleOpenAssignModal}
+              onOpenNotes={(ath) => setNotesAthlete(ath)}
             />
           ) : (
             <CoachAthletesTable
@@ -122,6 +132,7 @@ export default function AthletesPage() {
               isLoading={coachQuery.isLoading || isMeLoading}
               isError={coachQuery.isError}
               onRetry={coachQuery.refetch}
+              onOpenNotes={(ath) => setNotesAthlete(ath)}
             />
           )}
         </WithPagination>
@@ -142,6 +153,16 @@ export default function AthletesPage() {
           />
         </>
       )}
+
+      {/* Athlete Notes Sheet */}
+      <AthleteNotesSheet
+        athlete={notesAthlete}
+        open={!!notesAthlete}
+        onOpenChange={(open) => {
+          if (!open) setNotesAthlete(null);
+        }}
+        currentUserId={currentUserId}
+      />
     </PageWrapper>
   );
 }

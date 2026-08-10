@@ -1,0 +1,61 @@
+{
+  "page": {
+    "title": "Coach Notes",
+    "description": "View and manage observation notes for athletes assigned to your team.",
+    "count": "{{count}} Note",
+    "count_plural": "{{count}} Notes",
+    "addNote": "Add Note",
+    "filterByAthlete": "Filter by athlete...",
+    "allAthletes": "All Athletes",
+    "noNotesTitle": "No coach notes found",
+    "noNotesDescription": "There are no notes created yet for the selected criteria."
+  },
+  "card": {
+    "by": "by",
+    "edited": "Edited",
+    "authorBadge": "You",
+    "actions": "Actions",
+    "edit": "Edit Note",
+    "delete": "Delete Note"
+  },
+  "modal": {
+    "createTitle": "Create Coach Note",
+    "createDescription": "Add an observation or technique note for an athlete.",
+    "editTitle": "Edit Coach Note",
+    "editDescription": "Update your note content below.",
+    "selectAthleteLabel": "Athlete",
+    "selectAthletePlaceholder": "Select an athlete",
+    "contentLabel": "Note Content",
+    "contentPlaceholder": "Write your detailed observation or technique recommendation here...",
+    "cancel": "Cancel",
+    "save": "Save Note",
+    "creating": "Creating...",
+    "updating": "Saving..."
+  },
+  "sheet": {
+    "title": "Coach Notes for {{name}}",
+    "description": "View notes recorded by assigned coaches for this athlete.",
+    "addQuickNote": "New Note",
+    "noNotesYet": "No notes recorded for this athlete yet."
+  },
+  "deleteDialog": {
+    "title": "Delete Note",
+    "description": "Are you sure you want to delete this note? This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Delete",
+    "deleting": "Deleting..."
+  },
+  "validations": {
+    "athleteRequired": "Please select an athlete.",
+    "contentMinLength": "Note content must be at least 3 characters.",
+    "contentMaxLength": "Note content cannot exceed 2000 characters."
+  },
+  "toasts": {
+    "createSuccess": "Coach note created successfully.",
+    "createError": "Failed to create coach note.",
+    "updateSuccess": "Coach note updated successfully.",
+    "updateError": "Failed to update coach note.",
+    "deleteSuccess": "Coach note deleted successfully.",
+    "deleteError": "Failed to delete coach note."
+  }
+}

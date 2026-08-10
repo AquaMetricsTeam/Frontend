@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { MdPersonAdd, MdCheckCircle, MdCancel } from "react-icons/md";
+import { MdPersonAdd, MdCheckCircle, MdCancel, MdStickyNote2 } from "react-icons/md";
 import {
   Table,
   TableHeader,
@@ -19,6 +19,7 @@ interface AdminAthletesTableProps {
   isError: boolean;
   onRetry: () => void;
   onOpenAssignModal: (athlete: AdminAthlete) => void;
+  onOpenNotes?: (athlete: { id: string; fullName: string; email?: string }) => void;
 }
 
 function getInitials(name: string) {
@@ -73,6 +74,7 @@ export function AdminAthletesTable({
   isError,
   onRetry,
   onOpenAssignModal,
+  onOpenNotes,
 }: AdminAthletesTableProps) {
   const { t } = useTranslation("athletes");
 
@@ -186,15 +188,34 @@ export function AdminAthletesTable({
 
                 {/* Actions */}
                 <TableCell className="py-3.5 pe-6 text-end">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-8 text-xs gap-1.5 rounded-lg border-border hover:border-primary/50 hover:bg-primary/5 cursor-pointer"
-                    onClick={() => onOpenAssignModal(athlete)}
-                  >
-                    <MdPersonAdd className="size-3.5 text-primary" />
-                    {t("table.manageCoaches")}
-                  </Button>
+                  <div className="flex items-center justify-end gap-2">
+                    {onOpenNotes && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 text-xs gap-1.5 rounded-lg text-primary hover:text-primary hover:bg-primary/10 cursor-pointer"
+                        onClick={() =>
+                          onOpenNotes({
+                            id: athlete.athleteId || athlete.id,
+                            fullName: athlete.fullName,
+                            email: athlete.email,
+                          })
+                        }
+                      >
+                        <MdStickyNote2 className="size-4" />
+                        <span>Notes</span>
+                      </Button>
+                    )}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 text-xs gap-1.5 rounded-lg border-border hover:border-primary/50 hover:bg-primary/5 cursor-pointer"
+                      onClick={() => onOpenAssignModal(athlete)}
+                    >
+                      <MdPersonAdd className="size-3.5 text-primary" />
+                      {t("table.manageCoaches")}
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
