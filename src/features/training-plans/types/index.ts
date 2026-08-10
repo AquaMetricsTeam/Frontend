@@ -1,6 +1,7 @@
 // ─── Domain Models ────────────────────────────────────────────────────────────
 
 export interface PlanExercise {
+  id?: number; // planExerciseId — required by ExercisePerformanceRequest
   exerciseId: number;
   exerciseName?: string | null;
   sets: number;

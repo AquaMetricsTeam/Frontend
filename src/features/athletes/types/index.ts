@@ -34,14 +34,25 @@ export interface AdminAthletesPaginatedResponse {
 export type Gender = 1 | 2 | 3; // 1=Male, 2=Female, 3=Unknown
 export type RegistrationStatus = 1 | 2 | 3; // 1=Active, 2=Pending, 3=Inactive
 
+export interface CoachAthleteCoach {
+  assignmentId?: number;
+  coachId?: string;
+  coachName?: string;
+  name?: string;
+  role?: string;
+}
+
 export interface CoachAthlete {
+  id?: string;
+  athleteId?: string;
   fullName: string;
   email: string;
   gender: Gender;
   age: number;
   registrationStatus: RegistrationStatus;
   groupNames: string[];
-  coachNames: string[];
+  coachNames?: string[];
+  coaches?: CoachAthleteCoach[] | string[];
 }
 
 export interface CoachAthletesPaginatedResponse {

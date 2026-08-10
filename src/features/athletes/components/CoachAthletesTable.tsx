@@ -28,6 +28,62 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
+function formatRole(role: string) {
+  switch (role) {
+    case "SwimmingCoach":
+      return "Swimming";
+    case "FitnessCoach":
+      return "Fitness";
+    case "NutritionSpecialist":
+      return "Nutrition";
+    default:
+      return role;
+  }
+}
+
+const ROLE_BADGE_CLASS: Record<string, string> = {
+  SwimmingCoach:
+    "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30",
+  FitnessCoach:
+    "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+  NutritionSpecialist:
+    "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
+};
+
+const DEFAULT_BADGE_CLASS =
+  "bg-primary/10 text-primary border-primary/30";
+
+function CoachBadge({ name, role }: { name: string; role?: string }) {
+  const cls = (role && ROLE_BADGE_CLASS[role]) ?? DEFAULT_BADGE_CLASS;
+  return (
+    <Badge
+      variant="outline"
+      className={`text-[11px] px-2 py-0.5 rounded-md font-medium border ${cls}`}
+    >
+      {name} {role ? `(${formatRole(role)})` : ""}
+    </Badge>
+  );
+}
+
+function getCoachesList(athlete: CoachAthlete): { id: string; name: string; role?: string }[] {
+  if (Array.isArray(athlete.coaches) && athlete.coaches.length > 0) {
+    return athlete.coaches.map((c, i) => {
+      if (typeof c === "string") {
+        return { id: `c-${i}`, name: c };
+      }
+      return {
+        id: c.coachId || `c-${i}`,
+        name: c.coachName || c.name || "Unknown Coach",
+        role: c.role,
+      };
+    });
+  }
+  if (Array.isArray(athlete.coachNames) && athlete.coachNames.length > 0) {
+    return athlete.coachNames.map((name, i) => ({ id: `cn-${i}`, name }));
+  }
+  return [];
+}
+
 function GenderBadge({ gender }: { gender: Gender }) {
   if (gender === 1)
     return (
@@ -99,6 +155,9 @@ export function CoachAthletesTable({
             <TableHead className="py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t("table.groups")}
             </TableHead>
+            <TableHead className="py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {t("table.coaches")}
+            </TableHead>
             <TableHead className="py-3 pe-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t("table.registrationStatus")}
             </TableHead>
@@ -109,67 +168,84 @@ export function CoachAthletesTable({
           <TableLoadingAndError
             isLoading={isLoading}
             isError={isError}
-            skeletonProps={{ rows: 5, columns: 5 }}
+            skeletonProps={{ rows: 5, columns: 6 }}
             errorMessageProps={{ onRetry }}
             hasNoData={!isLoading && !isError && athletes.length === 0}
           >
-            {athletes.map((athlete, idx) => (
-              <TableRow
-                key={`${athlete.email}-${idx}`}
-                className="hover:bg-muted/40 transition-colors"
-              >
-                {/* Name + Avatar */}
-                <TableCell className="py-3.5 ps-6 font-medium">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-xs border border-primary/20 shrink-0">
-                      {getInitials(athlete.fullName)}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-foreground text-sm">
-                        {athlete.fullName}
+            {athletes.map((athlete, idx) => {
+              const coachesList = getCoachesList(athlete);
+
+              return (
+                <TableRow
+                  key={`${athlete.email}-${idx}`}
+                  className="hover:bg-muted/40 transition-colors"
+                >
+                  {/* Name + Avatar */}
+                  <TableCell className="py-3.5 ps-6 font-medium">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-xs border border-primary/20 shrink-0">
+                        {getInitials(athlete.fullName)}
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        {athlete.email}
+                      <div>
+                        <div className="font-semibold text-foreground text-sm">
+                          {athlete.fullName}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {athlete.email}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </TableCell>
+                  </TableCell>
 
-                {/* Gender */}
-                <TableCell className="py-3.5">
-                  <GenderBadge gender={athlete.gender} />
-                </TableCell>
+                  {/* Gender */}
+                  <TableCell className="py-3.5">
+                    <GenderBadge gender={athlete.gender} />
+                  </TableCell>
 
-                {/* Age */}
-                <TableCell className="py-3.5 text-sm text-muted-foreground">
-                  {athlete.age}
-                </TableCell>
+                  {/* Age */}
+                  <TableCell className="py-3.5 text-sm text-muted-foreground">
+                    {athlete.age}
+                  </TableCell>
 
-                {/* Groups */}
-                <TableCell className="py-3.5">
-                  {athlete.groupNames.length === 0 ? (
-                    <span className="text-xs text-muted-foreground">—</span>
-                  ) : (
-                    <div className="flex flex-wrap gap-1">
-                      {athlete.groupNames.map((g) => (
-                        <Badge
-                          key={g}
-                          variant="secondary"
-                          className="text-[11px] px-2 py-0.5 rounded-md font-medium"
-                        >
-                          {g}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </TableCell>
+                  {/* Groups */}
+                  <TableCell className="py-3.5">
+                    {athlete.groupNames.length === 0 ? (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    ) : (
+                      <div className="flex flex-wrap gap-1">
+                        {athlete.groupNames.map((g) => (
+                          <Badge
+                            key={g}
+                            variant="secondary"
+                            className="text-[11px] px-2 py-0.5 rounded-md font-medium"
+                          >
+                            {g}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </TableCell>
 
-                {/* Registration Status */}
-                <TableCell className="py-3.5 pe-6">
-                  <RegistrationBadge status={athlete.registrationStatus} />
-                </TableCell>
-              </TableRow>
-            ))}
+                  {/* Coaches */}
+                  <TableCell className="py-3.5">
+                    {coachesList.length === 0 ? (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    ) : (
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        {coachesList.map((c) => (
+                          <CoachBadge key={c.id} name={c.name} role={c.role} />
+                        ))}
+                      </div>
+                    )}
+                  </TableCell>
+
+                  {/* Registration Status */}
+                  <TableCell className="py-3.5 pe-6">
+                    <RegistrationBadge status={athlete.registrationStatus} />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableLoadingAndError>
         </TableBody>
       </Table>

@@ -22,7 +22,7 @@ export default function UsersPage() {
 
   const { data, isLoading, isError, refetch } = useUsers({
     pageNumber: page,
-    pageSize: 10,
+    pageSize: 15,
     search: debouncedSearch,
     role,
   });

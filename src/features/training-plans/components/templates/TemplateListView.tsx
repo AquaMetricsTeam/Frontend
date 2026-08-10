@@ -42,7 +42,7 @@ export function TemplateListView() {
 
   const { data, isLoading, isError, refetch } = useTrainingPlans({
     pageNumber: page,
-    pageSize: 10,
+    pageSize: 15,
     search,
     isArchived: archiveFilter === "archived",
   });

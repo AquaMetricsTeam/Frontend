@@ -40,6 +40,7 @@ interface SelectFieldProps<TFieldValues extends FieldValues = FieldValues> {
   rules?: RegisterOptions<TFieldValues>;
   disabled?: boolean;
   className?: string;
+  valueType?: "number" | "string" | "auto";
 }
 
 export function SelectField<TFieldValues extends FieldValues = FieldValues>({
@@ -54,6 +55,7 @@ export function SelectField<TFieldValues extends FieldValues = FieldValues>({
   rules,
   disabled,
   className,
+  valueType = "auto",
 }: SelectFieldProps<TFieldValues>) {
   const { control } = useFormContext<TFieldValues>();
   const [open, setOpen] = useState(false);
@@ -64,7 +66,9 @@ export function SelectField<TFieldValues extends FieldValues = FieldValues>({
       control={control}
       rules={rules}
       render={({ field, fieldState: { error } }) => {
-        const selectedLabel = options.find((o) => o.value === field.value)?.label;
+        const selectedLabel = options.find(
+          (o) => String(o.value) === String(field.value),
+        )?.label;
 
         return (
           <LabelField
@@ -84,40 +88,59 @@ export function SelectField<TFieldValues extends FieldValues = FieldValues>({
                 disabled={disabled}
                 className={cn(
                   "flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2",
-                  "text-sm transition-colors duration-150",
+                  "text-sm transition-colors duration-150 cursor-pointer",
                   "hover:border-ring/50",
                   "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-0",
                   "disabled:cursor-not-allowed disabled:opacity-50",
                   !selectedLabel && "text-muted-foreground",
-                  error && "border-destructive focus:ring-destructive/50"
+                  error && "border-destructive focus:ring-destructive/50",
                 )}
               >
                 <span className="truncate">{selectedLabel ?? placeholder}</span>
                 <MdUnfoldMore className="ms-2 size-4 shrink-0 text-muted-foreground" />
               </PopoverTrigger>
 
-              <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+              <PopoverContent
+                className="w-[var(--radix-popover-trigger-width)] p-0"
+                align="start"
+              >
                 <Command>
-                  <CommandInput placeholder={searchPlaceholder} className="h-9" />
+                  <CommandInput
+                    placeholder={searchPlaceholder}
+                    className="h-9"
+                  />
                   <CommandList>
                     <CommandEmpty>{emptyMessage}</CommandEmpty>
                     <CommandGroup>
-                      {options.map((option) => (
-                        <CommandItem
-                          key={option.value}
-                          value={option.value}
-                          onSelect={(val) => {
-                            field.onChange(val === field.value ? "" : val);
-                            setOpen(false);
-                          }}
-                          className="flex items-center justify-between text-sm"
-                        >
-                          {option.label}
-                          {field.value === option.value && (
-                            <MdCheck className="size-4 text-primary" />
-                          )}
-                        </CommandItem>
-                      ))}
+                      {options.map((option) => {
+                        const isSelected =
+                          String(field.value) === String(option.value);
+                        return (
+                          <CommandItem
+                            key={option.value}
+                            value={`${option.label} ${option.value}`}
+                            onSelect={() => {
+                              let targetVal: string | number = option.value;
+                              if (valueType === "number") {
+                                targetVal = Number(option.value);
+                              } else if (valueType === "auto") {
+                                const num = Number(option.value);
+                                if (!isNaN(num) && option.value.trim() !== "") {
+                                  targetVal = num;
+                                }
+                              }
+                              field.onChange(isSelected ? "" : targetVal);
+                              setOpen(false);
+                            }}
+                            className="flex items-center justify-between text-sm cursor-pointer"
+                          >
+                            {option.label}
+                            {isSelected && (
+                              <MdCheck className="size-4 text-primary" />
+                            )}
+                          </CommandItem>
+                        );
+                      })}
                     </CommandGroup>
                   </CommandList>
                 </Command>
@@ -128,7 +151,7 @@ export function SelectField<TFieldValues extends FieldValues = FieldValues>({
               <div
                 id={`${name}-error`}
                 role="alert"
-                className="flex items-center gap-1.5 text-xs text-destructive"
+                className="flex items-center gap-1.5 text-xs text-destructive mt-1"
               >
                 <MdErrorOutline className="size-3.5 shrink-0" />
                 <span>{error.message}</span>

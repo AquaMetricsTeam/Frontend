@@ -35,7 +35,7 @@ export default function TrainingPage() {
             className="text-2xl font-bold tracking-tight text-foreground"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Swimming Training
+            Training Plans
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Manage training plans, assignments, and daily sessions

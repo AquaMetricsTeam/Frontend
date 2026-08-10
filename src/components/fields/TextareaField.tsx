@@ -52,6 +52,7 @@ export function TextareaField<TFieldValues extends FieldValues = FieldValues>({
         >
           <Textarea
             {...field}
+            value={field.value ?? ""}
             id={name}
             placeholder={placeholder}
             rows={rows}
