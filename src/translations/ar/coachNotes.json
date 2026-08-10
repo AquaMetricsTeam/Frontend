@@ -1,0 +1,61 @@
+{
+  "page": {
+    "title": "ملاحظات المدربين",
+    "description": "عرض وإدارة ملاحظات التقييم والتدريب للرياضيين المسندين لفريقك.",
+    "count": "ملاحظة {{count}}",
+    "count_plural": "{{count}} ملاحظة",
+    "addNote": "إضافة ملاحظة",
+    "filterByAthlete": "تصفية حسب الرياضي...",
+    "allAthletes": "جميع الرياضيين",
+    "noNotesTitle": "لم يتم العثور على ملاحظات",
+    "noNotesDescription": "لا توجد ملاحظات مسجلة حالياً تقتفي المعايير المحددة."
+  },
+  "card": {
+    "by": "بواسطة",
+    "edited": "معدل",
+    "authorBadge": "أنت",
+    "actions": "إجراءات",
+    "edit": "تعديل الملاحظة",
+    "delete": "حذف الملاحظة"
+  },
+  "modal": {
+    "createTitle": "إضافة ملاحظة جديدة",
+    "createDescription": "أضف ملاحظة حول الأداء أو التكنيك الخاص بالرياضي.",
+    "editTitle": "تعديل الملاحظة",
+    "editDescription": "قم بتحديث محتوى الملاحظة أدناه.",
+    "selectAthleteLabel": "الرياضي",
+    "selectAthletePlaceholder": "اختر رياضياً",
+    "contentLabel": "محتوى الملاحظة",
+    "contentPlaceholder": "اكتب ملاحظاتك وتوصياتك التفصيلية هنا...",
+    "cancel": "إلغاء",
+    "save": "حفظ الملاحظة",
+    "creating": "جاري الإضافة...",
+    "updating": "جاري الحفظ..."
+  },
+  "sheet": {
+    "title": "ملاحظات المدربين للرياضي {{name}}",
+    "description": "استعراض الملاحظات المسجلة من المدربين لهذا الرياضي.",
+    "addQuickNote": "ملاحظة جديدة",
+    "noNotesYet": "لا توجد ملاحظات مسجلة لهذا الرياضي بعد."
+  },
+  "deleteDialog": {
+    "title": "حذف الملاحظة",
+    "description": "هل أنت تأكد من رغبتك في حذف هذه الملاحظة؟ لا يمكن التراجع عن هذا الإجراء.",
+    "cancel": "إلغاء",
+    "confirm": "حذف",
+    "deleting": "جاري الحذف..."
+  },
+  "validations": {
+    "athleteRequired": "يرجى اختيار رياضي.",
+    "contentMinLength": "يجب أن يتكون محتوى الملاحظة من 3 حروف على الأقل.",
+    "contentMaxLength": "لا يمكن أن يتجاوز محتوى الملاحظة 2000 حرف."
+  },
+  "toasts": {
+    "createSuccess": "تم إضافة الملاحظة بنجاح.",
+    "createError": "فشل في إضافة الملاحظة.",
+    "updateSuccess": "تم تحديث الملاحظة بنجاح.",
+    "updateError": "فشل في تحديث الملاحظة.",
+    "deleteSuccess": "تم حذف الملاحظة بنجاح.",
+    "deleteError": "فشل في حذف الملاحظة."
+  }
+}

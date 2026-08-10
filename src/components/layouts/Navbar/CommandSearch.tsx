@@ -19,10 +19,13 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 
+import { useAuth } from "@/components/Providers/AuthProvider";
+
 export function CommandSearch({ className }: { className?: string }) {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { hasRole } = useAuth();
 
   // Keyboard shortcut listener (Ctrl+K or Cmd+K)
   useEffect(() => {
@@ -86,15 +89,21 @@ export function CommandSearch({ className }: { className?: string }) {
                 <CommandItem onSelect={() => handleSelect("/athletes")}>
                   <span>Athletes</span>
                 </CommandItem>
-                <CommandItem onSelect={() => handleSelect("/users")}>
-                  <span>Users & Staff</span>
-                </CommandItem>
-                <CommandItem onSelect={() => handleSelect("/swimming")}>
-                  <span>Swimming Program</span>
-                </CommandItem>
-                <CommandItem onSelect={() => handleSelect("/fitness")}>
-                  <span>Fitness Program</span>
-                </CommandItem>
+                {hasRole("Admin") && (
+                  <CommandItem onSelect={() => handleSelect("/users")}>
+                    <span>Users & Staff</span>
+                  </CommandItem>
+                )}
+                {hasRole("SwimmingCoach") && (
+                  <CommandItem onSelect={() => handleSelect("/swimming")}>
+                    <span>Swimming Program</span>
+                  </CommandItem>
+                )}
+                {hasRole("FitnessCoach") && (
+                  <CommandItem onSelect={() => handleSelect("/fitness")}>
+                    <span>Fitness Program</span>
+                  </CommandItem>
+                )}
               </CommandGroup>
 
               <CommandSeparator />

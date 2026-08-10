@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { MdMale, MdFemale, MdPerson } from "react-icons/md";
+import { MdMale, MdFemale, MdPerson, MdStickyNote2 } from "react-icons/md";
 import {
   Table,
   TableHeader,
@@ -9,6 +9,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import TableLoadingAndError from "@/components/HOCs/TableLoadingAndError";
 import type { CoachAthlete, Gender, RegistrationStatus } from "../types/index";
 
@@ -17,6 +18,7 @@ interface CoachAthletesTableProps {
   isLoading: boolean;
   isError: boolean;
   onRetry: () => void;
+  onOpenNotes?: (athlete: { id: string; fullName: string; email?: string }) => void;
 }
 
 function getInitials(name: string) {
@@ -135,6 +137,7 @@ export function CoachAthletesTable({
   isLoading,
   isError,
   onRetry,
+  onOpenNotes,
 }: CoachAthletesTableProps) {
   const { t } = useTranslation("athletes");
 
@@ -241,7 +244,26 @@ export function CoachAthletesTable({
 
                   {/* Registration Status */}
                   <TableCell className="py-3.5 pe-6">
-                    <RegistrationBadge status={athlete.registrationStatus} />
+                    <div className="flex items-center justify-between gap-3">
+                      <RegistrationBadge status={athlete.registrationStatus} />
+                      {onOpenNotes && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 gap-1.5 px-2.5 text-xs text-primary hover:text-primary hover:bg-primary/10 rounded-lg cursor-pointer"
+                          onClick={() =>
+                            onOpenNotes({
+                              id: athlete.id || athlete.athleteId || "",
+                              fullName: athlete.fullName,
+                              email: athlete.email,
+                            })
+                          }
+                        >
+                          <MdStickyNote2 className="size-4" />
+                          <span>Notes</span>
+                        </Button>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               );

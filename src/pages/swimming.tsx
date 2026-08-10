@@ -21,8 +21,7 @@ export default function SwimmingPage() {
 
   const { data: meRes } = useMe();
   const userRoles = meRes?.data?.roles || [];
-  const canManage =
-    userRoles.includes("SwimmingCoach") || userRoles.includes("Admin");
+  const canManage = userRoles.includes("SwimmingCoach");
 
   // Filters State
   const {

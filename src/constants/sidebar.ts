@@ -8,7 +8,6 @@ import {
   MdMenuBook,
   MdNotifications,
   MdBarChart,
-  MdSettings,
   MdGroup,
   MdSportsGymnastics,
   MdFitnessCenter,
@@ -68,14 +67,14 @@ export const NAV_GROUPS: NavGroup[] = [
         labelKey: "common:nav.items.swimming",
         icon: MdPool,
         path: "/swimming",
-        allowedRoles: ["SwimmingCoach", "Admin"],
+        allowedRoles: ["SwimmingCoach"],
       },
       {
         key: "fitness",
         labelKey: "common:nav.items.fitness",
         icon: MdFitnessCenter,
         path: "/fitness",
-        allowedRoles: ["FitnessCoach", "Admin"],
+        allowedRoles: ["FitnessCoach"],
       },
       {
         key: "exercises",
@@ -108,6 +107,12 @@ export const NAV_GROUPS: NavGroup[] = [
         labelKey: "common:nav.items.coachNotes",
         icon: MdStickyNote2,
         path: "/coach-notes",
+        allowedRoles: [
+          "FitnessCoach",
+          "SwimmingCoach",
+          "NutritionSpecialist",
+          "Admin",
+        ],
       },
       {
         key: "aiRecommendations",
@@ -115,6 +120,7 @@ export const NAV_GROUPS: NavGroup[] = [
         icon: MdAutoAwesome,
         path: "/ai-recommendations",
         badge: 12,
+        allowedRoles: ["NutritionSpecialist", "FitnessCoach", "SwimmingCoach"],
       },
     ],
   },
@@ -127,6 +133,7 @@ export const NAV_GROUPS: NavGroup[] = [
         labelKey: "common:nav.items.knowledgeBase",
         icon: MdMenuBook,
         path: "/knowledge-base",
+        allowedRoles: ["Admin"],
       },
       {
         key: "notifications",
@@ -139,19 +146,20 @@ export const NAV_GROUPS: NavGroup[] = [
         labelKey: "common:nav.items.reports",
         icon: MdBarChart,
         path: "/reports",
+        allowedRoles: ["Admin"],
       },
     ],
   },
-  {
-    groupKey: "system",
-    labelKey: "common:nav.groups.system",
-    items: [
-      {
-        key: "settings",
-        labelKey: "common:nav.items.settings",
-        icon: MdSettings,
-        path: "/settings",
-      },
-    ],
-  },
+  // {
+  //   groupKey: "system",
+  //   labelKey: "common:nav.groups.system",
+  //   items: [
+  //     {
+  //       key: "settings",
+  //       labelKey: "common:nav.items.settings",
+  //       icon: MdSettings,
+  //       path: "/settings",
+  //     },
+  //   ],
+  // },
 ];
