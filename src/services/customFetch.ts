@@ -2,8 +2,24 @@ import { t } from "i18next";
 import { BACKEND_BASE_URL } from "@/constants/backendAPIsConfig";
 import { DEFAULT_LOCALE } from "@/constants/i18nConfig";
 import { clearAllTokens, getStoredToken, saveToken } from "@/utils/authStorage";
+import { generateIdempotencyKey } from "@/lib/utils";
+
+export interface CustomFetchOptions extends RequestInit {
+  idempotencyKey?: string;
+  autoIdempotent?: boolean;
+  timeoutMs?: number;
+}
 
 let refreshAttemptInProgress: Promise<string> | null = null;
+
+// Global in-memory cache for tracking active/failed mutation request idempotency keys
+const activeIdempotencyKeys = new Map<string, { key: string; timestamp: number }>();
+const KEY_TTL_MS = 5 * 60 * 1000; // 5 minutes TTL
+
+function getPayloadHash(method: string, endpoint: string, body?: BodyInit | null): string {
+  const bodyString = typeof body === "string" ? body : "";
+  return `${method}:${endpoint}:${bodyString}`;
+}
 
 const AUTH_SKIP_REFRESH_PATHS = [
   "/Auth/login",
@@ -24,7 +40,11 @@ async function getRefreshedToken(): Promise<string> {
   return refreshAttemptInProgress;
 }
 
-function buildHeaders(options: RequestInit, token: string | null): HeadersInit {
+function buildHeaders(
+  options: CustomFetchOptions,
+  token: string | null,
+  idempotencyKey?: string,
+): HeadersInit {
   const isFormData = options.body instanceof FormData;
 
   return {
@@ -33,65 +53,152 @@ function buildHeaders(options: RequestInit, token: string | null): HeadersInit {
       : { "Content-Type": "application/json", Accept: "application/json" }),
     "accept-language": localStorage.getItem("i18nextLng") || DEFAULT_LOCALE,
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
     ...(options.headers || {}),
   };
 }
 
 export async function customFetch<T>(
   endpoint: string,
-  options: RequestInit = {},
+  options: CustomFetchOptions = {},
   isJsonResponse = true,
 ): Promise<T> {
+  // Immediate offline check
+  if (typeof navigator !== "undefined" && navigator.onLine === false) {
+    throw {
+      message: "You are currently offline. Please check your network connection.",
+      status: 0,
+    };
+  }
+
   const token = getStoredToken();
   const url = `${BACKEND_BASE_URL}${endpoint}`;
   const skipRefresh = AUTH_SKIP_REFRESH_PATHS.some((p) =>
     endpoint.startsWith(p),
   );
 
-  const makeRequest = async (accessToken: string | null) =>
-    fetch(url, {
-      ...options,
-      method: options.method || "GET",
-      headers: buildHeaders(options, accessToken),
-    });
+  const method = (options.method || "GET").toUpperCase();
+  const isMutationMethod = ["POST", "PUT", "PATCH"].includes(method);
 
-  let response = await makeRequest(token);
+  // Extract explicit idempotency key if passed
+  let idempotencyKey = options.idempotencyKey;
+  if (!idempotencyKey && options.headers) {
+    const headersObj = options.headers as Record<string, string>;
+    idempotencyKey = headersObj["Idempotency-Key"] || headersObj["idempotency-key"];
+  }
 
-  if (response.status === 401 && !skipRefresh) {
+  // Payload-aware global idempotency key lookup & generation
+  let requestHash: string | null = null;
+  if (!idempotencyKey && (options.autoIdempotent || isMutationMethod)) {
+    requestHash = getPayloadHash(method, endpoint, options.body);
+
+    // Clean up expired keys (> 5 min)
+    const now = Date.now();
+    for (const [h, item] of activeIdempotencyKeys.entries()) {
+      if (now - item.timestamp > KEY_TTL_MS) {
+        activeIdempotencyKeys.delete(h);
+      }
+    }
+
+    // Reuse existing key if previous attempt for identical payload failed/pending
+    if (activeIdempotencyKeys.has(requestHash)) {
+      idempotencyKey = activeIdempotencyKeys.get(requestHash)!.key;
+    } else {
+      idempotencyKey = generateIdempotencyKey();
+      activeIdempotencyKeys.set(requestHash, {
+        key: idempotencyKey,
+        timestamp: Date.now(),
+      });
+    }
+  }
+
+  const timeoutMs = options.timeoutMs ?? 10000; // Default 10s timeout
+
+  const makeRequest = async (accessToken: string | null) => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+
     try {
-      const newAccessToken = await getRefreshedToken();
-      saveToken(newAccessToken, !!localStorage.getItem("token"));
-      response = await makeRequest(newAccessToken);
-    } catch {
-      clearAllTokens();
-      window.location.replace("/login");
-      throw new Error("Session expired. Please log in again.");
+      const res = await fetch(url, {
+        ...options,
+        method,
+        signal: options.signal || controller.signal,
+        headers: buildHeaders(options, accessToken, idempotencyKey),
+      });
+      clearTimeout(timer);
+      return res;
+    } catch (err: any) {
+      clearTimeout(timer);
+      if (err?.name === "AbortError") {
+        throw {
+          message: "Request timed out. Please try again.",
+          status: 408,
+        };
+      }
+      if (typeof navigator !== "undefined" && navigator.onLine === false) {
+        throw {
+          message: "You are currently offline. Please check your network connection.",
+          status: 0,
+        };
+      }
+      throw err;
     }
-  }
+  };
 
-  if (!response.ok) {
-    interface CustomErrorBody {
-      message?: string;
-      data?: unknown;
+  try {
+    let response = await makeRequest(token);
+
+    if (response.status === 401 && !skipRefresh) {
+      try {
+        const newAccessToken = await getRefreshedToken();
+        saveToken(newAccessToken, !!localStorage.getItem("token"));
+        response = await makeRequest(newAccessToken);
+      } catch {
+        clearAllTokens();
+        window.location.replace("/login");
+        throw new Error("Session expired. Please log in again.");
+      }
     }
 
-    let errorBody: CustomErrorBody;
-    try {
-      errorBody = await response.json();
-    } catch {
-      errorBody = {};
+    if (!response.ok) {
+      interface CustomErrorBody {
+        message?: string;
+        data?: unknown;
+      }
+
+      let errorBody: CustomErrorBody;
+      try {
+        errorBody = await response.json();
+      } catch {
+        errorBody = {};
+      }
+
+      throw {
+        message: errorBody.message || t("common:error.default"),
+        errorBody: errorBody.data || null,
+        status: response.status,
+      };
     }
 
-    throw {
-      message: errorBody.message || t("common:error.default"),
-      errorBody: errorBody.data || null,
-      status: response.status,
-    };
-  }
+    // Success! Clear key from global map so subsequent requests get a new key
+    if (requestHash) {
+      activeIdempotencyKeys.delete(requestHash);
+    }
 
-  if (!isJsonResponse) {
-    return response as unknown as T;
-  }
+    if (!isJsonResponse) {
+      return response as unknown as T;
+    }
 
-  return response.json();
+    return response.json();
+  } catch (error: any) {
+    // Note: On error, requestHash remains in activeIdempotencyKeys map
+    // so if user/app retries the exact same payload, the same Idempotency-Key is reused.
+    if (error?.name === "TypeError" && error?.message?.includes("fetch")) {
+      throw {
+        message: "Network error. Please check your connection and retry.",
+        status: 0,
+      };
+    }
+    throw error;
+  }
 }
