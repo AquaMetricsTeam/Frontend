@@ -18,6 +18,7 @@ import { TextareaField } from "@/components/fields/TextareaField";
 import { ExercisePerformanceCard } from "./ExercisePerformanceCard";
 import { useCreateTrainingRecord } from "@/features/training-record/hooks/useCreateTrainingRecord";
 import { useTrainingSessions } from "@/features/training-plans/hooks/useTrainingSessions";
+import type { PerformanceStatus } from "@/features/swimming-performance/types";
 import { useTrainingSession } from "@/features/training-plans/hooks/useTrainingSession";
 import { useTrainingPlan } from "@/features/training-plans/hooks/useTrainingPlan";
 import {
@@ -161,7 +162,7 @@ export function LogFitnessRecordDrawer({
             : null,
           weightUsed: ep.weightUsed ? Number(ep.weightUsed) : null,
           rpe: ep.rpe ? Number(ep.rpe) : null,
-          status: Number(ep.status),
+          status: Number(ep.status) as PerformanceStatus,
           coachComment: ep.coachComment?.trim() || null,
         })),
         swimmingPerformances: [],

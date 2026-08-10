@@ -17,7 +17,12 @@ import {
   swimmingDrillSchema,
   type SwimmingDrillFormValues,
 } from "../constants/validations";
-import type { SwimmingPerformance } from "../types";
+import type {
+  SwimmingPerformance,
+  StrokeType,
+  PerformanceStatus,
+  PerformanceGrade,
+} from "../types";
 
 interface EditSwimmingPerformanceModalProps {
   performance: SwimmingPerformance | null;
@@ -66,6 +71,13 @@ export function EditSwimmingPerformanceModal({
     updateMutation.mutate(
       {
         ...values,
+        stroke: values.stroke as StrokeType,
+        status: values.status as PerformanceStatus,
+        technique: values.technique as PerformanceGrade,
+        start: values.start as PerformanceGrade,
+        turns: values.turns as PerformanceGrade,
+        finish: values.finish as PerformanceGrade,
+        paceConsistency: values.paceConsistency as PerformanceGrade,
         coachComment: values.coachComment?.trim() || null,
       },
       {

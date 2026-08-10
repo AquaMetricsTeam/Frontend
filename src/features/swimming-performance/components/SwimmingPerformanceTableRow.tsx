@@ -123,14 +123,16 @@ export function SwimmingPerformanceTableRow({
       {/* Actions */}
       <TableCell className="py-3.5 text-end">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8 rounded-lg cursor-pointer text-muted-foreground hover:text-foreground"
-            >
-              <MdMoreVert className="size-4" />
-            </Button>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8 rounded-lg cursor-pointer text-muted-foreground hover:text-foreground"
+              />
+            }
+          >
+            <MdMoreVert className="size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuItem

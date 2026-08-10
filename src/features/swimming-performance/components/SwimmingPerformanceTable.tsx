@@ -64,12 +64,13 @@ export function SwimmingPerformanceTable({
           <TableLoadingAndError
             isLoading={isLoading}
             isError={isError}
-            columnCount={7}
-            rowCount={5}
-            onRetry={onRetry}
-            isEmpty={records.length === 0}
-            emptyTitle={t("table.noRecords")}
-            emptyDescription={t("table.noRecordsDesc")}
+            hasNoData={!isLoading && !isError && records.length === 0}
+            skeletonProps={{ rows: 5, columns: 7 }}
+            errorMessageProps={{ onRetry }}
+            noDataMessageProps={{
+              messageKey: "common:noData.default",
+              descriptionKey: "common:noData.description",
+            }}
           >
             {records.map((item) => (
               <SwimmingPerformanceTableRow

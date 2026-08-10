@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { MdPool, MdTimer, MdFitnessCenter, MdSpeed } from "react-icons/md";
 import type { SwimmingPerformance } from "../types";
-import { formatTimeSpanDisplay, parseTimeSpanToSeconds } from "./MmSsInput";
+import { parseTimeSpanToSeconds } from "./MmSsInput";
 
 interface SwimmingPerformanceStatsHeaderProps {
   performances: SwimmingPerformance[];

@@ -518,11 +518,28 @@ export function SessionDetailSheet({
         <LogSwimmingPerformanceDrawer
           open={isLogDrawerOpen}
           onOpenChange={setIsLogDrawerOpen}
-          defaultTrainingRecordId={sessionId}
         />
 
         <SwimmingPerformanceDetailSheet
-          performance={selectedSwimmingDetail}
+          record={
+            selectedSwimmingDetail
+              ? {
+                  id: selectedSwimmingDetail.trainingRecordId || sessionId,
+                  athleteId: selectedSwimmingDetail.athleteId || "",
+                  athleteName:
+                    selectedSwimmingDetail.athleteName ||
+                    session?.title ||
+                    "Athlete",
+                  trainingSessionId: sessionId,
+                  sessionTitle: session?.title || "Training Session",
+                  sessionDate: session?.sessionDate || "",
+                  performanceRating: 8,
+                  fatigueLevel: 5,
+                  sessionCompleted: true,
+                  injuryOccurred: false,
+                }
+              : null
+          }
           open={isSwimmingDetailOpen}
           onOpenChange={setIsSwimmingDetailOpen}
         />

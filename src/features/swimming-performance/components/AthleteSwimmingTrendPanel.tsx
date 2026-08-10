@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MdShowChart, MdTimer, MdTrendingDown } from "react-icons/md";
+import { MdShowChart, MdTrendingDown } from "react-icons/md";
 import { StrokeType, type SwimmingPerformance } from "../types";
 import { STROKE_METADATA } from "../constants/enums";
 import { formatTimeSpanDisplay, parseTimeSpanToSeconds } from "./MmSsInput";

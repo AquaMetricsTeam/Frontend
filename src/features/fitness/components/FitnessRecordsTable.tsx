@@ -95,12 +95,13 @@ export function FitnessRecordsTable({
           <TableLoadingAndError
             isLoading={isLoading}
             isError={isError}
-            columnCount={7}
-            rowCount={5}
-            onRetry={onRetry}
-            isEmpty={records.length === 0}
-            emptyTitle="No fitness records yet"
-            emptyDescription="Log a fitness session to start tracking performance"
+            hasNoData={!isLoading && !isError && records.length === 0}
+            skeletonProps={{ rows: 5, columns: 7 }}
+            errorMessageProps={{ onRetry }}
+            noDataMessageProps={{
+              messageKey: "common:noData.default",
+              descriptionKey: "common:noData.description",
+            }}
           >
             {records.map((r) => (
               <TableRow key={r.id} className="hover:bg-muted/30 transition-colors">
@@ -163,14 +164,16 @@ export function FitnessRecordsTable({
                 </TableCell>
                 <TableCell className="text-end">
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-8 rounded-lg cursor-pointer text-muted-foreground hover:text-foreground"
-                      >
-                        <MdMoreVert className="size-4" />
-                      </Button>
+                    <DropdownMenuTrigger
+                      render={
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-8 rounded-lg cursor-pointer text-muted-foreground hover:text-foreground"
+                        />
+                      }
+                    >
+                      <MdMoreVert className="size-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-40">
                       <DropdownMenuItem

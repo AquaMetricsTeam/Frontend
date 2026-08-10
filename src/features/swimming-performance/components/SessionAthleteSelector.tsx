@@ -39,7 +39,7 @@ export function SessionAthleteSelector({
         <Label className="text-xs font-semibold text-foreground">
           {t("builder.selectSession")} *
         </Label>
-        <Select value={selectedSessionId} onValueChange={onSessionChange}>
+        <Select value={selectedSessionId} onValueChange={(val) => onSessionChange(val ?? "")}>
           <SelectTrigger className="h-9 text-xs rounded-lg font-medium">
             <SelectValue placeholder={t("builder.selectSession")} />
           </SelectTrigger>
@@ -62,7 +62,7 @@ export function SessionAthleteSelector({
         <Label className="text-xs font-semibold text-foreground">
           {t("builder.selectAthlete")}
         </Label>
-        <Select value={selectedAthleteId} onValueChange={onAthleteChange}>
+        <Select value={selectedAthleteId} onValueChange={(val) => onAthleteChange(val ?? "")}>
           <SelectTrigger className="h-9 text-xs rounded-lg font-medium">
             <SelectValue placeholder={t("builder.selectAthlete")} />
           </SelectTrigger>

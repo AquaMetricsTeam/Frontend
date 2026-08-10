@@ -35,7 +35,7 @@ export function TrainingRecordSelector({
         <span className="text-destructive">*</span>
       </Label>
 
-      <Select value={value} onValueChange={onChange} disabled={isLoading}>
+      <Select value={value} onValueChange={(val) => onChange(val ?? "")} disabled={isLoading}>
         <SelectTrigger className="h-9 text-xs rounded-lg font-medium">
           {isLoading ? (
             <span className="flex items-center gap-1.5 text-muted-foreground">

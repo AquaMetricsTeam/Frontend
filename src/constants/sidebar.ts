@@ -3,7 +3,6 @@ import {
   MdPeople,
   MdDirectionsRun,
   MdPool,
-  MdEventNote,
   MdStickyNote2,
   MdAutoAwesome,
   MdMenuBook,

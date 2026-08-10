@@ -8,30 +8,21 @@ const PerformanceStatusEnum = z.union([
 ]);
 
 export const exercisePerformanceSchema = z.object({
-  planExerciseId: z.coerce.number().min(1, "Exercise is required"),
-  completedSets: z.coerce.number().min(0, "Sets cannot be negative"),
-  completedReps: z.coerce.number().min(0, "Reps cannot be negative"),
-  completedDuration: z.preprocess(
-    (v) => (v === "" || v === null || v === undefined ? null : Number(v)),
-    z.number().nullable().optional(),
-  ),
-  weightUsed: z.preprocess(
-    (v) => (v === "" || v === null || v === undefined ? null : Number(v)),
-    z.number().nullable().optional(),
-  ),
-  rpe: z.preprocess(
-    (v) => (v === "" || v === null || v === undefined ? null : Number(v)),
-    z.number().min(1).max(10).nullable().optional(),
-  ),
+  planExerciseId: z.number().min(1, "Exercise is required"),
+  completedSets: z.number().min(0, "Sets cannot be negative"),
+  completedReps: z.number().min(0, "Reps cannot be negative"),
+  completedDuration: z.number().nullable().optional(),
+  weightUsed: z.number().nullable().optional(),
+  rpe: z.number().min(1).max(10).nullable().optional(),
   status: PerformanceStatusEnum,
   coachComment: z.string().optional().nullable(),
 });
 
 export const createFitnessRecordSchema = z.object({
   athleteId: z.string().min(1, "Athlete is required"),
-  trainingSessionId: z.coerce.number().min(1, "Session is required"),
-  performanceRating: z.coerce.number().min(1).max(10),
-  fatigueLevel: z.coerce.number().min(1).max(10),
+  trainingSessionId: z.number().min(1, "Session is required"),
+  performanceRating: z.number().min(1).max(10),
+  fatigueLevel: z.number().min(1).max(10),
   sessionCompleted: z.boolean(),
   injuryOccurred: z.boolean(),
   overallComment: z.string().optional().nullable(),

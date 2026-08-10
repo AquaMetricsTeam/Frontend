@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { MdEdit, MdFitnessCenter } from "react-icons/md";
+import { MdFitnessCenter } from "react-icons/md";
 import { useUpdateTrainingRecord } from "@/features/training-record/hooks/useUpdateTrainingRecord";
 import { TRAINING_RECORD_KEYS } from "@/features/training-record/constants/queryKeys";
 import { EXERCISE_PERFORMANCE_KEYS } from "@/features/fitness/hooks/useExercisePerformancesByTrainingRecord";
@@ -23,6 +23,7 @@ import type {
   TrainingRecordResponse,
   ExercisePerformanceResponse,
 } from "@/features/training-record/types";
+import type { PerformanceStatus } from "@/features/swimming-performance/types";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -117,7 +118,7 @@ export function EditExercisePerformanceModal({
             weightUsed: values.weightUsed ?? null,
             completedDuration: values.completedDuration ?? null,
             rpe: values.rpe ?? null,
-            status: values.status,
+            status: values.status as PerformanceStatus,
             coachComment: values.coachComment?.trim() || null,
           },
         ],
