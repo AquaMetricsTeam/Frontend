@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SearchInput } from "@/components/common/SearchInput";
 import { useTrainingSessions } from "../../hooks/useTrainingSessions";
-import { useAthletesLookup } from "@/features/lookups/hooks/useAthletesLookup";
+import { useTrainingSession } from "../../hooks/useTrainingSession";
 import { useSessionAttendance } from "../../hooks/useSessionAttendance";
 import { useMarkAttendance } from "../../hooks/useMarkAttendance";
 import { CreateSessionSheet } from "./CreateSessionSheet";
@@ -24,7 +24,6 @@ import { SessionDetailSheet } from "./SessionDetailSheet";
 import {
   AttendanceStatusEnum,
   type TrainingSession,
-  type AttendanceRecord,
 } from "../../types/index";
 import { cn } from "@/lib/utils";
 
@@ -84,36 +83,37 @@ export function SessionsView() {
     }
   }, [sessions, selectedSession]);
 
-  // 2. Fetch System Athletes Lookup
-  const { data: systemAthletesRes, isLoading: athletesLoading } =
-    useAthletesLookup(true);
-  const systemAthletes = systemAthletesRes?.data ?? [];
+  // 2. Fetch Single Session Detail (includes athletes via GET /api/training-sessions/{id})
+  const { data: sessionDetailRes, isLoading: sessionDetailLoading } =
+    useTrainingSession(sessionId, sessionId > 0);
+  const sessionAthletes = sessionDetailRes?.data?.athletes ?? selectedSession?.athletes ?? [];
 
   // 3. Fetch Session Attendance Records
   const { data: attendanceRes, isLoading: attendanceLoading } =
     useSessionAttendance(sessionId, sessionId > 0);
   const backendRecords = attendanceRes?.data ?? [];
 
-  // Initialize or Sync attendanceMap whenever backend records or selectedSession changes
+  // Initialize or Sync attendanceMap whenever sessionAthletes or backend records change
   useEffect(() => {
     if (sessionId === 0) return;
 
     const initialMap: Record<string, number> = {};
 
+    if (sessionAthletes.length > 0) {
+      sessionAthletes.forEach((ath) => {
+        initialMap[ath.athleteId] = AttendanceStatusEnum.Present;
+      });
+    }
+
     if (backendRecords.length > 0) {
       backendRecords.forEach((rec) => {
         initialMap[rec.athleteId] = rec.status;
-      });
-    } else if (systemAthletes.length > 0) {
-      // Default all to Present (1) if no record exists yet
-      systemAthletes.forEach((ath) => {
-        initialMap[ath.athleteId] = AttendanceStatusEnum.Present;
       });
     }
 
     setAttendanceMap(initialMap);
     setInitialAttendanceMap(initialMap);
-  }, [sessionId, backendRecords, systemAthletes]);
+  }, [sessionId, backendRecords, sessionAthletes]);
 
   // Mark attendance mutation
   const markMutation = useMarkAttendance(sessionId, () => {
@@ -131,21 +131,23 @@ export function SessionsView() {
     };
   }, [attendanceMap]);
 
-  // Determine list of displayed athletes
+  // Determine list of displayed athletes retrieved from GET /api/training-sessions/{id}
   const athleteList = useMemo(() => {
-    if (backendRecords.length > 0) {
-      return backendRecords.map((r) => ({
-        athleteId: r.athleteId,
-        fullName: r.athleteName,
-        profilePictureUrl: null as string | null,
+    if (sessionAthletes.length > 0) {
+      return sessionAthletes.map((a) => ({
+        athleteId: a.athleteId,
+        fullName: a.fullName,
+        groupName: a.groupName ?? null,
+        profilePictureUrl: a.profilePictureUrl ?? null,
       }));
     }
-    return systemAthletes.map((a) => ({
-      athleteId: a.athleteId,
-      fullName: a.fullName,
-      profilePictureUrl: a.profilePictureUrl ?? null,
+    return backendRecords.map((r) => ({
+      athleteId: r.athleteId,
+      fullName: r.athleteName,
+      groupName: null,
+      profilePictureUrl: null as string | null,
     }));
-  }, [backendRecords, systemAthletes]);
+  }, [sessionAthletes, backendRecords]);
 
   const filteredAthletes = useMemo(() => {
     if (!searchAthletes.trim()) return athleteList;
@@ -359,13 +361,13 @@ export function SessionsView() {
                 />
 
                 {/* Athletes Attendance List */}
-                {attendanceLoading || athletesLoading ? (
+                {attendanceLoading || sessionDetailLoading ? (
                   <div className="py-12 text-center text-xs text-muted-foreground">
                     Loading athletes & attendance records...
                   </div>
                 ) : filteredAthletes.length === 0 ? (
                   <div className="py-12 text-center text-xs text-muted-foreground">
-                    No athletes found in list.
+                    No athletes found for this training session.
                   </div>
                 ) : (
                   <div className="space-y-2 max-h-[440px] overflow-y-auto pr-1">
@@ -396,6 +398,14 @@ export function SessionsView() {
                               <span className="text-xs font-medium text-foreground truncate">
                                 {athlete.fullName}
                               </span>
+                              {athlete.groupName && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-[10px] py-0 px-1.5 font-normal text-muted-foreground border-border"
+                                >
+                                  {athlete.groupName}
+                                </Badge>
+                              )}
                               {isModified && (
                                 <Badge
                                   variant="secondary"

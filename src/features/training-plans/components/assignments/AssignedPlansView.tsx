@@ -284,7 +284,7 @@ export function AssignedPlansView() {
                                 )}
                               </div>
                               <span className="text-[11px] text-muted-foreground">
-                                Assigned {formatDate(item.assignedAt)}
+                                Assigned {item.assignedAt ? formatDate(item.assignedAt) : "N/A"}
                               </span>
                             </div>
                           </div>

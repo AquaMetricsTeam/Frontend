@@ -1,6 +1,6 @@
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MdPerson, MdGroup, MdCheck } from "react-icons/md";
+import { MdGroup, MdCheck } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";

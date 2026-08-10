@@ -92,14 +92,16 @@ export function TemplateTableRow({
 
         <TableCell className="text-end">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <MdMoreVert className="size-4" />
-              </Button>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                />
+              }
+            >
+              <MdMoreVert className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {!plan.isArchived && (

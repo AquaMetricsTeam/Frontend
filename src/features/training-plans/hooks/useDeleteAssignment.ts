@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { deleteAssignment } from "../services/deleteAssignment.service";
 import { ASSIGNMENT_KEYS } from "../constants/queryKeys";
 
-export function useDeleteAssignment(planId: number, onSuccess?: () => void) {
+export function useDeleteAssignment(_planId?: number, onSuccess?: () => void) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteAssignment,
