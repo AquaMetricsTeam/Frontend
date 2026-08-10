@@ -5,20 +5,18 @@ import { z } from "zod";
 export const mealSchema = z.object({
   // The API returns numeric IDs; coerce to string so both number and string
   // values from the server pass validation without type errors.
-  id: z.coerce.string().optional(),
+  id: z.string().optional(),
 
-  // mealType arrives as a number (1–6) from the API but coerce guards against
-  // any edge-case serialisation as a string.
-  mealType: z.coerce.number().int().min(1).max(6),
+  // mealType arrives as a number (1–6) from the API.
+  mealType: z.number().int().min(1).max(6),
 
   description: z.string().min(1, "Meal description is required"),
 
-  // Numeric macro fields: coerce handles responses where the backend sends
-  // "200" (string) or 200.0 (float that is a whole number).
-  calories: z.coerce.number().int().min(0, "Calories must be non-negative"),
-  proteinGrams: z.coerce.number().int().min(0, "Protein must be non-negative"),
-  carbGrams: z.coerce.number().int().min(0, "Carbs must be non-negative"),
-  fatGrams: z.coerce.number().int().min(0, "Fat must be non-negative"),
+  // Numeric macro fields: the form already provides numeric values.
+  calories: z.number().int().min(0, "Calories must be non-negative"),
+  proteinGrams: z.number().int().min(0, "Protein must be non-negative"),
+  carbGrams: z.number().int().min(0, "Carbs must be non-negative"),
+  fatGrams: z.number().int().min(0, "Fat must be non-negative"),
 
   dietaryNotes: z.string().optional(),
 });
@@ -28,8 +26,8 @@ export type MealFormValues = z.infer<typeof mealSchema>;
 // ─── Nutrition Plan Validation ──────────────────────────────────────────────
 
 export const nutritionPlanSchema = z.object({
-  // plan.id also comes as a number from the API; coerce to string.
-  id: z.coerce.string().optional(),
+  // plan.id also comes as a number from the API; normalize to string in code.
+  id: z.string().optional(),
 
   name: z
     .string()
@@ -40,12 +38,13 @@ export const nutritionPlanSchema = z.object({
   schedule: z.string().optional(),
 
   // UI-only field for the calorie boundary check. Not sent to the API.
-  targetCalories: z.coerce.number().min(0).optional().default(0),
+  targetCalories: z.number().min(0).optional().default(0),
 
   meals: z.array(mealSchema).min(1, "At least one meal is required"),
 });
 
 export type NutritionPlanFormValues = z.infer<typeof nutritionPlanSchema>;
+export type NutritionPlanFormRawValues = z.input<typeof nutritionPlanSchema>;
 
 // ─── Assignment Validation ──────────────────────────────────────────────────
 

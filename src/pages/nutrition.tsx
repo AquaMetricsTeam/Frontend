@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { MdAdd, MdSearch } from "react-icons/md";
 import PageWrapper from "@/components/layouts/PageWrapper";
 import Box from "@/components/layouts/Box";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/components/Providers/AuthProvider";
+import UnauthorizedPage from "@/pages/unauthorized";
+import FullPageLoading from "@/components/feedbacks/FullPageLoading";
 import { PlansList, PlanDetailPanel } from "@/features/nutrition/components/PlansList";
 import { AssignmentsList } from "@/features/nutrition/components/AssignmentsList";
 import { AssignmentDetailSlideOver } from "@/features/nutrition/components/AssignmentDetailSlideOver";
@@ -20,6 +23,14 @@ type UserRole = "NutritionSpecialist" | "Administrator";
 
 export default function NutritionPage() {
   const { t } = useTranslation("nutrition");
+  const { hasAnyRole, isLoading } = useAuth();
+  const canAccess = hasAnyRole(["NutritionSpecialist"]);
+  if (isLoading) {
+    return <FullPageLoading />;
+  }
+  if (!canAccess) {
+    return <UnauthorizedPage />;
+  }
   const [currentRole, setCurrentRole] = useState<UserRole>("NutritionSpecialist");
   const [selectedPlan, setSelectedPlan] = useState<NutritionPlan | null>(null);
   const [plansSearch, setPlansSearch] = useState("");
@@ -53,9 +64,17 @@ export default function NutritionPage() {
     handleAssignPlan,
     handleSubmitPlan,
     isDuplicate,
+    // new sync fields
+    deletedPlanId,
+    isDeleteSuccess,
   } = useNutritionPageManager();
 
-  // Override canEdit based on role switcher
+  // Clear selected plan when the currently displayed plan is deleted
+  useEffect(() => {
+    if (isDeleteSuccess && selectedPlan && deletedPlanId === selectedPlan.id) {
+      setSelectedPlan(null);
+    }
+  }, [isDeleteSuccess, deletedPlanId, selectedPlan]);
   const canEdit = currentRole === "NutritionSpecialist" && originalCanEdit;
   const isAdminView = currentRole === "Administrator";
 

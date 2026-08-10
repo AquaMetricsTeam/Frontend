@@ -228,7 +228,7 @@ export function AssignmentsList({ onAssignmentClick }: AssignmentsListProps) {
                     const status = getAssignmentStatus(assignment);
 
                     const athleteName = assignment.athleteId
-                      ? (assignment as any).athleteName || athleteMap.get(assignment.athleteId) || assignment.athleteId
+                      ? assignment.athleteName || athleteMap.get(assignment.athleteId) || `Athlete (${assignment.athleteId})`
                       : "—";
                     const assignedViaName = assignment.groupId != null
                       ? (groupMap.get(assignment.groupId) ?? `Group ${assignment.groupId}`)

@@ -9,14 +9,14 @@
   },
   "list": {
     "title": "Nutrition Plans",
-    "createButton": "+ Create Plan",
+    "createButton": " Create Plan",
     "searchPlaceholder": "Search plans by name...",
     "duplicate": "Duplicate",
     "assign": "Assign",
     "emptyState": {
       "title": "No nutrition plans yet",
       "description": "Start by creating your first nutrition plan to manage athlete diets.",
-      "createCta": "+ Create Plan"
+      "createCta": " Create Plan"
     },
     "table": {
       "name": "Plan Name",
@@ -33,7 +33,7 @@
     "title": "Assignments",
     "assignmentsCount": "assignments",
     "selectPlan": "Select a plan to view its assignments",
-    "selectPlanFilter": "Filter by Plan", 
+    "selectPlanFilter": "Filter by Plan",
     "selectPlanOption": "-- All Plans --",
     "searchPlaceholder": "Search assignments...",
     "noAssignments": "No assignments found",
@@ -50,7 +50,7 @@
     },
     "filters": {
       "allPlans": "All plans",
-      "allSources": "All sources", 
+      "allSources": "All sources",
       "allStatuses": "All statuses",
       "groupOnly": "Group assignments",
       "individualOnly": "Individual assignments"
@@ -66,7 +66,7 @@
     },
     "progress": {
       "info": "Info",
-      "meals": "Meals", 
+      "meals": "Meals",
       "done": "Done"
     },
     "step1": {

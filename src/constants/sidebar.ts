@@ -95,7 +95,7 @@ export const NAV_GROUPS: NavGroup[] = [
         labelKey: "common:nav.items.nutrition",
         icon: MdRestaurant,
         path: "/nutrition",
-        allowedRoles: ["NutritionSpecialist", "Admin"],
+        allowedRoles: ["NutritionSpecialist"],
       },
     ],
   },

@@ -44,6 +44,7 @@ export interface NutritionPlanAssignment {
   nutritionPlanId: number;
   nutritionPlanName?: string;
   athleteId?: string;
+  athleteName?: string;
   groupId?: number | null;
   startDate: string;
   endDate: string | null;
@@ -143,5 +144,6 @@ export interface PlanAssignmentsPaginatedResponse {
 // when you need the schema itself; import from here for component prop types.
 export type {
   NutritionPlanFormValues,
+  NutritionPlanFormRawValues,
   AssignmentFormValues,
 } from "../constants/validations";

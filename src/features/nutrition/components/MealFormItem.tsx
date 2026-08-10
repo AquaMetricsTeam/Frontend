@@ -4,7 +4,10 @@ import { MdDelete } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MealType } from "../types/index";
-import type { NutritionPlanFormValues } from "../types/index";
+import type {
+  NutritionPlanFormRawValues,
+  NutritionPlanFormValues,
+} from "../types/index";
 
 // Maps numeric MealType enum values to display labels
 const MEAL_TYPE_LABELS: Record<MealType, string> = {
@@ -33,7 +36,11 @@ interface MealFormItemProps {
  */
 export function MealFormItem({ index, onRemove }: MealFormItemProps) {
   const { t } = useTranslation("nutrition");
-  const { control } = useFormContext<NutritionPlanFormValues>();
+  const { control } = useFormContext<
+    NutritionPlanFormRawValues,
+    unknown,
+    NutritionPlanFormValues
+  >();
 
   // ── Field controllers — each field is an isolated RHF leaf node ──────────
 
@@ -81,8 +88,7 @@ export function MealFormItem({ index, onRemove }: MealFormItemProps) {
     return isNaN(parsed) ? undefined : Math.max(0, parsed);
   };
 
-  const mealLabel =
-    MEAL_TYPE_LABELS[mealTypeField.value as MealType] ?? "Meal";
+  const mealLabel = MEAL_TYPE_LABELS[mealTypeField.value as MealType] ?? "Meal";
 
   return (
     <div className="rounded-xl border border-slate-700 bg-slate-800/60 overflow-hidden">

@@ -39,6 +39,8 @@ export function useNutritionPageManager() {
   const [warningPlanId, setWarningPlanId] = useState<string | null>(null);
   const [warningAction, setWarningAction] = useState<"edit" | "delete">("edit");
   const [selectedAssignmentPlan, setSelectedAssignmentPlan] = useState<string>("");
+  // State for duplicate flag
+  const [isDuplicate, setIsDuplicate] = useState(false);
 
   // Mutations
   const { mutate: createPlan, isPending: isCreating } = useCreateNutritionPlan(() => {
@@ -52,9 +54,12 @@ export function useNutritionPageManager() {
     setIsDuplicate(false);
   });
 
-  const { mutate: deletePlan, isPending: isDeleting } = useDeleteNutritionPlan(() => {
+  const { mutate: deletePlan, isPending: isDeleting, isSuccess: isDeleteSuccess } = useDeleteNutritionPlan(() => {
     setWarningDialogOpen(false);
+    setWarningPlanId(null);
   });
+  // Track which plan was deleted to sync UI selection
+  const [deletedPlanId, setDeletedPlanId] = useState<string | null>(null);
 
   // Fetch active assignments for warning dialog
   const { data: assignmentsRes } = usePlanAssignments(
@@ -64,9 +69,6 @@ export function useNutritionPageManager() {
   );
   const activeAssignmentCount = Array.isArray(assignmentsRes?.data) ? assignmentsRes.data.length : 0;
 
-  // Handler functions
-  // Track if current action is duplicate
-  const [isDuplicate, setIsDuplicate] = useState(false);
 
   const handleCreatePlan = useCallback(() => {
     setEditingPlan(null);
@@ -123,6 +125,7 @@ export function useNutritionPageManager() {
 
   const handleConfirmDelete = useCallback(() => {
     if (warningPlanId) {
+      setDeletedPlanId(warningPlanId);
       deletePlan(warningPlanId);
     }
   }, [warningPlanId, deletePlan]);
@@ -202,6 +205,10 @@ export function useNutritionPageManager() {
   }, []);
 
   return {
+    // expose warningPlanId for UI sync
+    warningPlanId,
+    deletedPlanId,
+    isDeleteSuccess,
     // Tab state
     currentTab,
     setCurrentTab,
@@ -226,7 +233,6 @@ export function useNutritionPageManager() {
     setWarningDialogOpen,
     warningAction,
     activeAssignmentCount,
-
     // Assignment list state
     selectedAssignmentPlan,
     setSelectedAssignmentPlan: handleSetSelectedAssignmentPlan,
