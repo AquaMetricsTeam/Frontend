@@ -4,6 +4,7 @@ import groups from "./groups.json";
 import exercises from "./exercises.json";
 import athletes from "./athletes.json";
 import training from "./training.json";
+import nutrition from "./nutrition.json";
 import swimming from "./swimming.json";
 import coachNotes from "./coachNotes.json";
 
@@ -14,6 +15,7 @@ export const en = {
   exercises,
   athletes,
   training,
+  nutrition,
   swimming,
   coachNotes,
 } as const;

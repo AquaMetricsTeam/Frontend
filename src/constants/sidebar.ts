@@ -10,6 +10,7 @@ import {
   MdBarChart,
   MdGroup,
   MdSportsGymnastics,
+  MdRestaurant,
   MdFitnessCenter,
 } from "react-icons/md";
 
@@ -90,12 +91,13 @@ export const NAV_GROUPS: NavGroup[] = [
         path: "/training",
         allowedRoles: ["SwimmingCoach", "FitnessCoach"],
       },
-      // {
-      //   key: "nutrition",
-      //   labelKey: "common:nav.items.nutrition",
-      //   icon: MdRestaurant,
-      //   path: "/nutrition",
-      // },
+      {
+        key: "nutrition",
+        labelKey: "common:nav.items.nutrition",
+        icon: MdRestaurant,
+        path: "/nutrition",
+        allowedRoles: ["NutritionSpecialist"],
+      },
     ],
   },
   {
