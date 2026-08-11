@@ -1,0 +1,205 @@
+{
+  "page": {
+    "title": "إدارة التغذية",
+    "description": "أنشئ وأدر خطط التغذية للرياضيين."
+  },
+  "tab": {
+    "plans": "الخطط",
+    "assignments": "التعيينات"
+  },
+  "list": {
+    "title": "خطط التغذية",
+    "createButton": "+ إنشاء خطة",
+    "searchPlaceholder": "ابحث عن الخطط بالاسم...",
+    "duplicate": "نسخ",
+    "assign": "تعيين",
+    "emptyState": {
+      "title": "لا توجد خطط تغذية حتى الآن",
+      "description": "ابدأ بإنشاء خطة التغذية الأولى الخاصة بك لإدارة نظام الرياضيين الغذائي.",
+      "createCta": "+ إنشاء خطة"
+    },
+    "table": {
+      "name": "اسم الخطة",
+      "objective": "الهدف",
+      "mealCount": "الوجبات",
+      "dailyCalories": "السعرات اليومية",
+      "actions": "الإجراءات"
+    },
+    "noResults": {
+      "message": "لم يتم العثور على خطط تطابق البحث"
+    }
+  },
+  "assignments": {
+    "title": "التعيينات",
+    "assignmentsCount": "تعيينات",
+    "selectPlan": "اختر خطة لعرض التعيينات الخاصة بها",
+    "selectPlanFilter": "تصفية بالخطة",
+    "selectPlanOption": "-- كل الخطط --",
+    "searchPlaceholder": "ابحث عن التعيينات...",
+    "noAssignments": "لم يتم العثور على تعيينات",
+    "table": {
+      "athlete": "الرياضي",
+      "assignedVia": "تم التعيين عبر",
+      "dateRange": "نطاق التاريخ",
+      "status": "الحالة"
+    },
+    "status": {
+      "active": "نشط",
+      "upcoming": "قادم",
+      "ended": "انتهى"
+    },
+    "filters": {
+      "allPlans": "كل الخطط",
+      "allSources": "كل المصادر",
+      "allStatuses": "كل الحالات",
+      "groupOnly": "تعيينات المجموعة",
+      "individualOnly": "التعيينات الفردية"
+    },
+    "viaGroup": "مجموعة: {{groupId}}",
+    "viaIndividual": "فردي"
+  },
+  "wizard": {
+    "titles": {
+      "create": "إنشاء خطة تغذية",
+      "edit": "تعديل خطة التغذية",
+      "duplicate": "نسخ خطة التغذية"
+    },
+    "progress": {
+      "info": "المعلومات",
+      "meals": "الوجبات",
+      "done": "تمت"
+    },
+    "step1": {
+      "title": "معلومات الخطة",
+      "nameLabel": "اسم الخطة",
+      "namePlaceholder": "مثال: نظام غذائي عالي الأداء",
+      "objectiveLabel": "الهدف التغذوي",
+      "objectivePlaceholder": "صف الغرض من خطة التغذية هذه...",
+      "objectiveOptional": "اختياري.",
+      "scheduleLabel": "الجدول",
+      "schedulePlaceholder": "مثال: خطة أسبوعية",
+      "nextButton": "التالي: إضافة الوجبات"
+    },
+    "step2": {
+      "title": "إضافة الوجبات",
+      "mealTypeLabel": "نوع الوجبة",
+      "mealLabel": "نوع الوجبة",
+      "descriptionLabel": "الوصف",
+      "descriptionPlaceholder": "مثال: الشوفان مع الموز ومسحوق البروتين وزبدة اللوز",
+      "caloriesLabel": "السعرات (كيلو كالوري)",
+      "proteinLabel": "البروتين (غ)",
+      "carbsLabel": "الكربوهيدرات (غ)",
+      "fatLabel": "الدهون (غ)",
+      "dietaryNotesLabel": "ملاحظات غذائية (اختياري)",
+      "dietaryNotesPlaceholder": "مثال: استبدل بروتين مصل اللبن ببروتين البازلاء في حالة عدم تحمل اللاكتوز",
+      "addMeal": "+ إضافة وجبة",
+      "useMealLibrary": "📚 استخدم وجبة موجودة",
+      "noMeals": "لم تتم إضافة أي وجبات حتى الآن. أضف واحدة للبدء.",
+      "validationError": "يجب إضافة وجبة واحدة على الأقل للمتابعة.",
+      "nextButton": "التالي: المراجعة"
+    },
+    "step3": {
+      "title": "المراجعة والتأكيد",
+      "planDetails": "ملخص الخطة",
+      "planName": "اسم الخطة",
+      "mealCount": "إجمالي الوجبات",
+      "dailyCalories": "السعرات اليومية",
+      "proteinTotal": "إجمالي البروتين (غ)",
+      "carbsTotal": "إجمالي الكربوهيدرات (غ)",
+      "fatTotal": "إجمالي الدهون (غ)",
+      "confirmMessage": "راجع التفاصيل أدناه وانقر فوق حفظ لإنشاء هذه الخطة.",
+      "saveButton": "حفظ الخطة"
+    }
+  },
+  "assign": {
+    "title": "تعيين خطة التغذية",
+    "subtitle": "التعيين للرياضيين أو المجموعات",
+    "planLabel": "الخطة",
+    "targetMode": "هدف التعيين",
+    "mode": {
+      "athlete": "رياضيون فرديون",
+      "group": "مجموعة"
+    },
+    "athleteSearch": "ابحث عن الرياضيين...",
+    "athleteCount_one": "{{count}} رياضي محدد",
+    "athleteCount_other": "{{count}} رياضيين محددين",
+    "noAthletesFound": "لا يوجد رياضيون يتطابقون مع بحثك",
+    "noAthletesAvailable": "لا يوجد رياضيون متاحون",
+    "selectAthlete": "اختر الرياضيين",
+    "selectAthleteOption": "-- اختر رياضياً --",
+    "selectGroup": "اختر مجموعة",
+    "selectGroupOption": "-- اختر مجموعة --",
+    "groupAthleteCount": "{{count}} رياضيين",
+    "dateRange": "مدة التعيين",
+    "startDate": "تاريخ البدء",
+    "endDate": "تاريخ الانتهاء",
+    "endDateOptional": "اختياري — اتركه فارغاً للاستمرار",
+    "ongoing": "مستمر",
+    "endDateError": "يجب أن يكون تاريخ الانتهاء بعد أو مساوياً لتاريخ البدء",
+    "conflictError": "هذا الرياضي لديه بالفعل خطة نشطة لهذا النطاق الزمني",
+    "conflictWarning": "تم اكتشاف تداخل",
+    "conflictDescription": "الرياضيون التاليون لديهم بالفعل تعيين نشط خلال التواريخ المحددة. سيتخطاهم الخادم تلقائياً.",
+    "noConflicts": "لا يوجد تعارض",
+    "summary": {
+      "title": "ملخص التعيين",
+      "assigning": "تعيين",
+      "to": "إلى",
+      "athletes_one": "{{count}} رياضي",
+      "athletes_other": "{{count}} رياضيين",
+      "dateRange": "{{start}} – {{end}}",
+      "dateOngoing": "{{start}} – مستمر",
+      "group": "مجموعة"
+    },
+    "confirmButton": "تأكيد التعيين",
+    "validation": {
+      "selectAtLeastOne": "اختر رياضياً واحداً على الأقل",
+      "selectGroup": "اختر مجموعة",
+      "startDateRequired": "تاريخ البدء مطلوب"
+    }
+  },
+  "modal": {
+    "warningDialog": {
+      "editTitle": "تحديث خطة نشطة",
+      "deleteTitle": "حذف خطة نشطة",
+      "warningMessage": "هذه الخطة معينة حالياً {{count}} رياضي",
+      "warningMessage_plural": "هذه الخطة معينة حالياً {{count}} رياضيين",
+      "editWarning": "سيؤدي حفظ التغييرات إلى تحديث خطة التغذية الخاصة بهم على الفور.",
+      "deleteWarning": "سيؤدي حذف هذه الخطة إلى إزالة جميع التعيينات النشطة."
+    },
+    "assignmentResult": {
+      "title": "نتائج التعيين",
+      "description": "اطلع على الرياضيين الذين تم تعيينهم والذين تم تخطيهم.",
+      "assigned": "تم التعيين بنجاح ✓",
+      "skipped": "تم التخطي ⚠",
+      "closeButton": "تم"
+    },
+    "mealLibrary": {
+      "title": "مكتبة الوجبات",
+      "description": "اختر وجبة موجودة لإضافتها إلى خطتك",
+      "searchPlaceholder": "ابحث عن الوجبات...",
+      "filterLabel": "تصفية حسب نوع الوجبة",
+      "noResults": "لم يتم العثور على وجبات تطابق معاييرك",
+      "selectButton": "استخدم هذه الوجبة"
+    }
+  },
+  "macro": {
+    "summaryTitle": "الإجمالي اليومي",
+    "calories": "السعرات",
+    "protein": "البروتين",
+    "carbs": "الكربوهيدرات",
+    "fat": "الدهون"
+  },
+  "roleSwitcher": {
+    "viewingAs": "عرض كـ",
+    "nutritionSpecialist": "أخصائي التغذية",
+    "administrator": "مدير"
+  },
+  "adminBanner": {
+    "message": "🔒 عرض المدير — خطط التغذية والتعيينات للقراءة فقط."
+  },
+  "assignmentDetail": {
+    "planSnapshot": "لقطة الخطة",
+    "meals": "الوجبات",
+    "viewFullPlan": "عرض الخطة كاملة"
+  }
+}

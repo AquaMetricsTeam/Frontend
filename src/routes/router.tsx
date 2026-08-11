@@ -11,6 +11,7 @@ import AthletesPage from "@/pages/athletes";
 import GroupsPage from "@/pages/groups";
 import ExercisesPage from "@/pages/exercises";
 import TrainingPage from "@/pages/training";
+import NutritionPage from "@/pages/nutrition";
 import SwimmingPage from "@/pages/swimming";
 import FitnessPage from "@/pages/fitness";
 import CoachNotesPage from "@/pages/coach-notes";
@@ -20,6 +21,11 @@ const DASHBOARD_ROLES: UserRole[] = [
   "Admin",
   "SwimmingCoach",
   "FitnessCoach",
+  "NutritionSpecialist",
+];
+
+const NUTRITION_ROLES: UserRole[] = [
+  "Admin",
   "NutritionSpecialist",
 ];
 
@@ -103,6 +109,13 @@ const router = createBrowserRouter([
                     <TrainingPage />
                   </ProtectedRoute>
                 ),
+              },
+              {
+                path: "/nutrition",
+                element: (
+                  <ProtectedRoute allowedRoles={NUTRITION_ROLES}>
+                    <NutritionPage />
+                  </ProtectedRoute>)
               },
               {
                 path: "/swimming",
