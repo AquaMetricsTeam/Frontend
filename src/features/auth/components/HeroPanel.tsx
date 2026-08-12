@@ -133,7 +133,7 @@ export function HeroPanel() {
       </div>
 
       {/* Main Content & Modern Stat Cards */}
-      <div className="relative z-10 flex h-[calc(100%-80px)] flex-col justify-end px-10 pb-12">
+      <div className="relative z-10 flex h-full flex-col justify-end px-10 pb-12">
         <div className="max-w-xl">
           {/* Main Title */}
           <h2 className="mb-3 text-4xl font-extrabold leading-[1.15] tracking-tight text-white xl:text-5xl">
