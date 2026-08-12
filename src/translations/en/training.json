@@ -11,8 +11,8 @@
   "templates": {
     "table": {
       "plan": "Plan",
-      "details": "Details",
-      "status": "Status",
+      "exercises": "Exercises",
+      "duration": "Duration",
       "actions": "Actions"
     },
     "actions": {

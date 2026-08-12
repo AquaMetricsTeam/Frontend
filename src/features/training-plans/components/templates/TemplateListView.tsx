@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MdAdd } from "react-icons/md";
 import Box from "@/components/layouts/Box";
 import WithPagination from "@/components/HOCs/WithPagination";
@@ -33,6 +34,7 @@ const ARCHIVE_OPTIONS: { value: ArchiveFilter; label: string }[] = [
 ];
 
 export function TemplateListView() {
+  const { t } = useTranslation("training");
   const [createOpen, setCreateOpen] = useState(false);
   const [assignPlan, setAssignPlan] = useState<TrainingPlan | null>(null);
   const [editPlan, setEditPlan] = useState<TrainingPlan | null>(null);
@@ -80,10 +82,12 @@ export function TemplateListView() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Plan</TableHead>
-                <TableHead>Details</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-end">Actions</TableHead>
+                <TableHead>{t("templates.table.plan")}</TableHead>
+                <TableHead>{t("templates.table.exercises")}</TableHead>
+                <TableHead>{t("templates.table.duration")}</TableHead>
+                <TableHead className="text-end">
+                  {t("templates.table.actions")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

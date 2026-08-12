@@ -109,12 +109,7 @@ export const NAV_GROUPS: NavGroup[] = [
         labelKey: "common:nav.items.coachNotes",
         icon: MdStickyNote2,
         path: "/coach-notes",
-        allowedRoles: [
-          "FitnessCoach",
-          "SwimmingCoach",
-          "NutritionSpecialist",
-          "Admin",
-        ],
+        allowedRoles: ["FitnessCoach", "SwimmingCoach", "NutritionSpecialist"],
       },
       {
         key: "aiRecommendations",

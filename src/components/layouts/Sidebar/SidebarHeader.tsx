@@ -1,4 +1,6 @@
-import { MdPool, MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import logoHorizontal from "@/assets/logo-horizontal.png";
+import logoVertical from "@/assets/logo-vertical.png";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { LANG_DIR } from "@/constants/i18nConfig";
@@ -29,30 +31,25 @@ export function SidebarHeader({ collapsed, onToggle }: SidebarHeaderProps) {
           : "justify-between gap-2 px-4",
       )}
     >
-      {/* Logo + name (expanded) */}
+      {/* Logo (expanded) */}
       {!collapsed && (
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/15">
-            <MdPool className="size-4 text-primary" />
-          </div>
-          <div className="min-w-0">
-            <p
-              className="truncate text-[13px] font-bold  text-foreground"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              Aqua Metrics
-            </p>
-            <p className="mt-0.5 truncate text-[10px] uppercase tracking-widest text-muted-foreground">
-              Swimming Academy
-            </p>
-          </div>
+        <div className="flex items-center min-w-0">
+          <img
+            src={logoHorizontal}
+            alt="Aqua Metrics"
+            className="h-12 w-auto object-contain"
+          />
         </div>
       )}
 
-      {/* Logo only (collapsed) */}
+      {/* Logo mark (collapsed) */}
       {collapsed && (
-        <div className="flex size-8  items-center justify-center rounded-lg bg-primary/15">
-          <MdPool className="size-4 text-primary" />
+        <div className="flex size-10 shrink-0 items-center justify-center">
+          <img
+            src={logoVertical}
+            alt="Aqua Metrics"
+            className="h-10 w-auto object-contain"
+          />
         </div>
       )}
 

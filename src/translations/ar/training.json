@@ -11,8 +11,8 @@
   "templates": {
     "table": {
       "plan": "الخطة",
-      "details": "التفاصيل",
-      "status": "الحالة",
+      "exercises": "التمارين",
+      "duration": "المدة",
       "actions": "الإجراءات"
     },
     "actions": {
