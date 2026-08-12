@@ -6,7 +6,6 @@ import {
   MdArchive,
   MdUnarchive,
   MdTimer,
-  MdFitnessCenter,
 } from "react-icons/md";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -63,31 +62,35 @@ export function TemplateTableRow({
         </TableCell>
 
         <TableCell>
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <MdFitnessCenter className="size-3.5" />
-              {plan.planExercises?.length ?? 0} ex.
+          {plan.planExercises && plan.planExercises.length > 0 ? (
+            <div className="flex flex-wrap items-center gap-1.5 max-w-xs">
+              {plan.planExercises.slice(0, 2).map((ex, idx) => (
+                <Badge
+                  key={ex.id ?? idx}
+                  variant="secondary"
+                  className="text-[11px] font-normal bg-primary/10 text-primary border-primary/20 shrink-0"
+                >
+                  {ex.exerciseName || `Exercise #${ex.exerciseId}`}
+                </Badge>
+              ))}
+              {plan.planExercises.length > 2 && (
+                <span className="text-xs text-muted-foreground font-medium">
+                  +{plan.planExercises.length - 2} more
+                </span>
+              )}
+            </div>
+          ) : (
+            <span className="text-xs text-muted-foreground font-normal">
+              No exercises
             </span>
-            <span className="flex items-center gap-1">
-              <MdTimer className="size-3.5" />
-              ~{totalDuration} min
-            </span>
-          </div>
+          )}
         </TableCell>
 
         <TableCell>
-          {plan.isArchived ? (
-            <Badge variant="secondary" className="text-xs">
-              Archived
-            </Badge>
-          ) : (
-            <Badge
-              variant="secondary"
-              className="text-xs bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-            >
-              Active
-            </Badge>
-          )}
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+            <MdTimer className="size-3.5 text-primary" />
+            <span>~{totalDuration} min</span>
+          </div>
         </TableCell>
 
         <TableCell className="text-end">
