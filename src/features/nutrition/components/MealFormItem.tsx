@@ -26,14 +26,6 @@ interface MealFormItemProps {
   onRemove: (index: number) => void;
 }
 
-/**
- * A single meal card inside the PlanWizardSlideOver step 2.
- *
- * Uses `useController` for every field so RHF registers them individually
- * as `meals.${index}.description`, `meals.${index}.calories`, etc.
- * This prevents the state-mutation bug where updating one meal's field
- * overwrites another meal's data through shared object references.
- */
 export function MealFormItem({ index, onRemove }: MealFormItemProps) {
   const { t } = useTranslation("nutrition");
   const { control } = useFormContext<
@@ -81,31 +73,32 @@ export function MealFormItem({ index, onRemove }: MealFormItemProps) {
     defaultValue: "",
   });
 
-  // Helper: parse a numeric input string to integer or undefined when empty
+  // Helper: parse a numeric input string to integer or undefined when empty, stripping leading zeros
   const parseNonNegativeInt = (raw: string): number | undefined => {
     if (raw === "") return undefined;
-    const parsed = parseInt(raw, 10);
+    const cleaned = raw.replace(/^0+(?=\d)/, "");
+    const parsed = parseInt(cleaned, 10);
     return isNaN(parsed) ? undefined : Math.max(0, parsed);
   };
 
   const mealLabel = MEAL_TYPE_LABELS[mealTypeField.value as MealType] ?? "Meal";
 
   return (
-    <div className="rounded-xl border border-slate-700 bg-slate-800/60 overflow-hidden">
+    <div className="rounded-xl border border-border bg-card overflow-hidden">
       {/* ── Card Header ───────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700 bg-slate-800/80">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/50">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 mb-0.5">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-0.5">
             {t("wizard.step2.mealLabel")}
           </p>
-          <p className="text-sm font-semibold text-slate-100">{mealLabel}</p>
+          <p className="text-sm font-semibold text-foreground">{mealLabel}</p>
         </div>
         <Button
           type="button"
           size="sm"
           variant="ghost"
           onClick={() => onRemove(index)}
-          className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-8 px-2 gap-1"
+          className="text-destructive hover:text-destructive/80 hover:bg-destructive/10 h-8 px-2 gap-1 cursor-pointer"
         >
           <MdDelete className="size-4" />
           <span className="text-xs">{t("common:delete")}</span>
@@ -116,7 +109,7 @@ export function MealFormItem({ index, onRemove }: MealFormItemProps) {
       <div className="p-4 space-y-4">
         {/* Description */}
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-400 block">
+          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
             {t("wizard.step2.descriptionLabel")}
           </label>
           <textarea
@@ -125,15 +118,15 @@ export function MealFormItem({ index, onRemove }: MealFormItemProps) {
             rows={3}
             className={[
               "w-full px-3 py-2 text-sm rounded-lg resize-none",
-              "bg-slate-900/60 border text-slate-100 placeholder:text-slate-600",
-              "focus:outline-none focus:ring-2 focus:ring-[#06B6D4]/50",
+              "bg-background border text-foreground placeholder:text-muted-foreground",
+              "focus:outline-none focus:ring-2 focus:ring-ring/50",
               descriptionState.error
-                ? "border-red-500/60"
-                : "border-slate-700 focus:border-[#06B6D4]/50",
+                ? "border-destructive"
+                : "border-input focus:border-ring",
             ].join(" ")}
           />
           {descriptionState.error && (
-            <p className="text-xs text-red-400">
+            <p className="text-xs text-destructive">
               {descriptionState.error.message}
             </p>
           )}
@@ -143,82 +136,86 @@ export function MealFormItem({ index, onRemove }: MealFormItemProps) {
         <div className="grid grid-cols-2 gap-3">
           {/* Calories */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-400 block">
+            <label className="text-xs font-semibold text-muted-foreground block">
               {t("wizard.step2.caloriesLabel")}
-              <span className="text-slate-600 font-normal ml-1">kcal</span>
+              <span className="text-muted-foreground/60 font-normal ms-1">kcal</span>
             </label>
             <Input
               type="number"
               min={0}
-              value={caloriesField.value ?? ""}
+              placeholder="0"
+              value={caloriesField.value === 0 ? "" : (caloriesField.value ?? "")}
               onChange={(e) =>
                 caloriesField.onChange(parseNonNegativeInt(e.target.value))
               }
               onBlur={caloriesField.onBlur}
-              className="bg-slate-900/60 border-slate-700 text-slate-100 text-sm focus:border-[#06B6D4]/50 focus:ring-[#06B6D4]/30"
+              className="text-sm"
             />
           </div>
 
           {/* Protein */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-400 block">
+            <label className="text-xs font-semibold text-muted-foreground block">
               {t("wizard.step2.proteinLabel")}
-              <span className="text-slate-600 font-normal ml-1">g</span>
+              <span className="text-muted-foreground/60 font-normal ms-1">g</span>
             </label>
             <Input
               type="number"
               min={0}
-              value={proteinField.value ?? ""}
+              placeholder="0"
+              value={proteinField.value === 0 ? "" : (proteinField.value ?? "")}
               onChange={(e) =>
                 proteinField.onChange(parseNonNegativeInt(e.target.value))
               }
               onBlur={proteinField.onBlur}
-              className="bg-slate-900/60 border-slate-700 text-slate-100 text-sm focus:border-[#06B6D4]/50 focus:ring-[#06B6D4]/30"
+              className="text-sm"
             />
           </div>
 
           {/* Carbs */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-400 block">
+            <label className="text-xs font-semibold text-muted-foreground block">
               {t("wizard.step2.carbsLabel")}
-              <span className="text-slate-600 font-normal ml-1">g</span>
+              <span className="text-muted-foreground/60 font-normal ms-1">g</span>
             </label>
             <Input
               type="number"
               min={0}
-              value={carbsField.value ?? ""}
+              placeholder="0"
+              value={carbsField.value === 0 ? "" : (carbsField.value ?? "")}
               onChange={(e) =>
                 carbsField.onChange(parseNonNegativeInt(e.target.value))
               }
               onBlur={carbsField.onBlur}
-              className="bg-slate-900/60 border-slate-700 text-slate-100 text-sm focus:border-[#06B6D4]/50 focus:ring-[#06B6D4]/30"
+              className="text-sm"
             />
           </div>
 
           {/* Fat */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-400 block">
+            <label className="text-xs font-semibold text-muted-foreground block">
               {t("wizard.step2.fatLabel")}
-              <span className="text-slate-600 font-normal ml-1">g</span>
+              <span className="text-muted-foreground/60 font-normal ms-1">g</span>
             </label>
             <Input
               type="number"
               min={0}
-              value={fatField.value ?? ""}
+              placeholder="0"
+              value={fatField.value === 0 ? "" : (fatField.value ?? "")}
               onChange={(e) =>
                 fatField.onChange(parseNonNegativeInt(e.target.value))
               }
               onBlur={fatField.onBlur}
-              className="bg-slate-900/60 border-slate-700 text-slate-100 text-sm focus:border-[#06B6D4]/50 focus:ring-[#06B6D4]/30"
+              className="text-sm"
             />
           </div>
         </div>
 
         {/* Dietary Notes */}
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-400 block">
+          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
             {t("wizard.step2.dietaryNotesLabel")}
-            <span className="text-slate-600 font-normal ml-1 normal-case tracking-normal">
+            <span className="text-muted-foreground/60 font-normal ms-1 normal-case tracking-normal">
               ({t("wizard.step1.objectiveOptional")})
             </span>
           </label>
@@ -226,10 +223,11 @@ export function MealFormItem({ index, onRemove }: MealFormItemProps) {
             {...notesField}
             placeholder={t("wizard.step2.dietaryNotesPlaceholder")}
             rows={2}
-            className="w-full px-3 py-2 text-sm rounded-lg resize-none bg-slate-900/60 border border-slate-700 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#06B6D4]/50 focus:border-[#06B6D4]/50"
+            className="w-full px-3 py-2 text-sm rounded-lg resize-none bg-background border border-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring"
           />
         </div>
       </div>
     </div>
   );
 }
+
