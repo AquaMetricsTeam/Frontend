@@ -62,6 +62,7 @@ export function EditTemplateSheet({
                 sets: ex.sets,
                 reps: ex.reps,
                 duration: ex.duration,
+                restSeconds: ex.restSeconds ?? 0,
                 intensity:
                   typeof ex.intensity === "number"
                     ? ex.intensity
@@ -78,6 +79,7 @@ export function EditTemplateSheet({
                   sets: 3,
                   reps: 10,
                   duration: 0,
+                  restSeconds: 0,
                   intensity: 2,
                   notes: "",
                 },
@@ -114,6 +116,7 @@ export function EditTemplateSheet({
         sets: ex.sets,
         reps: ex.reps,
         duration: ex.duration,
+        restSeconds: ex.restSeconds ?? 0,
         intensity: ex.intensity ?? null,
         notes: ex.notes || null,
         orderIndex: i + 1,

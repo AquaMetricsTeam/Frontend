@@ -62,6 +62,7 @@ export function CreateTemplateSheet({ open, onOpenChange }: CreateTemplateSheetP
         sets: ex.sets,
         reps: ex.reps,
         duration: ex.duration,
+        restSeconds: ex.restSeconds ?? 0,
         intensity: ex.intensity ?? null,
         notes: ex.notes || null,
         orderIndex: i + 1,

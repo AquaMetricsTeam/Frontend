@@ -37,10 +37,7 @@ import { cn } from "@/lib/utils";
 import { useSwimmingPerformancesByTrainingRecord } from "@/features/swimming-performance/hooks/useSwimmingPerformancesByTrainingRecord";
 import { LogSwimmingPerformanceDrawer } from "@/features/swimming-performance/components/LogSwimmingPerformanceDrawer";
 import { SwimmingPerformanceDetailSheet } from "@/features/swimming-performance/components/SwimmingPerformanceDetailSheet";
-import {
-  STROKE_METADATA,
-  STATUS_METADATA,
-} from "@/features/swimming-performance/constants/enums";
+import { STROKE_METADATA } from "@/features/swimming-performance/constants/enums";
 import { formatTimeSpanDisplay } from "@/features/swimming-performance/components/MmSsInput";
 import type { SwimmingPerformance } from "@/features/swimming-performance/types";
 
@@ -67,14 +64,20 @@ export function SessionDetailSheet({
   const { hasRole } = useAuth();
   const isSwimmingCoach = hasRole("SwimmingCoach");
   const isFitnessCoach = hasRole("FitnessCoach");
-  const isAdminOrHead = hasRole("Admin") || hasRole("HeadCoach");
+  const isAdminOrHead = hasRole("Admin");
 
   // Determine tab access based on role
-  const canViewSwimming = isSwimmingCoach || isAdminOrHead || (!isSwimmingCoach && !isFitnessCoach);
-  const canViewFitness = isFitnessCoach || isAdminOrHead || (!isSwimmingCoach && !isFitnessCoach);
+  const canViewSwimming =
+    isSwimmingCoach || isAdminOrHead || (!isSwimmingCoach && !isFitnessCoach);
+  const canViewFitness =
+    isFitnessCoach || isAdminOrHead || (!isSwimmingCoach && !isFitnessCoach);
 
   const tabOptions = useMemo(() => {
-    const opts: { value: SessionTab; label: string; icon: React.ElementType }[] = [
+    const opts: {
+      value: SessionTab;
+      label: string;
+      icon: React.ElementType;
+    }[] = [
       { value: "overview", label: "Details & Plan", icon: MdSportsGymnastics },
       { value: "attendance", label: "Attendance Tracker", icon: MdFactCheck },
     ];
@@ -82,7 +85,11 @@ export function SessionDetailSheet({
       opts.push({ value: "swimming", label: "Swimming Drills", icon: MdPool });
     }
     if (canViewFitness) {
-      opts.push({ value: "fitness", label: "Fitness Drills", icon: MdFitnessCenter });
+      opts.push({
+        value: "fitness",
+        label: "Fitness Drills",
+        icon: MdFitnessCenter,
+      });
     }
     return opts;
   }, [canViewSwimming, canViewFitness]);
@@ -122,9 +129,10 @@ export function SessionDetailSheet({
     useState<TrainingRecordResponse | null>(null);
   const [isFitnessDetailOpen, setIsFitnessDetailOpen] = useState(false);
 
-  const { data: fitnessRes, isLoading: fitnessLoading } = useTrainingRecords(
-    { trainingSessionId: sessionId, pageSize: 50 },
-  );
+  const { data: fitnessRes, isLoading: fitnessLoading } = useTrainingRecords({
+    trainingSessionId: sessionId,
+    pageSize: 50,
+  });
   const fitnessRecords = fitnessRes?.data?.items ?? [];
 
   // Fetch plan details for exercises breakdown
@@ -342,12 +350,12 @@ export function SessionDetailSheet({
                               {pe.reps} reps
                             </Badge>
                           )}
-                          {pe.durationMinutes && (
+                          {pe.duration && (
                             <Badge
                               variant="secondary"
                               className="text-[10px] px-1.5 py-0"
                             >
-                              {pe.durationMinutes}m
+                              {pe.duration}m
                             </Badge>
                           )}
                           {pe.restSeconds && (
@@ -383,20 +391,36 @@ export function SessionDetailSheet({
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                 <div className="p-2.5 rounded-xl border border-border bg-card flex flex-col items-center">
-                  <span className="text-[10px] uppercase font-semibold text-muted-foreground">Total</span>
-                  <span className="text-sm font-bold text-foreground">{stats.total}</span>
+                  <span className="text-[10px] uppercase font-semibold text-muted-foreground">
+                    Total
+                  </span>
+                  <span className="text-sm font-bold text-foreground">
+                    {stats.total}
+                  </span>
                 </div>
                 <div className="p-2.5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 flex flex-col items-center">
-                  <span className="text-[10px] uppercase font-semibold text-emerald-500">Present</span>
-                  <span className="text-sm font-bold text-emerald-500">{stats.present}</span>
+                  <span className="text-[10px] uppercase font-semibold text-emerald-500">
+                    Present
+                  </span>
+                  <span className="text-sm font-bold text-emerald-500">
+                    {stats.present}
+                  </span>
                 </div>
                 <div className="p-2.5 rounded-xl border border-amber-500/20 bg-amber-500/10 flex flex-col items-center">
-                  <span className="text-[10px] uppercase font-semibold text-amber-500">Late</span>
-                  <span className="text-sm font-bold text-amber-500">{stats.late}</span>
+                  <span className="text-[10px] uppercase font-semibold text-amber-500">
+                    Late
+                  </span>
+                  <span className="text-sm font-bold text-amber-500">
+                    {stats.late}
+                  </span>
                 </div>
                 <div className="p-2.5 rounded-xl border border-rose-500/20 bg-rose-500/10 flex flex-col items-center">
-                  <span className="text-[10px] uppercase font-semibold text-rose-500">Absent</span>
-                  <span className="text-sm font-bold text-rose-500">{stats.absent}</span>
+                  <span className="text-[10px] uppercase font-semibold text-rose-500">
+                    Absent
+                  </span>
+                  <span className="text-sm font-bold text-rose-500">
+                    {stats.absent}
+                  </span>
                 </div>
               </div>
 
@@ -416,19 +440,54 @@ export function SessionDetailSheet({
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <Avatar className="size-8 shrink-0">
-                          <AvatarImage src={athlete.profilePictureUrl ?? undefined} />
-                          <AvatarFallback className="text-xs font-semibold">{athlete.fullName.slice(0, 2).toUpperCase()}</AvatarFallback>
+                          <AvatarImage
+                            src={athlete.profilePictureUrl ?? undefined}
+                          />
+                          <AvatarFallback className="text-xs font-semibold">
+                            {athlete.fullName.slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
                         </Avatar>
-                        <span className="text-xs font-medium text-foreground truncate">{athlete.fullName}</span>
+                        <span className="text-xs font-medium text-foreground truncate">
+                          {athlete.fullName}
+                        </span>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
-                        <button type="button" onClick={() => setStatus(athlete.athleteId, "Present")} className={cn("px-2 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1", currentStatus === "Present" ? "bg-emerald-500/20 text-emerald-500 border border-emerald-500/40" : "text-muted-foreground hover:bg-muted/40")}>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setStatus(athlete.athleteId, "Present")
+                          }
+                          className={cn(
+                            "px-2 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1",
+                            currentStatus === "Present"
+                              ? "bg-emerald-500/20 text-emerald-500 border border-emerald-500/40"
+                              : "text-muted-foreground hover:bg-muted/40",
+                          )}
+                        >
                           <MdCheckCircle className="size-3" /> Present
                         </button>
-                        <button type="button" onClick={() => setStatus(athlete.athleteId, "Late")} className={cn("px-2 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1", currentStatus === "Late" ? "bg-amber-500/20 text-amber-500 border border-amber-500/40" : "text-muted-foreground hover:bg-muted/40")}>
+                        <button
+                          type="button"
+                          onClick={() => setStatus(athlete.athleteId, "Late")}
+                          className={cn(
+                            "px-2 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1",
+                            currentStatus === "Late"
+                              ? "bg-amber-500/20 text-amber-500 border border-amber-500/40"
+                              : "text-muted-foreground hover:bg-muted/40",
+                          )}
+                        >
                           <MdSchedule className="size-3" /> Late
                         </button>
-                        <button type="button" onClick={() => setStatus(athlete.athleteId, "Absent")} className={cn("px-2 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1", currentStatus === "Absent" ? "bg-rose-500/20 text-rose-500 border border-rose-500/40" : "text-muted-foreground hover:bg-muted/40")}>
+                        <button
+                          type="button"
+                          onClick={() => setStatus(athlete.athleteId, "Absent")}
+                          className={cn(
+                            "px-2 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1",
+                            currentStatus === "Absent"
+                              ? "bg-rose-500/20 text-rose-500 border border-rose-500/40"
+                              : "text-muted-foreground hover:bg-muted/40",
+                          )}
+                        >
                           <MdCancel className="size-3" /> Absent
                         </button>
                       </div>
@@ -486,14 +545,26 @@ export function SessionDetailSheet({
                         className="p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-all cursor-pointer space-y-2 shadow-xs"
                       >
                         <div className="flex items-center justify-between">
-                          <Badge variant="outline" className={cn("text-[10px] font-bold px-2 py-0.5", strokeMeta?.badgeClass)}>
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "text-[10px] font-bold px-2 py-0.5",
+                              strokeMeta?.badgeClass,
+                            )}
+                          >
                             {strokeMeta?.shortLabel || "Free"}
                           </Badge>
-                          <span className="text-xs font-bold text-primary">{item.distanceMeters}m × {item.repetitions} reps</span>
+                          <span className="text-xs font-bold text-primary">
+                            {item.distanceMeters}m × {item.repetitions} reps
+                          </span>
                         </div>
                         <div className="flex items-center justify-between text-xs font-mono">
-                          <span className="text-emerald-600 dark:text-emerald-400 font-bold">Best: {formatTimeSpanDisplay(item.bestRepTime)}</span>
-                          <span className="text-foreground">Avg: {formatTimeSpanDisplay(item.averageRepTime)}</span>
+                          <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                            Best: {formatTimeSpanDisplay(item.bestRepTime)}
+                          </span>
+                          <span className="text-foreground">
+                            Avg: {formatTimeSpanDisplay(item.averageRepTime)}
+                          </span>
                         </div>
                       </div>
                     );
@@ -528,7 +599,8 @@ export function SessionDetailSheet({
                     No fitness performance records logged for this session yet.
                   </p>
                   <p className="text-[11px] text-muted-foreground">
-                    Click &quot;+ Log Fitness Record&quot; to record workout data.
+                    Click &quot;+ Log Fitness Record&quot; to record workout
+                    data.
                   </p>
                   <Button
                     size="sm"
@@ -554,17 +626,31 @@ export function SessionDetailSheet({
                         <div className="flex items-center gap-2">
                           <Avatar className="size-7">
                             <AvatarFallback className="text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                              {(item.athleteName || "AT").slice(0, 2).toUpperCase()}
+                              {(item.athleteName || "AT")
+                                .slice(0, 2)
+                                .toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
-                          <span className="text-xs font-semibold text-foreground">{item.athleteName}</span>
+                          <span className="text-xs font-semibold text-foreground">
+                            {item.athleteName}
+                          </span>
                         </div>
-                        <Badge variant="outline" className={cn("text-[10px] font-semibold px-2 py-0.5", item.sessionCompleted ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/30" : "bg-rose-500/10 text-rose-600 border-rose-500/30")}>
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            "text-[10px] font-semibold px-2 py-0.5",
+                            item.sessionCompleted
+                              ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/30"
+                              : "bg-rose-500/10 text-rose-600 border-rose-500/30",
+                          )}
+                        >
                           {item.sessionCompleted ? "Completed" : "Incomplete"}
                         </Badge>
                       </div>
                       <div className="flex items-center justify-between text-xs font-mono text-muted-foreground">
-                        <span className="text-amber-600 dark:text-amber-400 font-medium">Rating: {item.performanceRating}/10</span>
+                        <span className="text-amber-600 dark:text-amber-400 font-medium">
+                          Rating: {item.performanceRating}/10
+                        </span>
                         <span>Fatigue: {item.fatigueLevel}/10</span>
                       </div>
                     </div>
@@ -588,7 +674,10 @@ export function SessionDetailSheet({
                   ? {
                       id: selectedSwimmingDetail.trainingRecordId || sessionId,
                       athleteId: selectedSwimmingDetail.athleteId || "",
-                      athleteName: selectedSwimmingDetail.athleteName || session?.title || "Athlete",
+                      athleteName:
+                        selectedSwimmingDetail.athleteName ||
+                        session?.title ||
+                        "Athlete",
                       trainingSessionId: sessionId,
                       sessionTitle: session?.title || "Training Session",
                       sessionDate: session?.sessionDate || "",
@@ -627,7 +716,9 @@ export function SessionDetailSheet({
               disabled={markMutation.isPending}
               className="w-full cursor-pointer"
             >
-              {markMutation.isPending ? "Saving Attendance..." : "Save Attendance Log"}
+              {markMutation.isPending
+                ? "Saving Attendance..."
+                : "Save Attendance Log"}
             </Button>
           </div>
         )}

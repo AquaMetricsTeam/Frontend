@@ -17,6 +17,7 @@ export const planExerciseSchema = z.object({
   sets: z.number().min(1, "Min 1 set"),
   reps: z.number().min(0),
   duration: z.number().min(0),
+  restSeconds: z.number().min(0, "Min 0s").optional(),
   intensity: z.number().min(1).max(3).optional(),
   notes: z.string().optional(),
 });

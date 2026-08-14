@@ -110,6 +110,12 @@ export function ExercisePerformanceCard({
                   </span>
                 </>
               ) : null}
+              {selectedExercise.restSeconds ? (
+                <>
+                  <span>•</span>
+                  <span>{selectedExercise.restSeconds}s rest</span>
+                </>
+              ) : null}
             </span>
           )}
         </div>

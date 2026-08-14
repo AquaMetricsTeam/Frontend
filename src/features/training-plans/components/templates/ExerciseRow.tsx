@@ -155,7 +155,7 @@ export function ExerciseRow({
       {/* Card Content Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5 items-start ps-2">
         {/* Exercise Select */}
-        <div className="sm:col-span-5">
+        <div className="sm:col-span-4">
           <Controller
             name={`exercises.${index}.exerciseId`}
             control={control}
@@ -227,7 +227,7 @@ export function ExerciseRow({
         </div>
 
         {/* Sets */}
-        <div className="col-span-4 sm:col-span-2">
+        <div className="col-span-3 sm:col-span-2">
           <LabelField htmlFor={`exercises.${index}.sets`} label="Sets">
             <Input
               id={`exercises.${index}.sets`}
@@ -241,7 +241,7 @@ export function ExerciseRow({
         </div>
 
         {/* Reps */}
-        <div className="col-span-4 sm:col-span-2">
+        <div className="col-span-3 sm:col-span-2">
           <LabelField htmlFor={`exercises.${index}.reps`} label="Reps">
             <Input
               id={`exercises.${index}.reps`}
@@ -255,7 +255,7 @@ export function ExerciseRow({
         </div>
 
         {/* Duration (Min) */}
-        <div className="col-span-4 sm:col-span-3">
+        <div className="col-span-3 sm:col-span-2">
           <LabelField htmlFor={`exercises.${index}.duration`} label="Duration (min)">
             <Input
               id={`exercises.${index}.duration`}
@@ -264,6 +264,20 @@ export function ExerciseRow({
               placeholder="0"
               className="h-9 text-xs"
               {...register(`exercises.${index}.duration`, { valueAsNumber: true })}
+            />
+          </LabelField>
+        </div>
+
+        {/* Rest (Sec) */}
+        <div className="col-span-3 sm:col-span-2">
+          <LabelField htmlFor={`exercises.${index}.restSeconds`} label="Rest (sec)">
+            <Input
+              id={`exercises.${index}.restSeconds`}
+              type="number"
+              min={0}
+              placeholder="30"
+              className="h-9 text-xs"
+              {...register(`exercises.${index}.restSeconds`, { valueAsNumber: true })}
             />
           </LabelField>
         </div>

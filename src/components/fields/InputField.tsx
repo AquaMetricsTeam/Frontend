@@ -80,7 +80,7 @@ export function InputField<TFieldValues extends FieldValues = FieldValues>({
               onChange={(e) => {
                 if (effectiveType === "number") {
                   const val = e.target.value;
-                  field.onChange(val === "" ? "" : Number(val));
+                  field.onChange(val === "" ? null : Number(val));
                 } else {
                   field.onChange(e);
                 }

@@ -25,6 +25,7 @@ import {
   type SwimmingDrillRequest,
 } from "../types";
 import { useTrainingPlan } from "@/features/training-plans/hooks/useTrainingPlan";
+import type { PlanExercise } from "@/features/training-plans/types";
 
 const DEFAULT_DRILL: SwimmingDrillRequest = {
   stroke: StrokeType.Freestyle,
@@ -46,7 +47,7 @@ const DEFAULT_DRILL: SwimmingDrillRequest = {
 
 function mapPlanExerciseToDrill(pe: PlanExercise): SwimmingDrillRequest {
   const name = pe.exerciseName?.toLowerCase() || "";
-  let stroke = StrokeType.Freestyle;
+  let stroke: StrokeType = StrokeType.Freestyle;
   if (name.includes("back")) stroke = StrokeType.Backstroke;
   else if (name.includes("breast")) stroke = StrokeType.Breaststroke;
   else if (name.includes("fly") || name.includes("butterfly"))

@@ -8,6 +8,7 @@ export interface PlanExercise {
   sets: number;
   reps: number;
   duration: number; // in minutes
+  restSeconds?: number;
   intensity?: number | string | null;
   notes?: string | null;
   orderIndex: number;

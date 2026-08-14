@@ -4,7 +4,6 @@ import {
   MdTimer,
   MdRepeat,
   MdNotes,
-  MdPerson,
   MdGroup,
   MdAssignment,
   MdEdit,
@@ -57,8 +56,14 @@ export function TemplateDetailSheet({
 
   const totalDuration = calculatePlanDuration(activePlan);
   const exercises = activePlan.planExercises ?? [];
-  const totalSets = exercises.reduce((acc, ex) => acc + (Number(ex.sets) || 0), 0);
-  const totalReps = exercises.reduce((acc, ex) => acc + (Number(ex.reps) || 0), 0);
+  const totalSets = exercises.reduce(
+    (acc, ex) => acc + (Number(ex.sets) || 0),
+    0,
+  );
+  const totalReps = exercises.reduce(
+    (acc, ex) => acc + (Number(ex.reps) || 0),
+    0,
+  );
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -206,6 +211,14 @@ export function TemplateDetailSheet({
                             </span>{" "}
                             {ex.reps}
                           </span>
+                          {ex.restSeconds !== undefined && ex.restSeconds !== null && ex.restSeconds > 0 && (
+                            <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                              <span className="font-normal opacity-80">
+                                Rest:
+                              </span>{" "}
+                              {ex.restSeconds}s
+                            </span>
+                          )}
                           {ex.intensity && (
                             <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-600 dark:text-amber-400">
                               <span className="font-normal opacity-80">
@@ -271,11 +284,14 @@ export function TemplateDetailSheet({
                           <Avatar className="size-7 shrink-0">
                             <AvatarImage
                               src={
-                                assignment.athlete.profilePictureUrl ?? undefined
+                                assignment.athlete.profilePictureUrl ??
+                                undefined
                               }
                             />
                             <AvatarFallback className="text-[10px] font-semibold">
-                              {assignment.athlete.fullName.slice(0, 2).toUpperCase()}
+                              {assignment.athlete.fullName
+                                .slice(0, 2)
+                                .toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
                         ) : (
