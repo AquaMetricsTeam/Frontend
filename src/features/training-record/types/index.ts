@@ -32,6 +32,7 @@ export interface ExercisePerformanceResponse {
   plannedSets: number;
   plannedReps: number;
   plannedDuration: number;
+  plannedRestSeconds?: number | null;
   completedSets: number;
   completedReps: number;
   completedDuration?: number | null;

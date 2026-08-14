@@ -274,6 +274,14 @@ export function FitnessRecordDetailSheet({
                                     </strong>
                                   </span>
                                 )}
+                                {ex.plannedRestSeconds != null && ex.plannedRestSeconds > 0 && (
+                                  <span>
+                                    Rest:{" "}
+                                    <strong className="text-foreground">
+                                      {ex.plannedRestSeconds}s
+                                    </strong>
+                                  </span>
+                                )}
                               </div>
                             </div>
                             <div className="space-y-1.5">
