@@ -28,7 +28,9 @@ export function LoginForm() {
     <FormProvider {...methods}>
       <div className="w-full max-w-sm">
         <div className="mb-8">
-          <h1 className="mb-1.5 text-2xl font-bold text-white">Welcome Back</h1>
+          <h1 className="mb-1.5 text-2xl font-bold text-nutral-900">
+            Welcome Back
+          </h1>
           <p className="text-sm text-slate-400">
             Enter your credentials to access the coaching dashboard.
           </p>

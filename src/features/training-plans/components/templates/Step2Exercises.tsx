@@ -23,6 +23,7 @@ const DEFAULT_EXERCISE: PlanExerciseFormValues = {
   sets: 3,
   reps: 10,
   duration: 0,
+  restSeconds: 30,
   intensity: 2,
   notes: "",
 };

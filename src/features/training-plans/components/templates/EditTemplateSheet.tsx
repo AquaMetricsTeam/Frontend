@@ -57,10 +57,12 @@ export function EditTemplateSheet({
         exercises:
           fullPlan.planExercises && fullPlan.planExercises.length > 0
             ? fullPlan.planExercises.map((ex) => ({
+                planExerciseId: ex.planExerciseId ?? ex.id,
                 exerciseId: ex.exerciseId,
                 sets: ex.sets,
                 reps: ex.reps,
                 duration: ex.duration,
+                restSeconds: ex.restSeconds ?? 0,
                 intensity:
                   typeof ex.intensity === "number"
                     ? ex.intensity
@@ -77,6 +79,7 @@ export function EditTemplateSheet({
                   sets: 3,
                   reps: 10,
                   duration: 0,
+                  restSeconds: 0,
                   intensity: 2,
                   notes: "",
                 },
@@ -108,12 +111,14 @@ export function EditTemplateSheet({
       title: planInfo.title,
       description: planInfo.description ?? "",
       planExercises: exercises.exercises.map((ex, i) => ({
+        ...(ex.planExerciseId ? { planExerciseId: ex.planExerciseId } : {}),
         exerciseId: ex.exerciseId,
         sets: ex.sets,
         reps: ex.reps,
         duration: ex.duration,
-        intensity: ex.intensity,
-        notes: ex.notes,
+        restSeconds: ex.restSeconds ?? 0,
+        intensity: ex.intensity ?? null,
+        notes: ex.notes || null,
         orderIndex: i + 1,
       })),
     };

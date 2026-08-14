@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { useAthletesLookup } from "@/features/lookups/hooks/useAthletesLookup";
+import { useAvailableAthletesLookup } from "@/features/lookups/hooks/useAvailableAthletesLookup";
 import { useGroupsLookup } from "@/features/lookups/hooks/useGroupsLookup";
 import {
   assignmentStepSchema,
@@ -37,7 +37,7 @@ export function Step3Assignment({
   const athleteIds = form.watch("athleteIds");
   const groupIds = form.watch("groupIds");
 
-  const { data: athleteRes } = useAthletesLookup(assignNow);
+  const { data: athleteRes } = useAvailableAthletesLookup(assignNow);
   const { data: groupRes } = useGroupsLookup(assignNow);
 
   const athletes = athleteRes?.data ?? [];
@@ -141,31 +141,37 @@ export function Step3Assignment({
                   Individual Athletes
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
-                  {athletes.map((athlete) => {
-                    const isSelected = athleteIds.includes(athlete.athleteId);
-                    return (
-                      <button
-                        key={athlete.athleteId}
-                        type="button"
-                        onClick={() => toggleAthlete(athlete.athleteId)}
-                        className={cn(
-                          "flex items-center gap-2.5 rounded-lg p-2.5 border text-xs font-medium transition-all text-start",
-                          isSelected
-                            ? "border-primary bg-primary/8 text-primary"
-                            : "border-border text-muted-foreground hover:bg-accent",
-                        )}
-                      >
-                        <Avatar className="size-6 shrink-0">
-                          <AvatarImage src={athlete.profilePictureUrl ?? undefined} />
-                          <AvatarFallback className="text-[10px]">
-                            {athlete.fullName.slice(0, 2).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="flex-1 truncate">{athlete.fullName}</span>
-                        {isSelected && <MdCheck className="size-3.5 shrink-0 text-primary" />}
-                      </button>
-                    );
-                  })}
+                  {athletes.length === 0 ? (
+                    <p className="col-span-2 py-4 text-center text-xs text-muted-foreground">
+                      No available athletes found.
+                    </p>
+                  ) : (
+                    athletes.map((athlete) => {
+                      const isSelected = athleteIds.includes(athlete.athleteId);
+                      return (
+                        <button
+                          key={athlete.athleteId}
+                          type="button"
+                          onClick={() => toggleAthlete(athlete.athleteId)}
+                          className={cn(
+                            "flex items-center gap-2.5 rounded-lg p-2.5 border text-xs font-medium transition-all text-start",
+                            isSelected
+                              ? "border-primary bg-primary/8 text-primary"
+                              : "border-border text-muted-foreground hover:bg-accent",
+                          )}
+                        >
+                          <Avatar className="size-6 shrink-0">
+                            <AvatarImage src={athlete.profilePictureUrl ?? undefined} />
+                            <AvatarFallback className="text-[10px]">
+                              {athlete.fullName.slice(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="flex-1 truncate">{athlete.fullName}</span>
+                          {isSelected && <MdCheck className="size-3.5 shrink-0 text-primary" />}
+                        </button>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             </div>

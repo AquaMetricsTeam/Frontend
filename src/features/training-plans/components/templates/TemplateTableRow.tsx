@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   MdMoreVert,
   MdEdit,
@@ -6,6 +7,7 @@ import {
   MdArchive,
   MdUnarchive,
   MdTimer,
+  MdVisibility,
 } from "react-icons/md";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -35,13 +37,16 @@ interface TemplateTableRowProps {
   plan: TrainingPlan;
   onAssign: (plan: TrainingPlan) => void;
   onEdit: (plan: TrainingPlan) => void;
+  onView?: (plan: TrainingPlan) => void;
 }
 
 export function TemplateTableRow({
   plan,
   onAssign,
   onEdit,
+  onView,
 }: TemplateTableRowProps) {
+  const { t } = useTranslation("training");
   const [confirmArchive, setConfirmArchive] = useState(false);
   const archiveMutation = useArchiveTrainingPlan();
   const restoreMutation = useRestoreTrainingPlan();
@@ -49,10 +54,15 @@ export function TemplateTableRow({
 
   return (
     <>
-      <TableRow className="group">
+      <TableRow
+        className="group cursor-pointer hover:bg-muted/50 transition-colors"
+        onClick={() => onView?.(plan)}
+      >
         <TableCell>
           <div className="flex flex-col gap-0.5">
-            <span className="font-medium text-foreground">{plan.title}</span>
+            <span className="font-medium text-foreground group-hover:text-primary transition-colors">
+              {plan.title}
+            </span>
             {plan.description && (
               <span className="text-xs text-muted-foreground line-clamp-1">
                 {plan.description}
@@ -93,7 +103,7 @@ export function TemplateTableRow({
           </div>
         </TableCell>
 
-        <TableCell className="text-end">
+        <TableCell className="text-end" onClick={(e) => e.stopPropagation()}>
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
@@ -107,15 +117,19 @@ export function TemplateTableRow({
               <MdMoreVert className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onView?.(plan)}>
+                <MdVisibility className="size-4 me-2" />
+                {t("templates.actions.view", { defaultValue: "View Details" })}
+              </DropdownMenuItem>
               {!plan.isArchived && (
                 <>
                   <DropdownMenuItem onClick={() => onEdit(plan)}>
                     <MdEdit className="size-4 me-2" />
-                    Edit
+                    {t("templates.actions.edit", { defaultValue: "Edit" })}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => onAssign(plan)}>
                     <MdAssignment className="size-4 me-2" />
-                    Assign
+                    {t("templates.actions.assign", { defaultValue: "Assign" })}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -123,14 +137,14 @@ export function TemplateTableRow({
                     className="text-destructive focus:text-destructive"
                   >
                     <MdArchive className="size-4 me-2" />
-                    Archive
+                    {t("templates.actions.archive", { defaultValue: "Archive" })}
                   </DropdownMenuItem>
                 </>
               )}
               {plan.isArchived && (
                 <DropdownMenuItem onClick={() => restoreMutation.mutate(plan.id)}>
                   <MdUnarchive className="size-4 me-2" />
-                  Restore
+                  {t("templates.actions.restore", { defaultValue: "Restore" })}
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>

@@ -24,6 +24,8 @@ import {
   PerformanceGrade,
   type SwimmingDrillRequest,
 } from "../types";
+import { useTrainingPlan } from "@/features/training-plans/hooks/useTrainingPlan";
+import type { PlanExercise } from "@/features/training-plans/types";
 
 const DEFAULT_DRILL: SwimmingDrillRequest = {
   stroke: StrokeType.Freestyle,
@@ -43,6 +45,38 @@ const DEFAULT_DRILL: SwimmingDrillRequest = {
   coachComment: "",
 };
 
+function mapPlanExerciseToDrill(pe: PlanExercise): SwimmingDrillRequest {
+  const name = pe.exerciseName?.toLowerCase() || "";
+  let stroke: StrokeType = StrokeType.Freestyle;
+  if (name.includes("back")) stroke = StrokeType.Backstroke;
+  else if (name.includes("breast")) stroke = StrokeType.Breaststroke;
+  else if (name.includes("fly") || name.includes("butterfly"))
+    stroke = StrokeType.Butterfly;
+  else if (name.includes("medley") || name.includes("im"))
+    stroke = StrokeType.IndividualMedley;
+
+  const distMatch = pe.exerciseName?.match(/(\d+)\s*m/i);
+  const distanceMeters = distMatch ? Number(distMatch[1]) : 100;
+
+  return {
+    stroke,
+    distanceMeters,
+    repetitions: pe.sets || pe.reps || 4,
+    restIntervalSeconds: pe.restSeconds || 30,
+    bestRepTime: "00:01:08",
+    averageRepTime: "00:01:10",
+    worstRepTime: "00:01:13",
+    technique: PerformanceGrade.Excellent,
+    start: PerformanceGrade.Excellent,
+    turns: PerformanceGrade.Good,
+    finish: PerformanceGrade.Excellent,
+    paceConsistency: PerformanceGrade.Good,
+    rpe: 7,
+    status: PerformanceStatus.Completed,
+    coachComment: pe.notes || "",
+  };
+}
+
 interface LogFormValues {
   athleteId: string;
   trainingSessionId: number;
@@ -57,11 +91,15 @@ interface LogFormValues {
 interface LogSwimmingPerformanceDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  defaultSessionId?: number;
+  defaultAthleteId?: string;
 }
 
 export function LogSwimmingPerformanceDrawer({
   open,
   onOpenChange,
+  defaultSessionId,
+  defaultAthleteId,
 }: LogSwimmingPerformanceDrawerProps) {
   const { t } = useTranslation("swimming");
   const createMutation = useCreateTrainingRecord();
@@ -77,8 +115,8 @@ export function LogSwimmingPerformanceDrawer({
 
   const form = useForm<LogFormValues>({
     defaultValues: {
-      athleteId: "",
-      trainingSessionId: 0,
+      athleteId: defaultAthleteId || "",
+      trainingSessionId: defaultSessionId || 0,
       performanceRating: 7,
       fatigueLevel: 5,
       sessionCompleted: true,
@@ -96,23 +134,29 @@ export function LogSwimmingPerformanceDrawer({
   // Watch session ID to fetch session-specific athletes
   const selectedSessionId = form.watch("trainingSessionId");
 
-  // 2. Fetch session details strictly to get athletes assigned to THIS session only
+  // 2. Fetch session details strictly to get athletes and plan
   const { data: sessionDetailRes, isLoading: sessionAthletesLoading } =
     useTrainingSession(Number(selectedSessionId), !!selectedSessionId);
 
-  const sessionAthletes = sessionDetailRes?.data?.athletes ?? [];
+  const sessionDetail = sessionDetailRes?.data;
+  const sessionAthletes = sessionDetail?.athletes ?? [];
+  const trainingPlanId = sessionDetail?.trainingPlanId ?? 0;
 
   const athleteOptions = sessionAthletes.map((a) => ({
     value: a.athleteId,
     label: a.fullName,
   }));
 
-  // Reset form when dialog is opened fresh
+  // 3. Fetch training plan for drills auto-population
+  const { data: planRes } = useTrainingPlan(trainingPlanId, !!trainingPlanId);
+  const planExercises = planRes?.data?.planExercises ?? [];
+
+  // Reset form when dialog is opened
   useEffect(() => {
     if (open) {
       form.reset({
-        athleteId: "",
-        trainingSessionId: 0,
+        athleteId: defaultAthleteId || "",
+        trainingSessionId: defaultSessionId || 0,
         performanceRating: 7,
         fatigueLevel: 5,
         sessionCompleted: true,
@@ -121,7 +165,22 @@ export function LogSwimmingPerformanceDrawer({
         swimmingPerformances: [{ ...DEFAULT_DRILL }],
       });
     }
-  }, [open, form]);
+  }, [open, form, defaultSessionId, defaultAthleteId]);
+
+  // When plan exercises load for selected session, auto-fill drill cards
+  useEffect(() => {
+    if (open && selectedSessionId && planExercises.length > 0) {
+      const mappedDrills = planExercises.map(mapPlanExerciseToDrill);
+      form.setValue("swimmingPerformances", mappedDrills);
+    }
+  }, [open, selectedSessionId, planExercises, form]);
+
+  // When session changes: clear athlete if not default
+  useEffect(() => {
+    if (selectedSessionId && selectedSessionId !== (defaultSessionId ?? 0)) {
+      form.setValue("athleteId", "");
+    }
+  }, [selectedSessionId, form, defaultSessionId]);
 
   function handleDuplicateLast() {
     const currentList = form.getValues("swimmingPerformances");
@@ -341,6 +400,7 @@ export function LogSwimmingPerformanceDrawer({
                   index={index}
                   totalDrills={fields.length}
                   prefix={`swimmingPerformances.${index}`}
+                  plannedExercise={planExercises[index]}
                   onRemove={() => remove(index)}
                 />
               ))}

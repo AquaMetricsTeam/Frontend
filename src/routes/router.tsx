@@ -10,7 +10,9 @@ import UsersPage from "@/pages/users";
 import AthletesPage from "@/pages/athletes";
 import GroupsPage from "@/pages/groups";
 import ExercisesPage from "@/pages/exercises";
-import TrainingPage from "@/pages/training";
+import TrainingTemplatesPage from "@/pages/training-templates";
+import TrainingAssignmentsPage from "@/pages/training-assignments";
+import TrainingSessionsPage from "@/pages/training-sessions";
 import NutritionPage from "@/pages/nutrition";
 import SwimmingPage from "@/pages/swimming";
 import FitnessPage from "@/pages/fitness";
@@ -27,6 +29,12 @@ const DASHBOARD_ROLES: UserRole[] = [
 const NUTRITION_ROLES: UserRole[] = [
   "Admin",
   "NutritionSpecialist",
+];
+
+const TRAINING_ROLES: UserRole[] = [
+  "SwimmingCoach",
+  "Admin",
+  "FitnessCoach",
 ];
 
 const router = createBrowserRouter([
@@ -102,11 +110,33 @@ const router = createBrowserRouter([
               },
               {
                 path: "/training",
+                element: <Navigate to="/training-templates" replace />,
+              },
+              {
+                path: "/training-plans",
+                element: <Navigate to="/training-templates" replace />,
+              },
+              {
+                path: "/training-templates",
                 element: (
-                  <ProtectedRoute
-                    allowedRoles={["SwimmingCoach", "Admin", "FitnessCoach"]}
-                  >
-                    <TrainingPage />
+                  <ProtectedRoute allowedRoles={TRAINING_ROLES}>
+                    <TrainingTemplatesPage />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/training-assignments",
+                element: (
+                  <ProtectedRoute allowedRoles={TRAINING_ROLES}>
+                    <TrainingAssignmentsPage />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/training-sessions",
+                element: (
+                  <ProtectedRoute allowedRoles={TRAINING_ROLES}>
+                    <TrainingSessionsPage />
                   </ProtectedRoute>
                 ),
               },

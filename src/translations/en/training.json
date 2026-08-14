@@ -16,6 +16,7 @@
       "actions": "Actions"
     },
     "actions": {
+      "view": "View Details",
       "edit": "Edit",
       "assign": "Assign",
       "archive": "Archive",

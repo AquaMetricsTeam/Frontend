@@ -1,12 +1,5 @@
 import { z } from "zod";
 
-const PerformanceStatusEnum = z.union([
-  z.literal(1),
-  z.literal(2),
-  z.literal(3),
-  z.literal(4),
-]);
-
 export const exercisePerformanceSchema = z.object({
   planExerciseId: z.number().min(1, "Exercise is required"),
   completedSets: z.number().min(0, "Sets cannot be negative"),
@@ -14,7 +7,7 @@ export const exercisePerformanceSchema = z.object({
   completedDuration: z.number().nullable().optional(),
   weightUsed: z.number().nullable().optional(),
   rpe: z.number().min(1).max(10).nullable().optional(),
-  status: PerformanceStatusEnum,
+  status: z.number().min(1).max(4),
   coachComment: z.string().optional().nullable(),
 });
 

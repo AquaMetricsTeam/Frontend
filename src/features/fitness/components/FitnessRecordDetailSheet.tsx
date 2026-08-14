@@ -85,9 +85,9 @@ export function FitnessRecordDetailSheet({
 
   const fetchedExercises = exerciseRes?.data ?? [];
   const exercisePerformances =
-    fetchedExercises.length > 0
-      ? fetchedExercises
-      : detail?.exercisePerformances ?? [];
+    detail?.exercisePerformances && detail.exercisePerformances.length > 0
+      ? detail.exercisePerformances
+      : fetchedExercises;
 
   const isLoading = isRecordLoading || isExerciseLoading;
 
@@ -253,38 +253,62 @@ export function FitnessRecordDetailSheet({
                               <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-wide">
                                 Planned
                               </p>
-                              <div className="flex gap-3 text-muted-foreground">
+                              <div className="flex flex-wrap gap-2.5 text-muted-foreground">
                                 <span>
                                   Sets:{" "}
                                   <strong className="text-foreground">
-                                    {ex.plannedSets}
+                                    {ex.plannedSets ?? 0}
                                   </strong>
                                 </span>
                                 <span>
                                   Reps:{" "}
                                   <strong className="text-foreground">
-                                    {ex.plannedReps}
+                                    {ex.plannedReps ?? 0}
                                   </strong>
                                 </span>
+                                {ex.plannedDuration != null && ex.plannedDuration > 0 && (
+                                  <span>
+                                    Duration:{" "}
+                                    <strong className="text-foreground">
+                                      {ex.plannedDuration}m
+                                    </strong>
+                                  </span>
+                                )}
+                                {ex.plannedRestSeconds != null && ex.plannedRestSeconds > 0 && (
+                                  <span>
+                                    Rest:{" "}
+                                    <strong className="text-foreground">
+                                      {ex.plannedRestSeconds}s
+                                    </strong>
+                                  </span>
+                                )}
                               </div>
                             </div>
                             <div className="space-y-1.5">
                               <p className="text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400 tracking-wide">
                                 Completed
                               </p>
-                              <div className="flex gap-3 text-muted-foreground">
+                              <div className="flex flex-wrap gap-2.5 text-muted-foreground">
                                 <span>
                                   Sets:{" "}
                                   <strong className="text-foreground">
-                                    {ex.completedSets}
+                                    {ex.completedSets ?? 0}
                                   </strong>
                                 </span>
                                 <span>
                                   Reps:{" "}
                                   <strong className="text-foreground">
-                                    {ex.completedReps}
+                                    {ex.completedReps ?? 0}
                                   </strong>
                                 </span>
+                                {ex.completedDuration != null && ex.completedDuration > 0 && (
+                                  <span>
+                                    Duration:{" "}
+                                    <strong className="text-foreground">
+                                      {ex.completedDuration}m
+                                    </strong>
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </div>

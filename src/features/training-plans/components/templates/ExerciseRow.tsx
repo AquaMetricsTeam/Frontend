@@ -155,7 +155,7 @@ export function ExerciseRow({
       {/* Card Content Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5 items-start ps-2">
         {/* Exercise Select */}
-        <div className="sm:col-span-5">
+        <div className="sm:col-span-4 h-full">
           <Controller
             name={`exercises.${index}.exerciseId`}
             control={control}
@@ -165,13 +165,14 @@ export function ExerciseRow({
                 <LabelField
                   htmlFor={`exercises.${index}.exerciseId`}
                   label="Exercise"
+                  className="h-full"
                 >
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger
                       id={`exercises.${index}.exerciseId`}
                       type="button"
                       className={cn(
-                        "flex h-9 w-full items-center justify-between rounded-lg border border-input bg-background px-3 text-xs font-medium transition-colors",
+                        "flex h-9 w-full items-center mt-auto justify-between rounded-lg border border-input bg-background px-3 text-xs font-medium transition-colors",
                         "hover:border-ring/50 focus:outline-none focus:ring-2 focus:ring-primary/40",
                         !selected && "text-muted-foreground",
                         rowErrors?.exerciseId && "border-destructive",
@@ -227,43 +228,77 @@ export function ExerciseRow({
         </div>
 
         {/* Sets */}
-        <div className="col-span-4 sm:col-span-2">
-          <LabelField htmlFor={`exercises.${index}.sets`} label="Sets">
+        <div className="col-span-3 sm:col-span-2 h-full">
+          <LabelField
+            htmlFor={`exercises.${index}.sets`}
+            label="Sets"
+            className="h-full "
+          >
             <Input
               id={`exercises.${index}.sets`}
               type="number"
               min={1}
               placeholder="3"
-              className="h-9 text-xs"
+              className="h-9 text-xs mt-auto"
               {...register(`exercises.${index}.sets`, { valueAsNumber: true })}
             />
           </LabelField>
         </div>
 
         {/* Reps */}
-        <div className="col-span-4 sm:col-span-2">
-          <LabelField htmlFor={`exercises.${index}.reps`} label="Reps">
+        <div className="col-span-3 sm:col-span-2 h-full">
+          <LabelField
+            htmlFor={`exercises.${index}.reps`}
+            label="Reps"
+            className="h-full "
+          >
             <Input
               id={`exercises.${index}.reps`}
               type="number"
               min={0}
               placeholder="10"
-              className="h-9 text-xs"
+              className="h-9 text-xs mt-auto"
               {...register(`exercises.${index}.reps`, { valueAsNumber: true })}
             />
           </LabelField>
         </div>
 
         {/* Duration (Min) */}
-        <div className="col-span-4 sm:col-span-3">
-          <LabelField htmlFor={`exercises.${index}.duration`} label="Duration (min)">
+        <div className="col-span-3 sm:col-span-2 h-full">
+          <LabelField
+            htmlFor={`exercises.${index}.duration`}
+            label="Duration (min)"
+            className="h-full "
+          >
             <Input
               id={`exercises.${index}.duration`}
               type="number"
               min={0}
               placeholder="0"
+              className="h-9 text-xs mt-auto"
+              {...register(`exercises.${index}.duration`, {
+                valueAsNumber: true,
+              })}
+            />
+          </LabelField>
+        </div>
+
+        {/* Rest (Sec) */}
+        <div className="col-span-3 sm:col-span-2 h-full">
+          <LabelField
+            htmlFor={`exercises.${index}.restSeconds`}
+            label="Rest (sec)"
+            className="h-full mt-auto"
+          >
+            <Input
+              id={`exercises.${index}.restSeconds`}
+              type="number"
+              min={0}
+              placeholder="30"
               className="h-9 text-xs"
-              {...register(`exercises.${index}.duration`, { valueAsNumber: true })}
+              {...register(`exercises.${index}.restSeconds`, {
+                valueAsNumber: true,
+              })}
             />
           </LabelField>
         </div>
@@ -305,7 +340,10 @@ export function ExerciseRow({
 
         {/* Notes / Instructions */}
         <div className="sm:col-span-7">
-          <LabelField htmlFor={`exercises.${index}.notes`} label="Notes / Instructions">
+          <LabelField
+            htmlFor={`exercises.${index}.notes`}
+            label="Notes / Instructions"
+          >
             <Textarea
               id={`exercises.${index}.notes`}
               rows={2}

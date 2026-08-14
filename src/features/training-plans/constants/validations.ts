@@ -12,10 +12,12 @@ export type PlanInfoFormValues = z.infer<typeof planInfoSchema>;
 // ─── Step 2 ────────────────────────────────────────────────────────────────────
 
 export const planExerciseSchema = z.object({
+  planExerciseId: z.number().optional(),
   exerciseId: z.number().min(1, "Exercise is required"),
   sets: z.number().min(1, "Min 1 set"),
   reps: z.number().min(0),
   duration: z.number().min(0),
+  restSeconds: z.number().min(0, "Min 0s").optional(),
   intensity: z.number().min(1).max(3).optional(),
   notes: z.string().optional(),
 });

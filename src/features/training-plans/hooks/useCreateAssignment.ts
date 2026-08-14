@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { createAssignment } from "../services/createAssignment.service";
 import { ASSIGNMENT_KEYS } from "../constants/queryKeys";
+import { LOOKUP_QUERY_KEYS } from "@/features/lookups/constants/queryKeys";
 
 export function useCreateAssignment(_planId?: number, onSuccess?: () => void) {
   const queryClient = useQueryClient();
@@ -9,6 +10,9 @@ export function useCreateAssignment(_planId?: number, onSuccess?: () => void) {
     mutationFn: createAssignment,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ASSIGNMENT_KEYS.all });
+      queryClient.invalidateQueries({
+        queryKey: LOOKUP_QUERY_KEYS.availableAthletes(),
+      });
       toast.success("Training plan assigned successfully");
       onSuccess?.();
     },

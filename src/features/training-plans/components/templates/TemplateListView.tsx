@@ -23,6 +23,7 @@ import { TemplateTableRow } from "./TemplateTableRow";
 import { TemplateEmptyState } from "./TemplateEmptyState";
 import { CreateTemplateSheet } from "./CreateTemplateSheet";
 import { EditTemplateSheet } from "./EditTemplateSheet";
+import { TemplateDetailSheet } from "./TemplateDetailSheet";
 import { AssignPlanSheet } from "../assignments/AssignPlanSheet";
 import type { TrainingPlan } from "../../types/index";
 
@@ -36,6 +37,7 @@ const ARCHIVE_OPTIONS: { value: ArchiveFilter; label: string }[] = [
 export function TemplateListView() {
   const { t } = useTranslation("training");
   const [createOpen, setCreateOpen] = useState(false);
+  const [viewPlan, setViewPlan] = useState<TrainingPlan | null>(null);
   const [assignPlan, setAssignPlan] = useState<TrainingPlan | null>(null);
   const [editPlan, setEditPlan] = useState<TrainingPlan | null>(null);
   const [archiveFilter, setArchiveFilter] = useState<ArchiveFilter>("active");
@@ -112,6 +114,7 @@ export function TemplateListView() {
                     <TemplateTableRow
                       key={plan.id}
                       plan={plan}
+                      onView={setViewPlan}
                       onEdit={setEditPlan}
                       onAssign={setAssignPlan}
                     />
@@ -136,6 +139,21 @@ export function TemplateListView() {
         open={assignPlan !== null}
         onOpenChange={(open) => {
           if (!open) setAssignPlan(null);
+        }}
+      />
+      <TemplateDetailSheet
+        plan={viewPlan}
+        open={viewPlan !== null}
+        onOpenChange={(open) => {
+          if (!open) setViewPlan(null);
+        }}
+        onEdit={(plan) => {
+          setViewPlan(null);
+          setEditPlan(plan);
+        }}
+        onAssign={(plan) => {
+          setViewPlan(null);
+          setAssignPlan(plan);
         }}
       />
     </>

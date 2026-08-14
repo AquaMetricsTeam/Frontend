@@ -1,15 +1,8 @@
 import { SearchInput } from "@/components/common/SearchInput";
-import { ComboboxSelect } from "@/components/common/ComboboxSelect";
+import { ComboboxSelect, type ComboboxOption } from "@/components/common/ComboboxSelect";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   MdAdd,
   MdFilterAlt,
@@ -18,6 +11,11 @@ import {
   MdKeyboardArrowUp,
 } from "react-icons/md";
 import { useAthletesLookup } from "@/features/lookups/hooks/useAthletesLookup";
+
+const COMPLETION_OPTIONS: ComboboxOption[] = [
+  { value: "true", label: "Completed" },
+  { value: "false", label: "Incomplete" },
+];
 
 interface FitnessFiltersBarProps {
   localSearch: string;
@@ -101,39 +99,24 @@ export function FitnessFiltersBar({
           className="w-full sm:w-48"
         />
 
-        {/* Session Completed */}
-        <div className="flex flex-col gap-1 w-full sm:w-40">
-          <Label className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/80 px-0.5">
-            Completion
-          </Label>
-          <Select
-            value={
-              sessionCompleted === undefined ? "ALL" : String(sessionCompleted)
-            }
-            onValueChange={(val) =>
-              onSessionCompletedChange(
-                val === "ALL" ? undefined : val === "true",
-              )
-            }
-          >
-            <SelectTrigger
-              className="h-9 text-xs rounded-lg"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL" className="text-xs text-muted-foreground">
-                Any Status
-              </SelectItem>
-              <SelectItem value="true" className="text-xs">
-                Completed
-              </SelectItem>
-              <SelectItem value="false" className="text-xs">
-                Incomplete
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        {/* Session Completed Combobox */}
+        <ComboboxSelect
+          label="Completion"
+          placeholder="Any Status"
+          searchPlaceholder="Search status..."
+          clearLabel="Any Status"
+          options={COMPLETION_OPTIONS}
+          value={
+            sessionCompleted === undefined ? "" : String(sessionCompleted)
+          }
+          onValueChange={(val) =>
+            onSessionCompletedChange(
+              val === "" ? undefined : val === "true",
+            )
+          }
+          hasValue={sessionCompleted !== undefined}
+          className="w-full sm:w-40"
+        />
 
         <div className="hidden sm:block h-9 w-px bg-border self-end" />
 
