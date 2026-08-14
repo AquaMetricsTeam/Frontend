@@ -77,6 +77,14 @@ export function InputField<TFieldValues extends FieldValues = FieldValues>({
             <Input
               {...field}
               value={field.value ?? ""}
+              onChange={(e) => {
+                if (effectiveType === "number") {
+                  const val = e.target.value;
+                  field.onChange(val === "" ? "" : Number(val));
+                } else {
+                  field.onChange(e);
+                }
+              }}
               id={name}
               type={effectiveType}
               placeholder={placeholder}

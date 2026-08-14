@@ -41,11 +41,15 @@ const DEFAULT_EXERCISE: ExercisePerformanceFormValues = {
 interface LogFitnessRecordDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  defaultSessionId?: number;
+  defaultAthleteId?: string;
 }
 
 export function LogFitnessRecordDrawer({
   open,
   onOpenChange,
+  defaultSessionId,
+  defaultAthleteId,
 }: LogFitnessRecordDrawerProps) {
   const createMutation = useCreateTrainingRecord();
 
@@ -61,8 +65,8 @@ export function LogFitnessRecordDrawer({
   const form = useForm<CreateFitnessRecordFormValues>({
     resolver: zodResolver(createFitnessRecordSchema),
     defaultValues: {
-      athleteId: "",
-      trainingSessionId: 0,
+      athleteId: defaultAthleteId || "",
+      trainingSessionId: defaultSessionId || 0,
       performanceRating: 7,
       fatigueLevel: 5,
       sessionCompleted: true,
@@ -99,12 +103,12 @@ export function LogFitnessRecordDrawer({
   );
   const planExercises = planRes?.data?.planExercises ?? [];
 
-  // Reset form on open, and reset exercise cards when session changes
+  // Reset form on open
   useEffect(() => {
     if (open) {
       form.reset({
-        athleteId: "",
-        trainingSessionId: 0,
+        athleteId: defaultAthleteId || "",
+        trainingSessionId: defaultSessionId || 0,
         performanceRating: 7,
         fatigueLevel: 5,
         sessionCompleted: true,
@@ -113,20 +117,32 @@ export function LogFitnessRecordDrawer({
         exercisePerformances: [{ ...DEFAULT_EXERCISE }],
       });
     }
-  }, [open, form]);
+  }, [open, form, defaultSessionId, defaultAthleteId]);
 
-  // When session changes: clear athlete + reset exercise planExerciseId choices
+  // When plan exercises load for selected session, auto-fill exercise cards with plan values
   useEffect(() => {
-    if (selectedSessionId) {
-      form.setValue("athleteId", "");
-      form.setValue(
-        "exercisePerformances",
-        form
-          .getValues("exercisePerformances")
-          .map(() => ({ ...DEFAULT_EXERCISE })),
-      );
+    if (open && selectedSessionId && planExercises.length > 0) {
+      const mappedExercises: ExercisePerformanceFormValues[] =
+        planExercises.map((pe) => ({
+          planExerciseId: pe.id ?? (pe as any).planExerciseId ?? pe.exerciseId,
+          completedSets: pe.sets ?? 3,
+          completedReps: pe.reps ?? 10,
+          completedDuration: pe.duration ?? null,
+          weightUsed: null,
+          rpe: 7,
+          status: 1,
+          coachComment: pe.notes || "",
+        }));
+      form.setValue("exercisePerformances", mappedExercises);
     }
-  }, [selectedSessionId, form]);
+  }, [open, selectedSessionId, planExercises, form]);
+
+  // When session changes: clear athlete if not default
+  useEffect(() => {
+    if (selectedSessionId && selectedSessionId !== (defaultSessionId ?? 0)) {
+      form.setValue("athleteId", "");
+    }
+  }, [selectedSessionId, form, defaultSessionId]);
 
   function handleAddExercise() {
     append({ ...DEFAULT_EXERCISE });
@@ -153,8 +169,7 @@ export function LogFitnessRecordDrawer({
         injuryOccurred: values.injuryOccurred,
         overallComment: values.overallComment || null,
         exercisePerformances: values.exercisePerformances.map((ep) => ({
-          // planExerciseId: Number(ep.planExerciseId),
-          planExerciseId: 73,
+          planExerciseId: Number(ep.planExerciseId) || 0,
           completedSets: Number(ep.completedSets || 0),
           completedReps: Number(ep.completedReps || 0),
           completedDuration: ep.completedDuration
@@ -256,7 +271,7 @@ export function LogFitnessRecordDrawer({
               </div>
 
               {/* Plan exercises hint */}
-              {selectedSessionId && (
+              {selectedSessionId ? (
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   {planLoading ? (
                     <span className="animate-pulse">
@@ -279,7 +294,7 @@ export function LogFitnessRecordDrawer({
                     </span>
                   )}
                 </div>
-              )}
+              ) : null}
 
               {/* Rating & Fatigue */}
               <div className="grid grid-cols-2 gap-4">

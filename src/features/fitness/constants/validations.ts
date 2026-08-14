@@ -8,21 +8,40 @@ const PerformanceStatusEnum = z.union([
 ]);
 
 export const exercisePerformanceSchema = z.object({
-  planExerciseId: z.number().min(1, "Exercise is required"),
-  completedSets: z.number().min(0, "Sets cannot be negative"),
-  completedReps: z.number().min(0, "Reps cannot be negative"),
-  completedDuration: z.number().nullable().optional(),
-  weightUsed: z.number().nullable().optional(),
-  rpe: z.number().min(1).max(10).nullable().optional(),
-  status: PerformanceStatusEnum,
+  planExerciseId: z.coerce.number().min(1, "Exercise is required"),
+  completedSets: z.coerce
+    .number({ invalid_type_error: "Completed sets must be a number" })
+    .min(0, "Sets cannot be negative"),
+  completedReps: z.coerce
+    .number({ invalid_type_error: "Completed reps must be a number" })
+    .min(0, "Reps cannot be negative"),
+  completedDuration: z
+    .preprocess(
+      (val) =>
+        val === "" || val === null || val === undefined ? null : Number(val),
+      z.number().nullable().optional(),
+    ),
+  weightUsed: z
+    .preprocess(
+      (val) =>
+        val === "" || val === null || val === undefined ? null : Number(val),
+      z.number().nullable().optional(),
+    ),
+  rpe: z
+    .preprocess(
+      (val) =>
+        val === "" || val === null || val === undefined ? null : Number(val),
+      z.number().min(1).max(10).nullable().optional(),
+    ),
+  status: z.coerce.number(),
   coachComment: z.string().optional().nullable(),
 });
 
 export const createFitnessRecordSchema = z.object({
   athleteId: z.string().min(1, "Athlete is required"),
-  trainingSessionId: z.number().min(1, "Session is required"),
-  performanceRating: z.number().min(1).max(10),
-  fatigueLevel: z.number().min(1).max(10),
+  trainingSessionId: z.coerce.number().min(1, "Session is required"),
+  performanceRating: z.coerce.number().min(1).max(10),
+  fatigueLevel: z.coerce.number().min(1).max(10),
   sessionCompleted: z.boolean(),
   injuryOccurred: z.boolean(),
   overallComment: z.string().optional().nullable(),

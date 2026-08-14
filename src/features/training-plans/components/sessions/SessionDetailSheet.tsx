@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Sheet,
   SheetContent,
@@ -17,11 +17,16 @@ import {
   MdLocationOn,
   MdFactCheck,
   MdFitnessCenter,
+  MdSportsGymnastics,
   MdCheckCircle,
   MdCancel,
   MdSchedule,
   MdNotes,
+  MdInfoOutline,
+  MdPool,
 } from "react-icons/md";
+import { useAuth } from "@/components/Providers/AuthProvider";
+import { Loading } from "@/components/feedbacks/Loading";
 import { useTrainingSession } from "../../hooks/useTrainingSession";
 import { useSessionAttendance } from "../../hooks/useSessionAttendance";
 import { useMarkAttendance } from "../../hooks/useMarkAttendance";
@@ -29,27 +34,24 @@ import { useTrainingPlan } from "../../hooks/useTrainingPlan";
 import { AttendanceStatusEnum, type TrainingSession } from "../../types/index";
 import { cn } from "@/lib/utils";
 
-import { MdPool } from "react-icons/md";
 import { useSwimmingPerformancesByTrainingRecord } from "@/features/swimming-performance/hooks/useSwimmingPerformancesByTrainingRecord";
 import { LogSwimmingPerformanceDrawer } from "@/features/swimming-performance/components/LogSwimmingPerformanceDrawer";
 import { SwimmingPerformanceDetailSheet } from "@/features/swimming-performance/components/SwimmingPerformanceDetailSheet";
-import { STROKE_METADATA, STATUS_METADATA } from "@/features/swimming-performance/constants/enums";
+import {
+  STROKE_METADATA,
+  STATUS_METADATA,
+} from "@/features/swimming-performance/constants/enums";
 import { formatTimeSpanDisplay } from "@/features/swimming-performance/components/MmSsInput";
 import type { SwimmingPerformance } from "@/features/swimming-performance/types";
 
+import { useTrainingRecords } from "@/features/training-record/hooks/useTrainingRecords";
+import { LogFitnessRecordDrawer } from "@/features/fitness/components/LogFitnessRecordDrawer";
+import { FitnessRecordDetailSheet } from "@/features/fitness/components/FitnessRecordDetailSheet";
+import type { TrainingRecordResponse } from "@/features/training-record/types";
+
 type AttendanceStatus = "Present" | "Late" | "Absent";
 
-type SessionTab = "overview" | "attendance" | "swimming";
-
-const TAB_OPTIONS: {
-  value: SessionTab;
-  label: string;
-  icon: React.ElementType;
-}[] = [
-  { value: "overview", label: "Details & Plan", icon: MdFitnessCenter },
-  { value: "attendance", label: "Attendance Tracker", icon: MdFactCheck },
-  { value: "swimming", label: "Swimming Drills", icon: MdPool },
-];
+type SessionTab = "overview" | "attendance" | "swimming" | "fitness";
 
 interface SessionDetailSheetProps {
   session: TrainingSession | null;
@@ -62,6 +64,29 @@ export function SessionDetailSheet({
   open,
   onOpenChange,
 }: SessionDetailSheetProps) {
+  const { hasRole } = useAuth();
+  const isSwimmingCoach = hasRole("SwimmingCoach");
+  const isFitnessCoach = hasRole("FitnessCoach");
+  const isAdminOrHead = hasRole("Admin") || hasRole("HeadCoach");
+
+  // Determine tab access based on role
+  const canViewSwimming = isSwimmingCoach || isAdminOrHead || (!isSwimmingCoach && !isFitnessCoach);
+  const canViewFitness = isFitnessCoach || isAdminOrHead || (!isSwimmingCoach && !isFitnessCoach);
+
+  const tabOptions = useMemo(() => {
+    const opts: { value: SessionTab; label: string; icon: React.ElementType }[] = [
+      { value: "overview", label: "Details & Plan", icon: MdSportsGymnastics },
+      { value: "attendance", label: "Attendance Tracker", icon: MdFactCheck },
+    ];
+    if (canViewSwimming) {
+      opts.push({ value: "swimming", label: "Swimming Drills", icon: MdPool });
+    }
+    if (canViewFitness) {
+      opts.push({ value: "fitness", label: "Fitness Drills", icon: MdFitnessCenter });
+    }
+    return opts;
+  }, [canViewSwimming, canViewFitness]);
+
   const [tab, setTab] = useState<SessionTab>("overview");
   const [search, setSearch] = useState("");
   const [attendance, setAttendance] = useState<
@@ -71,24 +96,46 @@ export function SessionDetailSheet({
   const sessionId = session?.id ?? 0;
   const planId = session?.trainingPlanId ?? 0;
 
+  // Auto-switch to valid tab if current tab is hidden for role
+  useEffect(() => {
+    if (!tabOptions.some((o) => o.value === tab)) {
+      setTab(tabOptions[0]?.value || "overview");
+    }
+  }, [tabOptions, tab]);
+
+  // Swimming state & query
   const [isLogDrawerOpen, setIsLogDrawerOpen] = useState(false);
   const [selectedSwimmingDetail, setSelectedSwimmingDetail] =
     useState<SwimmingPerformance | null>(null);
   const [isSwimmingDetailOpen, setIsSwimmingDetailOpen] = useState(false);
 
-  const { data: swimmingRes } = useSwimmingPerformancesByTrainingRecord(
-    sessionId,
-    open && sessionId > 0,
-  );
+  const { data: swimmingRes, isLoading: swimmingLoading } =
+    useSwimmingPerformancesByTrainingRecord(
+      sessionId,
+      open && sessionId > 0 && canViewSwimming,
+    );
   const swimmingPerformances = swimmingRes?.data ?? [];
+
+  // Fitness state & query
+  const [isFitnessDrawerOpen, setIsFitnessDrawerOpen] = useState(false);
+  const [selectedFitnessDetail, setSelectedFitnessDetail] =
+    useState<TrainingRecordResponse | null>(null);
+  const [isFitnessDetailOpen, setIsFitnessDetailOpen] = useState(false);
+
+  const { data: fitnessRes, isLoading: fitnessLoading } = useTrainingRecords(
+    { trainingSessionId: sessionId, pageSize: 50 },
+  );
+  const fitnessRecords = fitnessRes?.data?.items ?? [];
 
   // Fetch plan details for exercises breakdown
   const { data: planRes } = useTrainingPlan(planId, open && planId > 0);
   const planExercises = planRes?.data?.planExercises ?? [];
 
   // Fetch single session detail (includes athletes via GET /api/training-sessions/{id})
-  const { data: sessionDetailRes } =
-    useTrainingSession(sessionId, open && sessionId > 0);
+  const { data: sessionDetailRes } = useTrainingSession(
+    sessionId,
+    open && sessionId > 0,
+  );
   const athletes = sessionDetailRes?.data?.athletes ?? session?.athletes ?? [];
 
   // Fetch session attendance records
@@ -104,15 +151,15 @@ export function SessionDetailSheet({
   useEffect(() => {
     if (athletes.length > 0) {
       const initial: Record<string, AttendanceStatus> = {};
-      athletes.forEach((a) => {
-        initial[a.athleteId] = "Present";
-      });
 
       if (backendRecords.length > 0) {
         backendRecords.forEach((rec) => {
-          if (rec.status === AttendanceStatusEnum.Late) initial[rec.athleteId] = "Late";
-          else if (rec.status === AttendanceStatusEnum.Absent) initial[rec.athleteId] = "Absent";
-          else initial[rec.athleteId] = "Present";
+          if (rec.status === AttendanceStatusEnum.Late)
+            initial[rec.athleteId] = "Late";
+          else if (rec.status === AttendanceStatusEnum.Absent)
+            initial[rec.athleteId] = "Absent";
+          else if (rec.status === AttendanceStatusEnum.Present)
+            initial[rec.athleteId] = "Present";
         });
       }
 
@@ -121,6 +168,8 @@ export function SessionDetailSheet({
   }, [athletes, backendRecords]);
 
   if (!session) return null;
+
+  const hasTakenAttendance = backendRecords.length > 0;
 
   const filteredAthletes = athletes.filter((a) =>
     (a.fullName ?? "").toLowerCase().includes(search.toLowerCase()),
@@ -131,13 +180,19 @@ export function SessionDetailSheet({
     present: Object.values(attendance).filter((s) => s === "Present").length,
     late: Object.values(attendance).filter((s) => s === "Late").length,
     absent: Object.values(attendance).filter((s) => s === "Absent").length,
+    unmarked: athletes.filter((a) => !attendance[a.athleteId]).length,
   };
 
   function setStatus(athleteId: string, status: AttendanceStatus) {
-    setAttendance((prev) => ({
-      ...prev,
-      [athleteId]: status,
-    }));
+    setAttendance((prev) => {
+      const next = { ...prev };
+      if (next[athleteId] === status) {
+        delete next[athleteId];
+      } else {
+        next[athleteId] = status;
+      }
+      return next;
+    });
   }
 
   function handleSaveAttendance() {
@@ -178,21 +233,18 @@ export function SessionDetailSheet({
           </SheetDescription>
         </SheetHeader>
 
-        {/* Tab Selector */}
         <div className="px-6 pt-4 pb-2 border-b border-border bg-card/40">
           <SegmentedControl
-            options={TAB_OPTIONS}
+            options={tabOptions}
             value={tab}
-            onChange={(v) => setTab(v)}
+            onChange={(v) => setTab(v as SessionTab)}
             className="w-full"
           />
         </div>
 
-        {/* Content Body */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
           {tab === "overview" && (
             <>
-              {/* Session Meta Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="flex flex-col gap-1 p-3 rounded-xl border border-border bg-card">
                   <span className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground uppercase">
@@ -222,77 +274,91 @@ export function SessionDetailSheet({
                 </div>
               </div>
 
-              {/* Session Notes */}
-              {session.notes && (
-                <div className="p-3.5 rounded-xl border border-border bg-muted/20 space-y-1">
-                  <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                    <MdNotes className="size-4 text-primary" /> Instructions &
-                    Notes
-                  </span>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    {session.notes}
-                  </p>
-                </div>
-              )}
-
-              {/* Plan Exercises Breakdown */}
-              <div className="space-y-3 pt-2">
+              <div className="p-4 rounded-xl border border-border bg-card space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                    <MdFitnessCenter className="size-4 text-primary" />
-                    Training Plan Exercises ({planExercises.length})
-                  </h4>
+                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Assigned Plan
+                  </span>
+                  <Badge variant="outline" className="text-xs font-semibold">
+                    {session.trainingPlanTitle}
+                  </Badge>
                 </div>
+
+                {planRes?.data?.description && (
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {planRes.data.description}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                  <MdFitnessCenter className="size-4 text-primary" />
+                  Plan Exercises ({planExercises.length})
+                </h4>
 
                 {planExercises.length === 0 ? (
-                  <p className="text-xs text-muted-foreground py-4 text-center">
-                    No exercises listed for this training plan template.
-                  </p>
+                  <div className="p-6 rounded-xl border border-dashed border-border text-center text-xs text-muted-foreground">
+                    No exercises defined in this plan template.
+                  </div>
                 ) : (
                   <div className="space-y-2">
-                    {planExercises.map((ex, idx) => (
+                    {planExercises.map((pe, idx) => (
                       <div
-                        key={ex.exerciseId || idx}
-                        className="flex flex-col gap-1.5 p-3 rounded-xl border border-border bg-card text-xs"
+                        key={pe.id}
+                        className="flex items-start justify-between gap-3 p-3 rounded-xl border border-border bg-card hover:bg-muted/30 transition-all"
                       >
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-foreground">
-                            #{idx + 1}{" "}
-                            {ex.exerciseName ?? `Exercise #${ex.exerciseId}`}
+                        <div className="flex items-start gap-3 min-w-0">
+                          <span className="flex size-6 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary mt-0.5">
+                            {pe.orderIndex || idx + 1}
                           </span>
-                          <Badge variant="outline" className="text-[10px]">
-                            {ex.intensity === 1
-                              ? "Low Intensity"
-                              : ex.intensity === 3
-                                ? "High Intensity"
-                                : "Medium Intensity"}
-                          </Badge>
+                          <div className="min-w-0">
+                            <span className="text-xs font-semibold text-foreground truncate block">
+                              {pe.exerciseName}
+                            </span>
+                            {pe.notes && (
+                              <p className="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1">
+                                <MdNotes className="size-3 shrink-0" />
+                                {pe.notes}
+                              </p>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex items-center gap-4 text-muted-foreground text-[11px]">
-                          <span>
-                            Sets:{" "}
-                            <strong className="text-foreground">
-                              {ex.sets}
-                            </strong>
-                          </span>
-                          <span>
-                            Reps:{" "}
-                            <strong className="text-foreground">
-                              {ex.reps}
-                            </strong>
-                          </span>
-                          <span>
-                            Duration:{" "}
-                            <strong className="text-foreground">
-                              {ex.duration} min
-                            </strong>
-                          </span>
+
+                        <div className="flex flex-wrap items-center gap-1.5 shrink-0">
+                          {pe.sets && (
+                            <Badge
+                              variant="secondary"
+                              className="text-[10px] px-1.5 py-0"
+                            >
+                              {pe.sets} sets
+                            </Badge>
+                          )}
+                          {pe.reps && (
+                            <Badge
+                              variant="secondary"
+                              className="text-[10px] px-1.5 py-0"
+                            >
+                              {pe.reps} reps
+                            </Badge>
+                          )}
+                          {pe.durationMinutes && (
+                            <Badge
+                              variant="secondary"
+                              className="text-[10px] px-1.5 py-0"
+                            >
+                              {pe.durationMinutes}m
+                            </Badge>
+                          )}
+                          {pe.restSeconds && (
+                            <Badge
+                              variant="outline"
+                              className="text-[10px] px-1.5 py-0 text-muted-foreground"
+                            >
+                              {pe.restSeconds}s rest
+                            </Badge>
+                          )}
                         </div>
-                        {ex.notes && (
-                          <p className="text-[11px] text-muted-foreground/80 pt-0.5 italic">
-                            &quot;{ex.notes}&quot;
-                          </p>
-                        )}
                       </div>
                     ))}
                   </div>
@@ -303,55 +369,46 @@ export function SessionDetailSheet({
 
           {tab === "attendance" && (
             <div className="space-y-4">
-              {/* Stats Bar */}
-              <div className="grid grid-cols-4 gap-2 text-center">
+              {!hasTakenAttendance && (
+                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-800 dark:text-amber-300 text-xs leading-relaxed">
+                  <MdInfoOutline className="size-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+                  <div className="flex-1">
+                    <span className="font-semibold">
+                      Attendance Not Taken Yet
+                    </span>{" "}
+                    — No attendance records have been saved for this session.
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                 <div className="p-2.5 rounded-xl border border-border bg-card flex flex-col items-center">
-                  <span className="text-[10px] uppercase font-semibold text-muted-foreground">
-                    Total
-                  </span>
-                  <span className="text-sm font-bold text-foreground">
-                    {stats.total}
-                  </span>
+                  <span className="text-[10px] uppercase font-semibold text-muted-foreground">Total</span>
+                  <span className="text-sm font-bold text-foreground">{stats.total}</span>
                 </div>
                 <div className="p-2.5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 flex flex-col items-center">
-                  <span className="text-[10px] uppercase font-semibold text-emerald-500">
-                    Present
-                  </span>
-                  <span className="text-sm font-bold text-emerald-500">
-                    {stats.present}
-                  </span>
+                  <span className="text-[10px] uppercase font-semibold text-emerald-500">Present</span>
+                  <span className="text-sm font-bold text-emerald-500">{stats.present}</span>
                 </div>
                 <div className="p-2.5 rounded-xl border border-amber-500/20 bg-amber-500/10 flex flex-col items-center">
-                  <span className="text-[10px] uppercase font-semibold text-amber-500">
-                    Late
-                  </span>
-                  <span className="text-sm font-bold text-amber-500">
-                    {stats.late}
-                  </span>
+                  <span className="text-[10px] uppercase font-semibold text-amber-500">Late</span>
+                  <span className="text-sm font-bold text-amber-500">{stats.late}</span>
                 </div>
                 <div className="p-2.5 rounded-xl border border-rose-500/20 bg-rose-500/10 flex flex-col items-center">
-                  <span className="text-[10px] uppercase font-semibold text-rose-500">
-                    Absent
-                  </span>
-                  <span className="text-sm font-bold text-rose-500">
-                    {stats.absent}
-                  </span>
+                  <span className="text-[10px] uppercase font-semibold text-rose-500">Absent</span>
+                  <span className="text-sm font-bold text-rose-500">{stats.absent}</span>
                 </div>
               </div>
 
-              {/* Search Athletes */}
               <SearchInput
                 value={search}
                 onChange={setSearch}
                 placeholder="Search athletes for attendance..."
               />
 
-              {/* Athletes List */}
               <div className="space-y-2">
                 {filteredAthletes.map((athlete) => {
-                  const currentStatus =
-                    attendance[athlete.athleteId] ?? "Present";
-
+                  const currentStatus = attendance[athlete.athleteId];
                   return (
                     <div
                       key={athlete.athleteId}
@@ -359,62 +416,20 @@ export function SessionDetailSheet({
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <Avatar className="size-8 shrink-0">
-                          <AvatarImage
-                            src={athlete.profilePictureUrl ?? undefined}
-                          />
-                          <AvatarFallback className="text-xs font-semibold">
-                            {athlete.fullName.slice(0, 2).toUpperCase()}
-                          </AvatarFallback>
+                          <AvatarImage src={athlete.profilePictureUrl ?? undefined} />
+                          <AvatarFallback className="text-xs font-semibold">{athlete.fullName.slice(0, 2).toUpperCase()}</AvatarFallback>
                         </Avatar>
-                        <span className="text-xs font-medium text-foreground truncate">
-                          {athlete.fullName}
-                        </span>
+                        <span className="text-xs font-medium text-foreground truncate">{athlete.fullName}</span>
                       </div>
-
-                      {/* Status Toggle Group */}
                       <div className="flex items-center gap-1 shrink-0">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setStatus(athlete.athleteId, "Present")
-                          }
-                          className={cn(
-                            "px-2 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1",
-                            currentStatus === "Present"
-                              ? "bg-emerald-500/20 text-emerald-500 border border-emerald-500/40"
-                              : "text-muted-foreground hover:bg-muted/40",
-                          )}
-                        >
-                          <MdCheckCircle className="size-3" />
-                          Present
+                        <button type="button" onClick={() => setStatus(athlete.athleteId, "Present")} className={cn("px-2 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1", currentStatus === "Present" ? "bg-emerald-500/20 text-emerald-500 border border-emerald-500/40" : "text-muted-foreground hover:bg-muted/40")}>
+                          <MdCheckCircle className="size-3" /> Present
                         </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setStatus(athlete.athleteId, "Late")}
-                          className={cn(
-                            "px-2 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1",
-                            currentStatus === "Late"
-                              ? "bg-amber-500/20 text-amber-500 border border-amber-500/40"
-                              : "text-muted-foreground hover:bg-muted/40",
-                          )}
-                        >
-                          <MdSchedule className="size-3" />
-                          Late
+                        <button type="button" onClick={() => setStatus(athlete.athleteId, "Late")} className={cn("px-2 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1", currentStatus === "Late" ? "bg-amber-500/20 text-amber-500 border border-amber-500/40" : "text-muted-foreground hover:bg-muted/40")}>
+                          <MdSchedule className="size-3" /> Late
                         </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setStatus(athlete.athleteId, "Absent")}
-                          className={cn(
-                            "px-2 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1",
-                            currentStatus === "Absent"
-                              ? "bg-rose-500/20 text-rose-500 border border-rose-500/40"
-                              : "text-muted-foreground hover:bg-muted/40",
-                          )}
-                        >
-                          <MdCancel className="size-3" />
-                          Absent
+                        <button type="button" onClick={() => setStatus(athlete.athleteId, "Absent")} className={cn("px-2 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1", currentStatus === "Absent" ? "bg-rose-500/20 text-rose-500 border border-rose-500/40" : "text-muted-foreground hover:bg-muted/40")}>
+                          <MdCancel className="size-3" /> Absent
                         </button>
                       </div>
                     </div>
@@ -424,7 +439,7 @@ export function SessionDetailSheet({
             </div>
           )}
 
-          {tab === "swimming" && (
+          {tab === "swimming" && canViewSwimming && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
@@ -440,14 +455,13 @@ export function SessionDetailSheet({
                 </Button>
               </div>
 
-              {swimmingPerformances.length === 0 ? (
+              {swimmingLoading ? (
+                <Loading label="Loading swimming drills…" className="py-12" />
+              ) : swimmingPerformances.length === 0 ? (
                 <div className="p-8 rounded-xl border border-dashed border-border text-center space-y-2">
                   <MdPool className="size-8 text-muted-foreground/40 mx-auto" />
                   <p className="text-xs font-semibold text-foreground">
                     No swimming drills logged for this session record yet.
-                  </p>
-                  <p className="text-[11px] text-muted-foreground">
-                    Click &quot;+ Log Drill&quot; to record swimming sets, split lap times, and technical ratings.
                   </p>
                   <Button
                     size="sm"
@@ -462,7 +476,6 @@ export function SessionDetailSheet({
                 <div className="space-y-2.5">
                   {swimmingPerformances.map((item) => {
                     const strokeMeta = STROKE_METADATA[item.stroke];
-                    const statusMeta = STATUS_METADATA[item.status];
                     return (
                       <div
                         key={item.id}
@@ -473,37 +486,14 @@ export function SessionDetailSheet({
                         className="p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-all cursor-pointer space-y-2 shadow-xs"
                       >
                         <div className="flex items-center justify-between">
-                          <Badge
-                            variant="outline"
-                            className={cn(
-                              "text-[10px] font-bold px-2 py-0.5",
-                              strokeMeta?.badgeClass,
-                            )}
-                          >
+                          <Badge variant="outline" className={cn("text-[10px] font-bold px-2 py-0.5", strokeMeta?.badgeClass)}>
                             {strokeMeta?.shortLabel || "Free"}
                           </Badge>
-
-                          <span className="text-xs font-bold text-primary">
-                            {item.distanceMeters}m × {item.repetitions} reps
-                          </span>
+                          <span className="text-xs font-bold text-primary">{item.distanceMeters}m × {item.repetitions} reps</span>
                         </div>
-
                         <div className="flex items-center justify-between text-xs font-mono">
-                          <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                            Best: {formatTimeSpanDisplay(item.bestRepTime)}
-                          </span>
-                          <span className="text-foreground">
-                            Avg: {formatTimeSpanDisplay(item.averageRepTime)}
-                          </span>
-                          <Badge
-                            variant="outline"
-                            className={cn(
-                              "text-[10px] font-semibold px-1.5 py-0",
-                              statusMeta?.badgeClass,
-                            )}
-                          >
-                            {statusMeta?.labelKey ? statusMeta.badgeClass : "Completed"}
-                          </Badge>
+                          <span className="text-emerald-600 dark:text-emerald-400 font-bold">Best: {formatTimeSpanDisplay(item.bestRepTime)}</span>
+                          <span className="text-foreground">Avg: {formatTimeSpanDisplay(item.averageRepTime)}</span>
                         </div>
                       </div>
                     );
@@ -512,39 +502,124 @@ export function SessionDetailSheet({
               )}
             </div>
           )}
+
+          {tab === "fitness" && canViewFitness && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                  <MdFitnessCenter className="size-4 text-amber-500" />
+                  Logged Fitness Records ({fitnessRecords.length})
+                </h4>
+                <Button
+                  size="sm"
+                  onClick={() => setIsFitnessDrawerOpen(true)}
+                  className="h-8 text-xs rounded-lg gap-1.5 cursor-pointer"
+                >
+                  + Log Fitness Record
+                </Button>
+              </div>
+
+              {fitnessLoading ? (
+                <Loading label="Loading fitness records…" className="py-12" />
+              ) : fitnessRecords.length === 0 ? (
+                <div className="p-8 rounded-xl border border-dashed border-border text-center space-y-2">
+                  <MdFitnessCenter className="size-8 text-muted-foreground/40 mx-auto" />
+                  <p className="text-xs font-semibold text-foreground">
+                    No fitness performance records logged for this session yet.
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">
+                    Click &quot;+ Log Fitness Record&quot; to record workout data.
+                  </p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setIsFitnessDrawerOpen(true)}
+                    className="mt-2 text-xs rounded-lg cursor-pointer"
+                  >
+                    + Log Fitness Record
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  {fitnessRecords.map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() => {
+                        setSelectedFitnessDetail(item);
+                        setIsFitnessDetailOpen(true);
+                      }}
+                      className="p-3.5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-all cursor-pointer space-y-2 shadow-xs"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Avatar className="size-7">
+                            <AvatarFallback className="text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                              {(item.athleteName || "AT").slice(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-xs font-semibold text-foreground">{item.athleteName}</span>
+                        </div>
+                        <Badge variant="outline" className={cn("text-[10px] font-semibold px-2 py-0.5", item.sessionCompleted ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/30" : "bg-rose-500/10 text-rose-600 border-rose-500/30")}>
+                          {item.sessionCompleted ? "Completed" : "Incomplete"}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-between text-xs font-mono text-muted-foreground">
+                        <span className="text-amber-600 dark:text-amber-400 font-medium">Rating: {item.performanceRating}/10</span>
+                        <span>Fatigue: {item.fatigueLevel}/10</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Drawers */}
-        <LogSwimmingPerformanceDrawer
-          open={isLogDrawerOpen}
-          onOpenChange={setIsLogDrawerOpen}
-        />
+        {canViewSwimming && (
+          <>
+            <LogSwimmingPerformanceDrawer
+              open={isLogDrawerOpen}
+              onOpenChange={setIsLogDrawerOpen}
+              defaultSessionId={sessionId}
+            />
+            <SwimmingPerformanceDetailSheet
+              record={
+                selectedSwimmingDetail
+                  ? {
+                      id: selectedSwimmingDetail.trainingRecordId || sessionId,
+                      athleteId: selectedSwimmingDetail.athleteId || "",
+                      athleteName: selectedSwimmingDetail.athleteName || session?.title || "Athlete",
+                      trainingSessionId: sessionId,
+                      sessionTitle: session?.title || "Training Session",
+                      sessionDate: session?.sessionDate || "",
+                      performanceRating: 8,
+                      fatigueLevel: 5,
+                      sessionCompleted: true,
+                      injuryOccurred: false,
+                    }
+                  : null
+              }
+              open={isSwimmingDetailOpen}
+              onOpenChange={setIsSwimmingDetailOpen}
+            />
+          </>
+        )}
 
-        <SwimmingPerformanceDetailSheet
-          record={
-            selectedSwimmingDetail
-              ? {
-                  id: selectedSwimmingDetail.trainingRecordId || sessionId,
-                  athleteId: selectedSwimmingDetail.athleteId || "",
-                  athleteName:
-                    selectedSwimmingDetail.athleteName ||
-                    session?.title ||
-                    "Athlete",
-                  trainingSessionId: sessionId,
-                  sessionTitle: session?.title || "Training Session",
-                  sessionDate: session?.sessionDate || "",
-                  performanceRating: 8,
-                  fatigueLevel: 5,
-                  sessionCompleted: true,
-                  injuryOccurred: false,
-                }
-              : null
-          }
-          open={isSwimmingDetailOpen}
-          onOpenChange={setIsSwimmingDetailOpen}
-        />
+        {canViewFitness && (
+          <>
+            <LogFitnessRecordDrawer
+              open={isFitnessDrawerOpen}
+              onOpenChange={setIsFitnessDrawerOpen}
+              defaultSessionId={sessionId}
+            />
+            <FitnessRecordDetailSheet
+              record={selectedFitnessDetail}
+              open={isFitnessDetailOpen}
+              onOpenChange={setIsFitnessDetailOpen}
+            />
+          </>
+        )}
 
-        {/* Footer */}
         {tab === "attendance" && (
           <div className="px-6 pb-6 pt-4 border-t border-border shrink-0">
             <Button

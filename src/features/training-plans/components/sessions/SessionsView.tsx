@@ -97,17 +97,11 @@ export function SessionsView() {
     useSessionAttendance(sessionId, sessionId > 0);
   const backendRecords = attendanceRes?.data ?? [];
 
-  // Initialize or Sync attendanceMap whenever sessionAthletes or backend records change
+  // Initialize or Sync attendanceMap whenever backend records change
   useEffect(() => {
     if (sessionId === 0) return;
 
     const initialMap: Record<string, number> = {};
-
-    if (sessionAthletes.length > 0) {
-      sessionAthletes.forEach((ath) => {
-        initialMap[ath.athleteId] = AttendanceStatusEnum.Present;
-      });
-    }
 
     if (backendRecords.length > 0) {
       backendRecords.forEach((rec) => {
@@ -117,23 +111,12 @@ export function SessionsView() {
 
     setAttendanceMap(initialMap);
     setInitialAttendanceMap(initialMap);
-  }, [sessionId, backendRecords, sessionAthletes]);
+  }, [sessionId, backendRecords]);
 
   // Mark attendance mutation
   const markMutation = useMarkAttendance(sessionId, () => {
     setInitialAttendanceMap({ ...attendanceMap });
   });
-
-  // Calculate status summary metrics
-  const stats = useMemo(() => {
-    const values = Object.values(attendanceMap);
-    return {
-      present: values.filter((s) => s === AttendanceStatusEnum.Present).length,
-      absent: values.filter((s) => s === AttendanceStatusEnum.Absent).length,
-      late: values.filter((s) => s === AttendanceStatusEnum.Late).length,
-      excused: values.filter((s) => s === AttendanceStatusEnum.Excused).length,
-    };
-  }, [attendanceMap]);
 
   // Determine list of displayed athletes retrieved from GET /api/training-sessions/{id}
   const athleteList = useMemo(() => {
@@ -152,6 +135,19 @@ export function SessionsView() {
       profilePictureUrl: null as string | null,
     }));
   }, [sessionAthletes, backendRecords]);
+
+  // Calculate status summary metrics
+  const stats = useMemo(() => {
+    const values = athleteList.map((a) => attendanceMap[a.athleteId]);
+    return {
+      total: athleteList.length,
+      present: values.filter((s) => s === AttendanceStatusEnum.Present).length,
+      absent: values.filter((s) => s === AttendanceStatusEnum.Absent).length,
+      late: values.filter((s) => s === AttendanceStatusEnum.Late).length,
+      excused: values.filter((s) => s === AttendanceStatusEnum.Excused).length,
+      unmarked: values.filter((s) => s === undefined).length,
+    };
+  }, [attendanceMap, athleteList]);
 
   const filteredAthletes = useMemo(() => {
     if (!searchAthletes.trim()) return athleteList;
@@ -302,20 +298,35 @@ export function SessionsView() {
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border">
                   <div>
-                    <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
-                      <span>Attendance — {selectedSession.title}</span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="size-6 text-muted-foreground hover:text-foreground"
-                        title="View Session Details & Exercises"
-                        onClick={() => setDetailOpen(true)}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
+                        <span>Attendance — {selectedSession.title}</span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="size-6 text-muted-foreground hover:text-foreground cursor-pointer"
+                          title="View Session Details & Exercises"
+                          onClick={() => setDetailOpen(true)}
+                        >
+                          <MdInfoOutline className="size-4" />
+                        </Button>
+                      </h3>
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "text-[10px] font-semibold px-2 py-0.5",
+                          backendRecords.length > 0
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+                            : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
+                        )}
                       >
-                        <MdInfoOutline className="size-4" />
-                      </Button>
-                    </h3>
-                    <p className="text-xs text-muted-foreground mt-0.5 flex flex-wrap items-center gap-2">
+                        {backendRecords.length > 0
+                          ? "Attendance Recorded"
+                          : "Not Taken Yet"}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1 flex flex-wrap items-center gap-2">
                       <span>{selectedSession.sessionDate}</span>
                       <span>•</span>
                       <span>
@@ -338,23 +349,41 @@ export function SessionsView() {
                   </Button>
                 </div>
 
+                {/* Not Taken Yet Notice Banner */}
+                {backendRecords.length === 0 && (
+                  <div className="flex items-start gap-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-800 dark:text-amber-300 text-xs leading-relaxed">
+                    <MdInfoOutline className="size-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+                    <div className="flex-1">
+                      <span className="font-semibold">Attendance Not Taken Yet</span> — No attendance records have been saved for this session. Mark athletes below or click &quot;Mark all Present&quot;.
+                    </div>
+                  </div>
+                )}
+
                 {/* Summary Metrics Bar */}
-                <div className="flex items-center gap-2 text-xs py-2 px-3 rounded-xl bg-muted/40 border border-border">
-                  <span className="font-semibold text-emerald-500">
+                <div className="flex flex-wrap items-center gap-2 text-xs py-2 px-3 rounded-xl bg-muted/40 border border-border">
+                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                     {stats.present} Present
                   </span>
                   <span className="text-muted-foreground/40">•</span>
-                  <span className="font-semibold text-rose-500">
+                  <span className="font-semibold text-rose-600 dark:text-rose-400">
                     {stats.absent} Absent
                   </span>
                   <span className="text-muted-foreground/40">•</span>
-                  <span className="font-semibold text-amber-500">
+                  <span className="font-semibold text-amber-600 dark:text-amber-400">
                     {stats.late} Late
                   </span>
                   <span className="text-muted-foreground/40">•</span>
                   <span className="font-semibold text-muted-foreground">
                     {stats.excused} Excused
                   </span>
+                  {stats.unmarked > 0 && (
+                    <>
+                      <span className="text-muted-foreground/40">•</span>
+                      <span className="font-semibold text-amber-600 dark:text-amber-400">
+                        {stats.unmarked} Unmarked
+                      </span>
+                    </>
+                  )}
                 </div>
 
                 {/* Search Bar */}
@@ -376,9 +405,8 @@ export function SessionsView() {
                 ) : (
                   <div className="space-y-2 max-h-[440px] overflow-y-auto pr-1">
                     {filteredAthletes.map((athlete) => {
-                      const currentStatus =
-                        attendanceMap[athlete.athleteId] ??
-                        AttendanceStatusEnum.Present;
+                      const currentStatus = attendanceMap[athlete.athleteId];
+                      const isUnmarked = currentStatus === undefined;
                       const isModified =
                         initialAttendanceMap[athlete.athleteId] !== undefined &&
                         initialAttendanceMap[athlete.athleteId] !==
@@ -409,6 +437,14 @@ export function SessionsView() {
                                   className="text-[10px] py-0 px-1.5 font-normal text-muted-foreground border-border"
                                 >
                                   {athlete.groupName}
+                                </Badge>
+                              )}
+                              {isUnmarked && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-[10px] py-0 px-1.5 font-normal text-amber-600 dark:text-amber-400 border-amber-500/30 bg-amber-500/5"
+                                >
+                                  Not Marked
                                 </Badge>
                               )}
                               {isModified && (

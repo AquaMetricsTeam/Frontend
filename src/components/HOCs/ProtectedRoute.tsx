@@ -1,8 +1,8 @@
 import { type ReactNode } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "@/components/Providers/AuthProvider";
+import { Loading } from "@/components/feedbacks/Loading";
 import type { UserRole } from "@/features/auth/types";
-
 
 interface ProtectedRouteProps {
   allowedRoles?: UserRole[];
@@ -20,10 +20,7 @@ export function ProtectedRoute({
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-sm text-muted-foreground">Loading…</p>
-        </div>
+        <Loading />
       </div>
     );
   }

@@ -98,8 +98,18 @@ export function ExercisePerformanceCard({
             Exercise {index + 1}
           </Badge>
           {selectedExercise && (
-            <span className="text-xs text-muted-foreground font-medium">
-              {selectedExercise.sets}×{selectedExercise.reps} planned
+            <span className="text-xs text-muted-foreground font-medium flex items-center gap-1.5">
+              <span>
+                {selectedExercise.sets}×{selectedExercise.reps} planned
+              </span>
+              {(selectedExercise.duration || (selectedExercise as any).durationMinutes) ? (
+                <>
+                  <span>•</span>
+                  <span>
+                    {selectedExercise.duration || (selectedExercise as any).durationMinutes} min planned
+                  </span>
+                </>
+              ) : null}
             </span>
           )}
         </div>
@@ -131,7 +141,25 @@ export function ExercisePerformanceCard({
           emptyMessage="No exercises in this plan."
           options={exerciseOptions}
           value={currentPlanExerciseId ? String(currentPlanExerciseId) : ""}
-          onValueChange={(val) => setFieldValue("planExerciseId", Number(val))}
+          onValueChange={(val) => {
+            const chosenId = Number(val);
+            setFieldValue("planExerciseId", chosenId);
+            const found = planExercises.find((ex) => getExerciseId(ex) === chosenId);
+            if (found) {
+              if (found.sets !== undefined && found.sets !== null) {
+                setFieldValue("completedSets", found.sets);
+              }
+              if (found.reps !== undefined && found.reps !== null) {
+                setFieldValue("completedReps", found.reps);
+              }
+              if (found.duration !== undefined && found.duration !== null) {
+                setFieldValue("completedDuration", found.duration);
+              }
+              if (found.notes) {
+                setFieldValue("coachComment", found.notes);
+              }
+            }
+          }}
           hasValue={!!currentPlanExerciseId && Number(currentPlanExerciseId) > 0}
           disabled={planExercises.length === 0}
           error={(errors.exercisePerformances as any)?.[index]?.planExerciseId?.message}

@@ -12,6 +12,8 @@ import {
   MdSportsGymnastics,
   MdRestaurant,
   MdFitnessCenter,
+  MdEvent,
+  MdAssignment,
 } from "react-icons/md";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -64,6 +66,34 @@ export const NAV_GROUPS: NavGroup[] = [
     labelKey: "common:nav.groups.programs",
     items: [
       {
+        key: "exercises",
+        labelKey: "common:nav.items.exercises",
+        icon: MdSportsGymnastics,
+        path: "/exercises",
+        allowedRoles: ["SwimmingCoach", "FitnessCoach", "NutritionSpecialist"],
+      },
+      {
+        key: "trainingTemplates",
+        labelKey: "common:nav.items.trainingTemplates",
+        icon: MdPool,
+        path: "/training-templates",
+        allowedRoles: ["SwimmingCoach", "FitnessCoach", "Admin"],
+      },
+      {
+        key: "trainingAssignments",
+        labelKey: "common:nav.items.trainingAssignments",
+        icon: MdAssignment,
+        path: "/training-assignments",
+        allowedRoles: ["SwimmingCoach", "FitnessCoach", "Admin"],
+      },
+      {
+        key: "trainingSessions",
+        labelKey: "common:nav.items.trainingSessions",
+        icon: MdEvent,
+        path: "/training-sessions",
+        allowedRoles: ["SwimmingCoach", "FitnessCoach", "Admin"],
+      },
+      {
         key: "swimming",
         labelKey: "common:nav.items.swimming",
         icon: MdPool,
@@ -77,20 +107,7 @@ export const NAV_GROUPS: NavGroup[] = [
         path: "/fitness",
         allowedRoles: ["FitnessCoach"],
       },
-      {
-        key: "exercises",
-        labelKey: "common:nav.items.exercises",
-        icon: MdSportsGymnastics,
-        path: "/exercises",
-        allowedRoles: ["SwimmingCoach", "FitnessCoach", "NutritionSpecialist"],
-      },
-      {
-        key: "training",
-        labelKey: "common:nav.items.training",
-        icon: MdPool,
-        path: "/training",
-        allowedRoles: ["SwimmingCoach", "FitnessCoach"],
-      },
+
       {
         key: "nutrition",
         labelKey: "common:nav.items.nutrition",

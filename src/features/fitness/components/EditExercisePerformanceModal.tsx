@@ -51,12 +51,24 @@ const STATUS_OPTIONS = [
 ] as const;
 
 const editExerciseSchema = z.object({
-  completedSets: z.number().int().min(0),
-  completedReps: z.number().int().min(0),
-  weightUsed: z.number().nullable().optional(),
-  completedDuration: z.number().nullable().optional(),
-  rpe: z.number().min(1).max(10).nullable().optional(),
-  status: z.number().int().min(1).max(4),
+  completedSets: z.coerce.number().int().min(0),
+  completedReps: z.coerce.number().int().min(0),
+  weightUsed: z.preprocess(
+    (val) =>
+      val === "" || val === null || val === undefined ? null : Number(val),
+    z.number().nullable().optional(),
+  ),
+  completedDuration: z.preprocess(
+    (val) =>
+      val === "" || val === null || val === undefined ? null : Number(val),
+    z.number().nullable().optional(),
+  ),
+  rpe: z.preprocess(
+    (val) =>
+      val === "" || val === null || val === undefined ? null : Number(val),
+    z.number().min(1).max(10).nullable().optional(),
+  ),
+  status: z.coerce.number().int().min(1).max(4),
   coachComment: z.string().nullable().optional(),
 });
 

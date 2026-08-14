@@ -10,9 +10,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import FullPageLoading from "@/components/feedbacks/FullPageLoading";
+import { Loading } from "@/components/feedbacks/Loading";
 import { cn } from "@/lib/utils";
-import { useAthletesLookup } from "@/features/lookups/hooks/useAthletesLookup";
+import { useAvailableAthletesLookup } from "@/features/lookups/hooks/useAvailableAthletesLookup";
 import { useGroupsLookup } from "@/features/lookups/hooks/useGroupsLookup";
 import { useAssignments } from "../../hooks/useAssignments";
 import { useCreateAssignment } from "../../hooks/useCreateAssignment";
@@ -40,7 +40,7 @@ export function AssignPlanSheet({
 
   // Prefetch both lookups when drawer opens
   const { data: athleteRes, isLoading: athletesLoading } =
-    useAthletesLookup(open);
+    useAvailableAthletesLookup(open);
   const { data: groupRes, isLoading: groupsLoading } = useGroupsLookup(open);
 
   // Fetch current assignments for default status & unassigning
@@ -172,84 +172,88 @@ export function AssignPlanSheet({
           </div>
 
           {isLoadingData ? (
-            <div className="py-12 flex items-center justify-center">
-              <FullPageLoading />
-            </div>
+            <Loading label="Loading available data…" className="py-12" />
           ) : (
             <>
               {/* Athletes Tab List */}
               {target === "athletes" && (
                 <div className="flex flex-col gap-2">
-                  {athletes.map((athlete) => {
-                    const existing = existingAssignments.find(
-                      (a) =>
-                        a.athlete?.athleteId === athlete.athleteId ||
-                        (a.assignedTo ?? "").toLowerCase() ===
-                          (athlete.fullName ?? "").toLowerCase(),
-                    );
-                    const isSelected = selectedAthletes.includes(
-                      athlete.athleteId,
-                    );
+                  {athletes.length === 0 ? (
+                    <p className="py-6 text-center text-xs text-muted-foreground">
+                      No available athletes found.
+                    </p>
+                  ) : (
+                    athletes.map((athlete) => {
+                      const existing = existingAssignments.find(
+                        (a) =>
+                          a.athlete?.athleteId === athlete.athleteId ||
+                          (a.assignedTo ?? "").toLowerCase() ===
+                            (athlete.fullName ?? "").toLowerCase(),
+                      );
+                      const isSelected = selectedAthletes.includes(
+                        athlete.athleteId,
+                      );
 
-                    return (
-                      <div
-                        key={athlete.athleteId}
-                        className={cn(
-                          "flex items-center gap-3 rounded-xl p-2.5 border transition-all duration-150",
-                          existing
-                            ? "border-emerald-500/40 bg-emerald-500/10"
-                            : isSelected
-                              ? "border-primary bg-primary/10"
-                              : "border-border hover:bg-accent/50",
-                        )}
-                      >
-                        <Avatar className="size-8 shrink-0">
-                          <AvatarImage
-                            src={athlete.profilePictureUrl ?? undefined}
-                          />
-                          <AvatarFallback className="text-xs font-semibold">
-                            {athlete.fullName.slice(0, 2).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="flex-1 text-xs font-medium text-foreground truncate">
-                          {athlete.fullName}
-                        </span>
+                      return (
+                        <div
+                          key={athlete.athleteId}
+                          className={cn(
+                            "flex items-center gap-3 rounded-xl p-2.5 border transition-all duration-150",
+                            existing
+                              ? "border-emerald-500/40 bg-emerald-500/10"
+                              : isSelected
+                                ? "border-primary bg-primary/10"
+                                : "border-border hover:bg-accent/50",
+                          )}
+                        >
+                          <Avatar className="size-8 shrink-0">
+                            <AvatarImage
+                              src={athlete.profilePictureUrl ?? undefined}
+                            />
+                            <AvatarFallback className="text-xs font-semibold">
+                              {athlete.fullName.slice(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="flex-1 text-xs font-medium text-foreground truncate">
+                            {athlete.fullName}
+                          </span>
 
-                        {existing ? (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="h-7 text-xs px-2.5 gap-1.5 bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-destructive/15 hover:text-destructive hover:border-destructive/30 transition-all duration-150 group/unassign"
-                            title="Click to unassign athlete"
-                            disabled={deleteMutation.isPending}
-                            onClick={() => deleteMutation.mutate(existing.id)}
-                          >
-                            <MdCheck className="size-3.5 group-hover/unassign:hidden" />
-                            <MdDeleteOutline className="size-3.5 hidden group-hover/unassign:inline-block" />
-                            <span className="group-hover/unassign:hidden">Assigned</span>
-                            <span className="hidden group-hover/unassign:inline-block">Unassign</span>
-                          </Button>
-                        ) : (
-                          <Button
-                            type="button"
-                            variant={isSelected ? "default" : "outline"}
-                            size="sm"
-                            className="h-7 text-xs px-2.5 cursor-pointer"
-                            onClick={() => toggleAthlete(athlete.athleteId)}
-                          >
-                            {isSelected ? (
-                              <>
-                                <MdCheck className="size-3.5 me-1" /> Selected
-                              </>
-                            ) : (
-                              "Select"
-                            )}
-                          </Button>
-                        )}
-                      </div>
-                    );
-                  })}
+                          {existing ? (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="h-7 text-xs px-2.5 gap-1.5 bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-destructive/15 hover:text-destructive hover:border-destructive/30 transition-all duration-150 group/unassign"
+                              title="Click to unassign athlete"
+                              disabled={deleteMutation.isPending}
+                              onClick={() => deleteMutation.mutate(existing.id)}
+                            >
+                              <MdCheck className="size-3.5 group-hover/unassign:hidden" />
+                              <MdDeleteOutline className="size-3.5 hidden group-hover/unassign:inline-block" />
+                              <span className="group-hover/unassign:hidden">Assigned</span>
+                              <span className="hidden group-hover/unassign:inline-block">Unassign</span>
+                            </Button>
+                          ) : (
+                            <Button
+                              type="button"
+                              variant={isSelected ? "default" : "outline"}
+                              size="sm"
+                              className="h-7 text-xs px-2.5 cursor-pointer"
+                              onClick={() => toggleAthlete(athlete.athleteId)}
+                            >
+                              {isSelected ? (
+                                <>
+                                  <MdCheck className="size-3.5 me-1" /> Selected
+                                </>
+                              ) : (
+                                "Select"
+                              )}
+                            </Button>
+                          )}
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               )}
 
