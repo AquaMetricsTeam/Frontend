@@ -49,11 +49,15 @@
       "ended": "انتهى"
     },
     "filters": {
+      "planLabel": "الخطة",
+      "sourceLabel": "المصدر",
+      "statusLabel": "الحالة",
       "allPlans": "كل الخطط",
       "allSources": "كل المصادر",
       "allStatuses": "كل الحالات",
       "groupOnly": "تعيينات المجموعة",
-      "individualOnly": "التعيينات الفردية"
+      "individualOnly": "التعيينات الفردية",
+      "searchPlans": "بحث عن خطط..."
     },
     "viaGroup": "مجموعة: {{groupId}}",
     "viaIndividual": "فردي"

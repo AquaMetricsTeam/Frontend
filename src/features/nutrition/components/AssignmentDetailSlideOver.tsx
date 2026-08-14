@@ -42,11 +42,11 @@ function getAssignmentStatus(assignment: NutritionPlanAssignment): AssignmentSta
 function getStatusColor(status: AssignmentStatus): string {
   switch (status) {
     case "active":
-      return "bg-[#10B981]/10 text-[#10B981] border-[#10B981]/30";
+      return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
     case "upcoming":
-      return "bg-[#38BDF8]/10 text-[#38BDF8] border-[#38BDF8]/30";
+      return "bg-primary/10 text-primary border-primary/20";
     case "ended":
-      return "bg-[#64748B]/10 text-[#64748B] border-[#64748B]/30";
+      return "bg-muted text-muted-foreground border-border";
   }
 }
 
@@ -81,8 +81,6 @@ function formatDateRange(startDate: string, endDate: string | null): string {
   if (!endDate) return `${fmt(start)} – ongoing`;
   return `${fmt(start)} – ${fmt(new Date(endDate))}`;
 }
-
-
 
 export function AssignmentDetailSlideOver({
   open,
@@ -126,44 +124,52 @@ export function AssignmentDetailSlideOver({
     <Drawer open={open} onOpenChange={onOpenChange} direction="right" modal={true}>
       <DrawerContent className="w-full sm:max-w-2xl h-full">
         {/* Header */}
-        <DrawerHeader className="relative flex flex-col items-start border-b border-border pb-3 pt-4 px-5">
-          <div className="flex-1 pe-8 w-full">
-            <h2 className="text-base font-bold text-white mb-0.5">
+        <DrawerHeader className="relative flex flex-col items-start border-b border-border pb-4 pt-4 px-5">
+          <div className="flex-1 pe-8 w-full space-y-2">
+            <h2 className="text-base font-bold text-foreground leading-snug">
               {athleteName || assignment.athleteId}
             </h2>
-            <p className="text-xs text-slate-400 font-medium">
-              {plan?.name || assignment.nutritionPlanName || "Unknown Plan"} · {formatDateRange(assignment.startDate, assignment.endDate)}
-            </p>
-            
-            <div className="flex flex-wrap items-center gap-2 mt-3">
+
+            <div className="space-y-0.5">
+              <p className="text-sm font-medium text-foreground/80">
+                {plan?.name || assignment.nutritionPlanName || "Unknown Plan"}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {formatDateRange(assignment.startDate, assignment.endDate)}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1.5">
               <Badge
                 variant="outline"
                 className={`${getStatusColor(status)} text-[10px] font-semibold px-2 py-0 h-5`}
               >
                 {t(`assignments.status.${status}`)}
               </Badge>
-              
+
               {assignment.groupId ? (
                 <Badge variant="outline" className="border-primary/30 text-primary bg-primary/10 text-[10px] font-semibold px-2 py-0 h-5">
-                  assigned via {group?.name || "Group"}
+                  via {group?.name || "Group"}
                 </Badge>
               ) : (
-                <Badge variant="outline" className="border-muted/50 text-muted-foreground bg-slate-800 text-[10px] font-semibold px-2 py-0 h-5">
-                  individual
+                <Badge variant="outline" className="border-border text-muted-foreground bg-muted text-[10px] font-semibold px-2 py-0 h-5">
+                  Individual
                 </Badge>
               )}
             </div>
 
-            <div className="mt-2.5 text-[10px] text-slate-500 font-normal">
-              Assigned by Coach · {assignment.assignedAt ? new Date(assignment.assignedAt).toLocaleDateString() : null}
-            </div>
+            {assignment.assignedAt && (
+              <p className="text-[10px] text-muted-foreground/70">
+                Assigned by Coach · {new Date(assignment.assignedAt).toLocaleDateString()}
+              </p>
+            )}
           </div>
 
           <Button
             size="icon-sm"
             variant="ghost"
             onClick={() => onOpenChange(false)}
-            className="absolute top-4 right-4 text-slate-400 hover:text-white"
+            className="absolute top-4 end-4 text-muted-foreground hover:text-foreground cursor-pointer"
           >
             <MdClose className="size-4" />
           </Button>
@@ -172,40 +178,47 @@ export function AssignmentDetailSlideOver({
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {/* Plan Snapshot Panel */}
           <div className="space-y-3">
-            {/* Daily Totals */}
-            <div className="bg-[#1E293B] text-white p-4 rounded-lg border border-[#2A3B52]">
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+            {/* Daily Totals — matches PlansList card grid */}
+            <div className="bg-muted/40 border border-border rounded-xl p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                   PLAN SNAPSHOT — DAILY TOTALS
                 </h4>
-                <span className="text-[10px] text-slate-400">
+                <span className="text-[10px] font-medium text-muted-foreground">
                   {plan?.meals?.length ?? 0} meals
                 </span>
               </div>
-              
-              <div className="grid grid-cols-4 gap-4 text-center">
-                <div>
-                  <div className="text-[9px] uppercase font-semibold text-slate-400 mb-0.5">CALORIES</div>
-                  <div className="text-base font-bold text-white tabular-nums">
-                    {dailyTotals.calories.toLocaleString()} <span className="text-[10px] text-slate-500 font-normal">kcal</span>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {/* Calories — Primary Energy Metric */}
+                <div className="rounded-lg bg-card border border-primary/20 p-3 flex flex-col justify-between">
+                  <div className="text-[10px] uppercase font-semibold text-primary/90 tracking-wide mb-1">CALORIES</div>
+                  <div className="text-base font-bold text-foreground/90 tabular-nums">
+                    {dailyTotals.calories.toLocaleString()} <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">kcal</span>
                   </div>
                 </div>
-                <div>
-                  <div className="text-[9px] uppercase font-semibold text-slate-400 mb-0.5">PROTEIN</div>
-                  <div className="text-base font-bold text-white tabular-nums">
-                    {dailyTotals.protein} <span className="text-[10px] text-slate-500 font-normal">g</span>
+
+                {/* Protein */}
+                <div className="rounded-lg bg-card border border-border p-3 flex flex-col justify-between">
+                  <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">PROTEIN</div>
+                  <div className="text-sm font-semibold text-foreground/80 tabular-nums">
+                    {dailyTotals.protein} <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">g</span>
                   </div>
                 </div>
-                <div>
-                  <div className="text-[9px] uppercase font-semibold text-slate-400 mb-0.5">CARBS</div>
-                  <div className="text-base font-bold text-white tabular-nums">
-                    {dailyTotals.carbs} <span className="text-[10px] text-slate-500 font-normal">g</span>
+
+                {/* Carbs */}
+                <div className="rounded-lg bg-card border border-border p-3 flex flex-col justify-between">
+                  <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">CARBS</div>
+                  <div className="text-sm font-semibold text-foreground/80 tabular-nums">
+                    {dailyTotals.carbs} <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">g</span>
                   </div>
                 </div>
-                <div>
-                  <div className="text-[9px] uppercase font-semibold text-slate-400 mb-0.5">FAT</div>
-                  <div className="text-base font-bold text-white tabular-nums">
-                    {dailyTotals.fat} <span className="text-[10px] text-slate-500 font-normal">g</span>
+
+                {/* Fat */}
+                <div className="rounded-lg bg-card border border-border p-3 flex flex-col justify-between">
+                  <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">FAT</div>
+                  <div className="text-sm font-semibold text-foreground/80 tabular-nums">
+                    {dailyTotals.fat} <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">g</span>
                   </div>
                 </div>
               </div>
@@ -215,25 +228,37 @@ export function AssignmentDetailSlideOver({
             <div className="space-y-2.5">
               {sortedMeals.length > 0 && (
                 sortedMeals.map((meal, index) => (
-                  <div key={index} className="p-3 border border-border rounded-lg bg-card">
-                    <div className="flex items-start gap-3">
+                  <div key={index} className="bg-muted/40 border border-border rounded-lg p-3 space-y-2">
+                    {/* Top Row: Badge + Calories primary, P/C/F secondary */}
+                    <div className="flex items-center justify-between gap-3">
                       <Badge
                         variant="outline"
-                        className={`${getMealTypeColor(meal.mealType)} shrink-0 text-[10px] px-1.5 py-0`}
+                        className={`${getMealTypeColor(meal.mealType)} shrink-0 text-[10px] px-2 py-0.5 font-semibold`}
                       >
                         {getMealTypeLabel(meal.mealType)}
                       </Badge>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs text-slate-400 font-normal">
-                            {meal.calories} kcal · P {meal.proteinGrams}g · C {meal.carbGrams}g · F {meal.fatGrams}g
-                          </span>
-                        </div>
-                        <p className="text-sm text-[#F1F5F9] font-medium leading-relaxed">
-                          {meal.description}
-                        </p>
+                      <div className="text-xs text-muted-foreground text-end shrink-0 whitespace-nowrap">
+                        <span className="font-bold text-foreground tabular-nums">{meal.calories} kcal</span>
+                        <span className="mx-1.5 text-muted-foreground/40">·</span>
+                        <span className="tabular-nums">P {meal.proteinGrams} g</span>
+                        <span className="mx-1 text-muted-foreground/40">·</span>
+                        <span className="tabular-nums">C {meal.carbGrams} g</span>
+                        <span className="mx-1 text-muted-foreground/40">·</span>
+                        <span className="tabular-nums">F {meal.fatGrams} g</span>
                       </div>
                     </div>
+
+                    {/* Meal Name */}
+                    <p className="text-sm font-bold text-foreground leading-snug">
+                      {meal.description}
+                    </p>
+
+                    {/* Dietary Notes */}
+                    {meal.dietaryNotes && (
+                      <div className="bg-background/80 border border-border rounded-md p-2">
+                        <p className="text-xs text-muted-foreground">{meal.dietaryNotes}</p>
+                      </div>
+                    )}
                   </div>
                 ))
               )}
@@ -247,7 +272,7 @@ export function AssignmentDetailSlideOver({
             size="sm"
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="text-xs h-8 border-slate-700 text-slate-300 hover:bg-slate-800"
+            className="text-xs h-8 cursor-pointer"
           >
             Close
           </Button>
@@ -257,7 +282,7 @@ export function AssignmentDetailSlideOver({
               onViewFullPlan?.(String(assignment.nutritionPlanId));
               onOpenChange(false);
             }}
-            className="text-xs h-8 bg-[#06B6D4] hover:bg-[#0891B2] text-white"
+            className="text-xs h-8 cursor-pointer"
           >
             View full plan
           </Button>
@@ -265,4 +290,4 @@ export function AssignmentDetailSlideOver({
       </DrawerContent>
     </Drawer>
   );
-}
+}

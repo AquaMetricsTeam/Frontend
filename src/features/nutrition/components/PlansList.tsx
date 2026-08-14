@@ -40,8 +40,6 @@ function getMealTypeLabel(mealType: MealType): string {
   return labels[mealType] || "Unknown";
 }
 
-
-
 export function PlansList({
   search: searchProp,
   selectedPlanId,
@@ -135,7 +133,7 @@ export function PlansList({
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 p-4">
         <div className="h-10 bg-muted animate-pulse rounded-lg"></div>
         {[...Array(5)].map((_, i) => (
           <div key={i} className="h-32 bg-muted animate-pulse rounded-lg"></div>
@@ -176,15 +174,15 @@ export function PlansList({
   return (
     <div className="flex flex-col">
       {/* Panel Header – count only */}
-      <div className="px-5 pt-4 pb-3 border-b border-slate-800 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-slate-300">Nutrition Plans</h2>
-        <span className="text-xs text-slate-500">{filteredPlans.length} plans</span>
+      <div className="px-5 pt-4 pb-3 border-b border-border flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-foreground">Nutrition Plans</h2>
+        <span className="text-xs text-muted-foreground">{filteredPlans.length} plans</span>
       </div>
 
       {/* Plans Flat List */}
       <div className="flex-1">
         {filteredPlans.length === 0 && search ? (
-          <div className="text-center py-8 text-sm text-slate-500">
+          <div className="text-center py-8 text-sm text-muted-foreground">
             {t("list.noResults.message")}
           </div>
         ) : (
@@ -198,73 +196,80 @@ export function PlansList({
                 key={plan.id}
                 onClick={() => onSelectPlan?.(plan)}
                 className={[
-                  "group relative cursor-pointer p-4 border-b border-slate-800/80 last:border-b-0 transition-colors",
+                  "group relative cursor-pointer p-4 border-b border-border last:border-b-0 transition-colors",
                   isSelected
-                    ? "bg-slate-800/60 border-l-2 border-l-[#06B6D4]"
-                    : "border-l-2 border-l-transparent hover:bg-slate-800/40",
+                    ? "bg-muted/80 border-s-2 border-s-primary"
+                    : "border-s-2 border-s-transparent hover:bg-muted/40",
                 ].join(" ")}
               >
                 {/* Title Row */}
                 <div className="flex items-center justify-between gap-2 mb-1">
-                  <h3 className="text-sm font-semibold text-white truncate flex-1">
+                  <h3 className="text-sm font-semibold text-foreground truncate flex-1">
                     {plan.name}
                   </h3>
                   {activeAssignments > 0 && (
-                    <span className="shrink-0 inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-medium text-emerald-400">
-                      • {activeAssignments} assigned
-                    </span>
+                    <Badge
+                      variant="outline"
+                      className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+                    >
+                      • <span className="font-bold text-emerald-600 dark:text-emerald-400 me-0.5">{activeAssignments}</span> assigned
+                    </Badge>
                   )}
                 </div>
 
                 {/* Description */}
-                <p className="text-xs text-slate-400 line-clamp-1 mb-2">
+                <p className="text-xs text-muted-foreground line-clamp-1 mb-2">
                   {(plan as any).objective || plan.name}
                 </p>
 
                 {/* Metadata Row */}
-                <div className="flex items-center text-[11px] text-slate-400 mb-3">
+                <div className="flex items-center text-[11px] text-muted-foreground mb-3">
                   <div className="flex items-center gap-2">
                     <span className="flex items-center gap-1">
                       <MdSchedule className="size-3 shrink-0" />
                       <span className="whitespace-nowrap">{(plan as any).schedule || "Weekly plan"}</span>
                     </span>
-                    <span className="text-slate-600">·</span>
+                    <span className="text-muted-foreground/60">·</span>
                     <span className="whitespace-nowrap">{plan.meals?.length ?? 0} meals</span>
-                    <span className="text-slate-600">·</span>
+                    <span className="text-muted-foreground/60">·</span>
                     <span className="whitespace-nowrap">{dailyCalories.toLocaleString()} kcal/day</span>
                   </div>
-                  <span className="ml-auto whitespace-nowrap pl-2 text-[10px] text-slate-500">
+                  <span className="ms-auto whitespace-nowrap ps-2 text-[10px] text-muted-foreground">
                     Edited {formatLastEdited(plan.updatedAt)}
                   </span>
                 </div>
 
                 {/* Action Buttons */}
                 {canEdit && (
-                  <div className="flex items-center gap-3 pt-2 border-t border-slate-800/60">
+                  <div className="flex items-center gap-3 pt-2 border-t border-border">
                     <button
+                      type="button"
                       onClick={(e) => { e.stopPropagation(); onEditPlan?.(plan); }}
-                      className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-slate-200 transition-colors"
+                      className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                     >
                       <MdEdit className="w-3 h-3" />
                       {t("common:edit")}
                     </button>
                     <button
+                      type="button"
                       onClick={(e) => { e.stopPropagation(); onDuplicatePlan?.(plan); }}
-                      className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-slate-200 transition-colors"
+                      className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                     >
                       <MdFileCopy className="w-3 h-3" />
                       {t("list.duplicate")}
                     </button>
                     <button
+                      type="button"
                       onClick={(e) => { e.stopPropagation(); onAssignPlan?.(plan); }}
-                      className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-slate-200 transition-colors"
+                      className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                     >
                       <MdAssignmentInd className="w-3 h-3" />
                       {t("list.assign")}
                     </button>
                     <button
+                      type="button"
                       onClick={(e) => { e.stopPropagation(); onDeletePlan?.(plan); }}
-                      className="flex items-center gap-1 text-[11px] text-red-400 hover:text-red-300 transition-colors ml-auto"
+                      className="flex items-center gap-1 text-[11px] text-destructive hover:text-destructive/80 transition-colors ms-auto cursor-pointer"
                     >
                       <MdDelete className="w-3.5 h-3.5" />
                       {t("common:delete")}
@@ -278,6 +283,18 @@ export function PlansList({
       </div>
     </div>
   );
+}
+
+function getMealTypeColor(mealType: MealType): string {
+  const colors: Record<MealType, string> = {
+    [MealType.Breakfast]: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/30",
+    [MealType.Lunch]: "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/30",
+    [MealType.Dinner]: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30",
+    [MealType.Snack]: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30",
+    [MealType.PreWorkout]: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/30",
+    [MealType.PostWorkout]: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/30",
+  };
+  return colors[mealType] || "bg-primary/10 text-primary border-primary/30";
 }
 
 // Plan Detail Panel Component
@@ -299,7 +316,6 @@ export function PlanDetailPanel({
 }: PlanDetailPanelProps & { activeAssignments?: number }) {
   const { t } = useTranslation("nutrition");
 
-
   if (!plan) {
     return (
       <div className="flex items-center justify-center h-full text-center p-8">
@@ -307,7 +323,7 @@ export function PlanDetailPanel({
           <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
             <MdAssignmentInd className="size-8 text-muted-foreground" />
           </div>
-          <h3 className="text-lg font-semibold mb-2">Select a nutrition plan</h3>
+          <h3 className="text-lg font-semibold mb-2 text-foreground">Select a nutrition plan</h3>
           <p className="text-sm text-muted-foreground">
             Choose a plan from the list to view its details and meal breakdown.
           </p>
@@ -328,50 +344,58 @@ export function PlanDetailPanel({
 
   const sortedMeals = [...(plan.meals || [])].sort((a, b) => a.mealType - b.mealType);
 
-
-
   return (
     <div className="space-y-6 h-full overflow-y-auto">
       {/* Plan Header */}
-      <div className="sticky top-0 bg-[#111827] border-b border-slate-800 pb-4 z-10">
-        <div className="flex items-start justify-between mb-3">
+      <div className="sticky top-0 bg-card border-b border-border pb-4 z-10">
+        <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex-1">
-            <h1 className="text-lg font-bold text-[#F1F5F9] mb-1">{plan.name}</h1>
-            <p className="text-slate-400 text-xs mb-2">
+            <h1 className="text-lg font-bold text-foreground mb-1">{plan.name}</h1>
+            <p className="text-muted-foreground text-xs mb-2">
               {plan.objective || "Nutritional objective"}
             </p>
-            <Badge variant="outline" className="text-[10px] py-0 px-2 border-slate-600 text-slate-300">
-              <MdSchedule className="size-3 me-1" />
-              {plan.schedule || "Weekly plan"}
-            </Badge>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <Badge variant="outline" className="text-[10px] py-0 px-2 text-muted-foreground">
+                <MdSchedule className="size-3 me-1" />
+                {plan.schedule || "Weekly plan"}
+              </Badge>
+              {activeAssignments > 0 && (
+                <Badge
+                  variant="outline"
+                  className="rounded-full px-2 py-0 text-[10px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+                >
+                  • <span className="font-bold text-emerald-600 dark:text-emerald-400 me-0.5">{activeAssignments}</span> {activeAssignments === 1 ? "athlete assigned" : "athletes assigned"}
+                </Badge>
+              )}
+            </div>
           </div>
 
           {canEdit && (
-            <div className="flex gap-1.5">
-              <Button 
-                size="sm" 
-                variant="outline" 
+            <div className="flex gap-1.5 shrink-0">
+              <Button
+                size="sm"
+                variant="outline"
                 onClick={() => onDuplicatePlan?.(plan)}
-                className="border-slate-600 text-slate-300 hover:bg-slate-800 text-xs h-7 px-2.5"
+                className="text-xs h-7 px-2.5 cursor-pointer"
               >
-                <MdFileCopy className="size-3.5 mr-1" />
+                <MdFileCopy className="size-3.5 me-1" />
                 {t("list.duplicate")}
               </Button>
-              <Button 
-                size="sm" 
-                variant="outline" 
+              <Button
+                size="sm"
+                variant="outline"
                 onClick={() => onEditPlan?.(plan)}
-                className="border-slate-600 text-slate-300 hover:bg-slate-800 text-xs h-7 px-2.5"
+                className="text-xs h-7 px-2.5 cursor-pointer"
               >
-                <MdEdit className="size-3.5 mr-1" />
+                <MdEdit className="size-3.5 me-1" />
                 {t("common:edit")}
               </Button>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 onClick={() => onAssignPlan?.(plan)}
-                className="bg-[#06B6D4] hover:bg-[#0891B2] text-white text-xs h-7 px-2.5"
+                className="text-xs h-7 px-2.5 cursor-pointer"
               >
-                <MdAdd className="size-3.5 mr-0.5" />
+                <MdAdd className="size-3.5 me-0.5" />
                 {t("list.assign")}
               </Button>
             </div>
@@ -380,90 +404,100 @@ export function PlanDetailPanel({
       </div>
 
       {/* Daily Totals Box */}
-      <div className="bg-[#1E293B] border border-[#2A3B52] rounded-lg p-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+      <div className="bg-muted/40 border border-border rounded-xl p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
             DAILY TOTALS
           </h2>
-          <span className="text-[10px] text-slate-400">
+          <span className="text-[10px] font-medium text-muted-foreground">
             {plan.meals?.length ?? 0} meals
           </span>
         </div>
-        
-        <div className="grid grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="text-lg font-bold text-white tabular-nums mb-0.5">
-              {dailyTotals.calories.toLocaleString()}
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {/* Calories — Primary Energy Metric */}
+          <div className="rounded-lg bg-card border border-primary/20 p-3 flex flex-col justify-between">
+            <div className="text-[10px] uppercase font-semibold text-primary/90 tracking-wide mb-1">
+              CALORIES
             </div>
-            <div className="text-[9px] uppercase font-semibold text-slate-400">CALORIES</div>
-            <div className="text-[10px] text-slate-500 font-normal">kcal</div>
+            <div className="text-base font-bold text-foreground/90 tabular-nums">
+              {dailyTotals.calories.toLocaleString()} <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">kcal</span>
+            </div>
           </div>
-          <div className="text-center">
-            <div className="text-lg font-bold text-white tabular-nums mb-0.5">
-              {dailyTotals.protein}
+
+          {/* Protein */}
+          <div className="rounded-lg bg-card border border-border p-3 flex flex-col justify-between">
+            <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">
+              PROTEIN
             </div>
-            <div className="text-[9px] uppercase font-semibold text-slate-400">PROTEIN</div>
-            <div className="text-[10px] text-slate-500 font-normal">g</div>
+            <div className="text-sm font-semibold text-foreground/80 tabular-nums">
+              {dailyTotals.protein} <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">g</span>
+            </div>
           </div>
-          <div className="text-center">
-            <div className="text-lg font-bold text-white tabular-nums mb-0.5">
-              {dailyTotals.carbs}
+
+          {/* Carbs */}
+          <div className="rounded-lg bg-card border border-border p-3 flex flex-col justify-between">
+            <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">
+              CARBS
             </div>
-            <div className="text-[9px] uppercase font-semibold text-slate-400">CARBS</div>
-            <div className="text-[10px] text-slate-500 font-normal">g</div>
+            <div className="text-sm font-semibold text-foreground/80 tabular-nums">
+              {dailyTotals.carbs} <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">g</span>
+            </div>
           </div>
-          <div className="text-center">
-            <div className="text-lg font-bold text-white tabular-nums mb-0.5">
-              {dailyTotals.fat}
+
+          {/* Fat */}
+          <div className="rounded-lg bg-card border border-border p-3 flex flex-col justify-between">
+            <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">
+              FAT
             </div>
-            <div className="text-[9px] uppercase font-semibold text-slate-400">FAT</div>
-            <div className="text-[10px] text-slate-500 font-normal">g</div>
+            <div className="text-sm font-semibold text-foreground/80 tabular-nums">
+              {dailyTotals.fat} <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">g</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Currently Assigned Indicator */}
-      {activeAssignments > 0 && (
-        <p className="text-sm text-slate-400 -mt-2">
-          Currently assigned to <span className="font-semibold text-slate-300">{activeAssignments}</span> athletes.
-        </p>
-      )}
-
       {/* Meal List */}
       <div className="space-y-2.5">
-        <h2 className="text-base font-semibold text-[#F1F5F9]">Meals</h2>
+        <h2 className="text-base font-semibold text-foreground">Meals</h2>
         {sortedMeals.length === 0 ? (
-          <div className="text-center py-6 text-xs text-slate-500">
+          <div className="text-center py-6 text-xs text-muted-foreground">
             No meals configured for this plan.
           </div>
         ) : (
           sortedMeals.map((meal, index) => (
-            <div 
-              key={index} 
-              className="bg-[#1E293B] border border-[#2A3B52] rounded-lg p-3"
+            <div
+              key={index}
+              className="bg-muted/40 border border-border rounded-lg p-3 space-y-2"
             >
-              {/* Top Row: Meal Type Chip & Macro Summary */}
-              <div className="flex items-start justify-between mb-2">
+              {/* Top Row: Meal Type Badge & Macro/Calorie Summary */}
+              <div className="flex items-center justify-between gap-3">
                 <Badge
                   variant="outline"
-                  className="bg-transparent text-[#38BDF8] border-[#38BDF8] shrink-0 text-[10px] px-1.5 py-0"
+                  className={`${getMealTypeColor(meal.mealType)} shrink-0 text-[10px] px-2 py-0.5 font-semibold`}
                 >
                   {getMealTypeLabel(meal.mealType)}
                 </Badge>
-                <span className="text-xs text-slate-400 ml-3">
-                  {meal.calories} kcal · P {meal.proteinGrams}g · C {meal.carbGrams}g · F {meal.fatGrams}g
-                </span>
+                <div className="text-xs text-muted-foreground text-end shrink-0 whitespace-nowrap">
+                  <span className="font-bold text-foreground tabular-nums">{meal.calories} kcal</span>
+                  <span className="mx-1.5 text-muted-foreground/40">·</span>
+                  <span className="tabular-nums">P {meal.proteinGrams} g</span>
+                  <span className="mx-1 text-muted-foreground/40">·</span>
+                  <span className="tabular-nums">C {meal.carbGrams} g</span>
+                  <span className="mx-1 text-muted-foreground/40">·</span>
+                  <span className="tabular-nums">F {meal.fatGrams} g</span>
+                </div>
               </div>
 
-              {/* Middle Row: Meal Description */}
-              <p className="text-sm font-semibold text-[#F1F5F9] mb-1">
+              {/* Middle Row: Meal Description / Name */}
+              <p className="text-sm font-bold text-foreground leading-snug">
                 {meal.description}
               </p>
 
               {/* Bottom Row: Dietary Notes (if present) */}
               {meal.dietaryNotes && (
-                <div className="bg-slate-800/50 border border-slate-700/50 rounded p-2 mt-2">
-                  <p className="text-xs text-slate-400">
+                <div className="bg-background/80 border border-border rounded-md p-2 mt-2">
+                  <p className="text-xs text-muted-foreground">
                     {meal.dietaryNotes}
                   </p>
                 </div>
