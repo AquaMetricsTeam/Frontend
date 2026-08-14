@@ -124,7 +124,7 @@ export function LogFitnessRecordDrawer({
     if (open && selectedSessionId && planExercises.length > 0) {
       const mappedExercises: ExercisePerformanceFormValues[] =
         planExercises.map((pe) => ({
-          planExerciseId: pe.id ?? (pe as any).planExerciseId ?? pe.exerciseId,
+          planExerciseId: pe.planExerciseId ?? pe.id ?? pe.exerciseId,
           completedSets: pe.sets ?? 3,
           completedReps: pe.reps ?? 10,
           completedDuration: pe.duration ?? null,

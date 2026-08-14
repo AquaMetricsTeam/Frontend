@@ -1,7 +1,8 @@
 // ─── Domain Models ────────────────────────────────────────────────────────────
 
 export interface PlanExercise {
-  id?: number; // planExerciseId — required by ExercisePerformanceRequest
+  planExerciseId?: number;
+  id?: number; // fallback alias for planExerciseId
   exerciseId: number;
   exerciseName?: string | null;
   sets: number;

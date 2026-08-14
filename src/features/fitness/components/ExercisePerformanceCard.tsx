@@ -71,7 +71,7 @@ export function ExercisePerformanceCard({
   const rpeVal = useWatch({ control, name: getFieldName("rpe") });
 
   const getExerciseId = (ex: PlanExercise) =>
-    ex.id ?? (ex as { planExerciseId?: number }).planExerciseId ?? ex.exerciseId;
+    ex.planExerciseId ?? ex.id ?? ex.exerciseId;
 
   const exerciseOptions = planExercises.map((ex) => {
     const id = getExerciseId(ex);
