@@ -1,8 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useForm, FormProvider, useFieldArray } from "react-hook-form";
+import { useForm, FormProvider, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MdClose, MdChevronLeft, MdLibraryAdd, MdCheck } from "react-icons/md";
+import { MdClose, MdChevronLeft, MdCheck, MdWarning, MdErrorOutline } from "react-icons/md";
 import {
   Drawer,
   DrawerContent,
@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { InputField } from "@/components/fields/InputField";
 import { TextareaField } from "@/components/fields/TextareaField";
 import { Input } from "@/components/ui/input";
-import { MacroSummaryBanner } from "./MacroSummaryBanner";
 import { MealLibraryModal } from "./MealLibraryModal";
 import { MealFormItem } from "./MealFormItem";
 import { nutritionPlanSchema } from "../constants/validations";
@@ -95,8 +94,11 @@ export function PlanWizardSlideOver({
     name: "meals",
   });
 
-  // watchedMeals reflects every keystroke so banners/totals stay accurate.
-  const rawWatchedMeals = watch("meals");
+  // rawWatchedMeals subscribes deeply via useWatch so banners/totals update live on every keystroke.
+  const rawWatchedMeals = useWatch({
+    control: methods.control,
+    name: "meals",
+  });
   const watchedMeals = useMemo<NutritionPlanMeal[]>(
     () =>
       Array.isArray(rawWatchedMeals)
@@ -174,9 +176,10 @@ export function PlanWizardSlideOver({
     };
   }
 
-  // Reset form whenever the drawer opens or the plan being edited changes.
+  // Reset form and wizard step whenever the drawer opens or the plan being edited changes.
   useEffect(() => {
     if (open) {
+      setCurrentStep(1);
       reset(buildResetValues(initialPlan ?? null, isDuplicate));
     }
   }, [open, initialPlan, isDuplicate, reset]);
@@ -261,34 +264,31 @@ export function PlanWizardSlideOver({
     ];
 
     return (
-      <div className="flex items-center justify-between mb-4 px-4">
+      <div className="flex items-center justify-between mb-2 px-2">
         {steps.map((step, index) => (
           <div key={step.step} className="flex items-center">
             <div
-              className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
-                currentStep >= step.step
-                  ? "bg-[#06B6D4] text-white"
-                  : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
-              }`}
+              className={`flex items-center justify-center w-7 h-7 rounded-full text-xs font-semibold ${currentStep >= step.step
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground"
+                }`}
             >
               {step.step}
             </div>
             <div
-              className={`ml-2 text-sm font-medium ${
-                currentStep >= step.step
-                  ? "text-[#06B6D4]"
-                  : "text-gray-500 dark:text-gray-400"
-              }`}
+              className={`ms-2 text-xs font-medium ${currentStep >= step.step
+                  ? "text-primary"
+                  : "text-muted-foreground"
+                }`}
             >
               {step.label}
             </div>
             {index < steps.length - 1 && (
               <div
-                className={`mx-4 h-px flex-1 ${
-                  currentStep > step.step
-                    ? "bg-[#06B6D4]"
-                    : "bg-gray-200 dark:bg-gray-700"
-                }`}
+                className={`mx-3 h-px flex-1 ${currentStep > step.step
+                    ? "bg-primary"
+                    : "bg-border"
+                  }`}
               />
             )}
           </div>
@@ -316,7 +316,7 @@ export function PlanWizardSlideOver({
       >
         <DrawerContent className="w-full sm:max-w-xl">
           {/* Header */}
-          <DrawerHeader className="flex flex-col border-b border-border pb-4">
+          <DrawerHeader className="flex flex-col border-b border-border px-6 pt-6 pb-4 bg-card">
             <div className="flex items-center justify-between mb-2">
               <div className="flex flex-col">
                 <h2 className="text-lg font-semibold">{getWizardTitle()}</h2>
@@ -331,6 +331,7 @@ export function PlanWizardSlideOver({
                 variant="ghost"
                 onClick={handleClose}
                 disabled={isLoading}
+                className="cursor-pointer"
               >
                 <MdClose className="size-5" />
               </Button>
@@ -359,7 +360,7 @@ export function PlanWizardSlideOver({
                       }}
                     />
 
-                    <div className="text-xs text-muted-foreground text-right -mt-4">
+                    <div className="text-xs text-muted-foreground text-end -mt-4">
                       {name?.length ?? 0}/150
                     </div>
 
@@ -388,7 +389,7 @@ export function PlanWizardSlideOver({
                     <div className="space-y-2">
                       <label className="text-sm font-medium leading-none">
                         Target Daily Calories
-                        <span className="text-xs text-muted-foreground font-normal ml-2">
+                        <span className="text-xs text-muted-foreground font-normal ms-2">
                           (optional — used for boundary check)
                         </span>
                       </label>
@@ -397,12 +398,13 @@ export function PlanWizardSlideOver({
                         min={0}
                         placeholder="e.g. 2500"
                         value={targetCalories || ""}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          const cleaned = e.target.value.replace(/^0+(?=\d)/, "");
                           setValue(
                             "targetCalories",
-                            Math.max(0, parseInt(e.target.value) || 0),
-                          )
-                        }
+                            cleaned === "" ? undefined as any : Math.max(0, parseInt(cleaned, 10) || 0),
+                          );
+                        }}
                         className="text-sm"
                       />
                     </div>
@@ -412,13 +414,71 @@ export function PlanWizardSlideOver({
                 {/* Step 2: Meals */}
                 {currentStep === 2 && (
                   <div className="space-y-4 pb-4">
-                    <div className="sticky top-0 z-10 bg-popover/95 backdrop-blur-sm">
-                      <MacroSummaryBanner meals={watchedMeals} sticky />
+                    {/* Sticky Running Daily Total Banner */}
+                    <div className="sticky top-0 z-20 bg-card border-b border-border px-4 py-3 shadow-xs">
+                      <div className="flex flex-col gap-2">
+                        {/* Heading — Prominent Primary Treatment */}
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-xs font-bold uppercase tracking-wider text-primary">
+                            {t("macro.summaryTitle")}
+                          </h3>
+                          <span className="text-[11px] font-medium text-muted-foreground">
+                            {macroTotals.totalMeals} {macroTotals.totalMeals === 1 ? "meal" : "meals"}
+                          </span>
+                        </div>
+
+                        {/* 4 Centered & Evenly Spaced Macro Metrics */}
+                        <div className="grid grid-cols-4 gap-2 text-center pt-0.5">
+                          {/* Calories */}
+                          <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-muted/40 border border-border/40">
+                            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">
+                              {t("macro.calories")}
+                            </span>
+                            <span className="text-sm font-bold text-orange-600 dark:text-orange-400 tabular-nums">
+                              {macroTotals.totalCalories.toLocaleString()}{" "}
+                              <span className="text-[10px] font-normal text-muted-foreground ms-0.5">kcal</span>
+                            </span>
+                          </div>
+
+                          {/* Protein */}
+                          <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-muted/40 border border-border/40">
+                            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">
+                              {t("macro.protein")}
+                            </span>
+                            <span className="text-sm font-bold text-blue-600 dark:text-blue-400 tabular-nums">
+                              {macroTotals.totalProtein}{" "}
+                              <span className="text-[10px] font-normal text-muted-foreground ms-0.5">g</span>
+                            </span>
+                          </div>
+
+                          {/* Carbs */}
+                          <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-muted/40 border border-border/40">
+                            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">
+                              {t("macro.carbs")}
+                            </span>
+                            <span className="text-sm font-bold text-amber-600 dark:text-amber-400 tabular-nums">
+                              {macroTotals.totalCarbs}{" "}
+                              <span className="text-[10px] font-normal text-muted-foreground ms-0.5">g</span>
+                            </span>
+                          </div>
+
+                          {/* Fat */}
+                          <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-muted/40 border border-border/40">
+                            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">
+                              {t("macro.fat")}
+                            </span>
+                            <span className="text-sm font-bold text-rose-600 dark:text-rose-400 tabular-nums">
+                              {macroTotals.totalFat}{" "}
+                              <span className="text-[10px] font-normal text-muted-foreground ms-0.5">g</span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="px-4 space-y-4">
                       <div className="space-y-2">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                           {t("wizard.step2.mealTypeLabel")}
                         </p>
                         <div className="flex flex-wrap gap-2">
@@ -434,8 +494,8 @@ export function PlanWizardSlideOver({
                                 className={[
                                   "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium border transition-colors",
                                   exists
-                                    ? "border-emerald-500/60 bg-emerald-500/10 text-emerald-400 cursor-default"
-                                    : "border-slate-700/50 bg-slate-800 text-slate-300 hover:border-slate-600 hover:text-slate-100 cursor-pointer",
+                                    ? "border-emerald-500/60 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 cursor-default"
+                                    : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground cursor-pointer",
                                 ].join(" ")}
                               >
                                 {exists && (
@@ -450,7 +510,7 @@ export function PlanWizardSlideOver({
 
                       <div className="space-y-3">
                         {sortedMealsWithIndex.length === 0 ? (
-                          <div className="text-center py-8 rounded-xl border border-dashed border-slate-700 text-sm text-slate-500">
+                          <div className="text-center py-8 rounded-xl border border-dashed border-border text-sm text-muted-foreground">
                             {t("wizard.step2.noMeals")}
                           </div>
                         ) : (
@@ -470,18 +530,15 @@ export function PlanWizardSlideOver({
                           size="sm"
                           variant="outline"
                           onClick={() => setMealLibraryOpen(true)}
-                          className="w-full border-slate-700 text-slate-300 hover:text-slate-100 hover:border-slate-600"
+                          className="w-full cursor-pointer"
                         >
-                          <MdLibraryAdd className="size-4" />
                           {t("wizard.step2.useMealLibrary")}
                         </Button>
                       </div>
 
                       {isOverCalorieTarget && (
-                        <div className="flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2.5 text-xs text-amber-400">
-                          <span className="mt-0.5 shrink-0 text-base leading-none">
-                            ⚠️
-                          </span>
+                        <div className="flex items-start gap-2.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3.5 py-2.5 text-xs text-amber-600 dark:text-amber-400">
+                          <MdWarning className="size-4 shrink-0 text-amber-500 mt-0.5" />
                           <span>
                             Total calories (
                             <strong>
@@ -509,84 +566,68 @@ export function PlanWizardSlideOver({
                 {currentStep === 3 && (
                   <div className="space-y-6 p-4">
                     <div className="space-y-4">
-                      <div className="p-4 bg-muted/50 rounded-lg border border-border">
-                        <h3 className="text-sm font-semibold mb-3">
-                          {t("wizard.step3.planDetails")}
-                        </h3>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">
-                              {t("wizard.step3.planName")}
-                            </span>
-                            <span className="font-medium">{name}</span>
+                      {/* Plan Summary Card */}
+                      <div className="p-4 bg-muted/50 rounded-xl border border-border space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-semibold text-foreground">
+                            {t("wizard.step3.planDetails")}
+                          </h3>
+                          <span className="text-xs text-muted-foreground">
+                            {name}
+                          </span>
+                        </div>
+
+                        {/* 4 Macro Cards */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          {/* Calories */}
+                          <div className="rounded-lg bg-card border border-primary/20 p-3 flex flex-col justify-between">
+                            <div className="text-[10px] uppercase font-semibold text-primary/90 tracking-wide mb-1">
+                              CALORIES
+                            </div>
+                            <div className="text-base font-bold text-foreground/90 tabular-nums">
+                              {macroTotals.totalCalories.toLocaleString()}{" "}
+                              <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">kcal</span>
+                            </div>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">
-                              {t("wizard.step3.mealCount")}
-                            </span>
-                            <span className="font-medium">
-                              {macroTotals.totalMeals}
-                            </span>
+
+                          {/* Protein */}
+                          <div className="rounded-lg bg-card border border-border p-3 flex flex-col justify-between">
+                            <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">
+                              PROTEIN
+                            </div>
+                            <div className="text-sm font-semibold text-foreground/80 tabular-nums">
+                              {macroTotals.totalProtein}{" "}
+                              <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">g</span>
+                            </div>
                           </div>
-                          <div className="border-t border-border/60 pt-2 mt-1 space-y-1.5">
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">
-                                {t("wizard.step3.dailyCalories")}
-                              </span>
-                              <span
-                                className={[
-                                  "font-semibold tabular-nums",
-                                  isOverCalorieTarget
-                                    ? "text-amber-400"
-                                    : "text-orange-500 dark:text-orange-400",
-                                ].join(" ")}
-                              >
-                                {macroTotals.totalCalories.toLocaleString()}{" "}
-                                kcal
-                                {isOverCalorieTarget && (
-                                  <span className="ml-1.5 text-[10px] font-medium text-amber-500">
-                                    ↑{" "}
-                                    {(
-                                      macroTotals.totalCalories - targetCalories
-                                    ).toLocaleString()}{" "}
-                                    over
-                                  </span>
-                                )}
-                              </span>
+
+                          {/* Carbs */}
+                          <div className="rounded-lg bg-card border border-border p-3 flex flex-col justify-between">
+                            <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">
+                              CARBS
                             </div>
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">
-                                {t("wizard.step3.proteinTotal")}
-                              </span>
-                              <span className="font-medium text-blue-500 tabular-nums">
-                                {macroTotals.totalProtein} g
-                              </span>
+                            <div className="text-sm font-semibold text-foreground/80 tabular-nums">
+                              {macroTotals.totalCarbs}{" "}
+                              <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">g</span>
                             </div>
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">
-                                {t("wizard.step3.carbsTotal")}
-                              </span>
-                              <span className="font-medium text-amber-500 tabular-nums">
-                                {macroTotals.totalCarbs} g
-                              </span>
+                          </div>
+
+                          {/* Fat */}
+                          <div className="rounded-lg bg-card border border-border p-3 flex flex-col justify-between">
+                            <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">
+                              FAT
                             </div>
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">
-                                {t("wizard.step3.fatTotal")}
-                              </span>
-                              <span className="font-medium text-rose-500 tabular-nums">
-                                {macroTotals.totalFat} g
-                              </span>
+                            <div className="text-sm font-semibold text-foreground/80 tabular-nums">
+                              {macroTotals.totalFat}{" "}
+                              <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">g</span>
                             </div>
                           </div>
                         </div>
                       </div>
 
                       {isOverCalorieTarget && (
-                        <div className="flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2.5 text-xs text-amber-400">
-                          <span className="mt-0.5 shrink-0 text-base leading-none">
-                            ⚠️
-                          </span>
+                        <div className="flex items-start gap-2.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3.5 py-2.5 text-xs text-amber-600 dark:text-amber-400">
+                          <MdWarning className="size-4 shrink-0 text-amber-500 mt-0.5" />
                           <span>
                             Total calories (
                             <strong>
@@ -603,9 +644,11 @@ export function PlanWizardSlideOver({
 
                       {/* Visible error banner if Zod rejects the form on Save */}
                       {hasMealErrors && (
-                        <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2.5 text-xs text-red-400">
-                          Some meals have validation errors. Please go back and
-                          fix them before saving.
+                        <div className="flex items-start gap-2.5 rounded-lg border border-destructive/30 bg-destructive/10 px-3.5 py-2.5 text-xs text-destructive">
+                          <MdErrorOutline className="size-4 shrink-0 mt-0.5" />
+                          <span>
+                            Some meals have validation errors. Please go back and fix them before saving.
+                          </span>
                         </div>
                       )}
                     </div>
@@ -616,13 +659,14 @@ export function PlanWizardSlideOver({
           </div>
 
           {/* Footer */}
-          <DrawerFooter className="border-t border-border flex-row justify-between gap-2">
+          <DrawerFooter className="border-t border-border flex-row items-center justify-between gap-3 px-6 py-4 bg-card">
             {currentStep > 1 && (
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={handleBack}
                 disabled={isLoading}
+                className="cursor-pointer"
               >
                 <MdChevronLeft className="size-4" />
                 {t("common:back")}
@@ -636,7 +680,7 @@ export function PlanWizardSlideOver({
                 size="sm"
                 onClick={handleProceedToStep2}
                 disabled={!name || hasNameError || isLoading}
-                className="bg-[#06B6D4] hover:bg-[#0891B2] text-white"
+                className="cursor-pointer"
               >
                 {t("wizard.step1.nextButton")}
               </Button>
@@ -647,33 +691,33 @@ export function PlanWizardSlideOver({
                 size="sm"
                 onClick={handleConfirm}
                 disabled={!canProceedToConfirmation || isLoading}
-                className="bg-[#06B6D4] hover:bg-[#0891B2] text-white"
+                className="cursor-pointer"
               >
                 {t("wizard.step2.nextButton")}
               </Button>
             )}
 
-              {currentStep === 3 && (
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={(e) => {
-                    if (isOverCalorieTarget) {
-                      e.preventDefault();
-                      setCalorieConfirmOpen(true);
-                      return;
-                    }
-                    // Trigger RHF submit
-                    handleSubmit(onSubmit)();
-                  }}
-                  disabled={isLoading}
-                  className="bg-[#06B6D4] hover:bg-[#0891B2] text-white"
-                >
-                  {isLoading
-                    ? t("common:processing")
-                    : t("wizard.step3.saveButton")}
-                </Button>
-              )}
+            {currentStep === 3 && (
+              <Button
+                type="button"
+                size="sm"
+                onClick={(e) => {
+                  if (isOverCalorieTarget) {
+                    e.preventDefault();
+                    setCalorieConfirmOpen(true);
+                    return;
+                  }
+                  // Trigger RHF submit
+                  handleSubmit(onSubmit)();
+                }}
+                disabled={isLoading}
+                className="cursor-pointer"
+              >
+                {isLoading
+                  ? t("common:processing")
+                  : t("wizard.step3.saveButton")}
+              </Button>
+            )}
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -692,20 +736,22 @@ export function PlanWizardSlideOver({
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setCalorieConfirmOpen(false)}
           />
-          <div className="relative z-10 w-full max-w-sm mx-4 rounded-xl border border-slate-700 bg-slate-900 shadow-2xl p-6 space-y-4">
+          <div className="relative z-10 w-full max-w-sm mx-4 rounded-xl border border-border bg-popover text-popover-foreground shadow-2xl p-6 space-y-4">
             <div className="flex items-start gap-3">
-              <span className="text-2xl leading-none mt-0.5">⚠️</span>
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-amber-500/10 text-amber-500">
+                <MdWarning className="size-5" />
+              </div>
               <div>
-                <h3 className="text-sm font-semibold text-slate-100 mb-1">
+                <h3 className="text-sm font-semibold text-foreground mb-1">
                   Calorie Limit Exceeded
                 </h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   This plan's total (
-                  <span className="text-amber-400 font-semibold">
+                  <span className="text-amber-600 dark:text-amber-400 font-semibold">
                     {macroTotals.totalCalories.toLocaleString()} kcal
                   </span>
                   ) exceeds the target of{" "}
-                  <span className="text-slate-200 font-semibold">
+                  <span className="text-foreground font-semibold">
                     {targetCalories.toLocaleString()} kcal
                   </span>
                   . Do you want to proceed?
@@ -716,14 +762,14 @@ export function PlanWizardSlideOver({
               <Button
                 size="sm"
                 variant="outline"
-                className="flex-1 border-slate-700 text-slate-300 hover:text-slate-100"
+                className="flex-1 cursor-pointer"
                 onClick={() => setCalorieConfirmOpen(false)}
               >
                 Revise Meals
               </Button>
               <Button
                 size="sm"
-                className="flex-1 bg-[#06B6D4] hover:bg-[#0891B2] text-white"
+                className="flex-1 cursor-pointer"
                 disabled={isLoading}
                 onClick={() => {
                   setCalorieConfirmOpen(false);
@@ -739,3 +785,4 @@ export function PlanWizardSlideOver({
     </>
   );
 }
+

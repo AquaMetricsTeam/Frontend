@@ -2,6 +2,15 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MdGroup, MdPerson } from "react-icons/md";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ComboboxSelect } from "@/components/common/ComboboxSelect";
 import { usePlanAssignments, useAllPlanAssignments } from "../hooks/usePlanAssignments";
 import { useNutritionPlans } from "../hooks/useNutritionPlans";
 import { useAthletesLookup } from "@/features/lookups/hooks/useAthletesLookup";
@@ -34,11 +43,11 @@ function getAssignmentStatus(assignment: NutritionPlanAssignment): AssignmentSta
 function getStatusColor(status: AssignmentStatus): string {
   switch (status) {
     case "active":
-      return "bg-[#10B981]/10 text-[#10B981] border-[#10B981]/30";
+      return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
     case "upcoming":
-      return "bg-[#38BDF8]/10 text-[#38BDF8] border-[#38BDF8]/30";
+      return "bg-primary/10 text-primary border-primary/20";
     case "ended":
-      return "bg-[#64748B]/10 text-[#64748B] border-[#64748B]/30";
+      return "bg-muted text-muted-foreground border-border";
   }
 }
 
@@ -58,6 +67,11 @@ export function AssignmentsList({ onAssignmentClick }: AssignmentsListProps) {
 
   const { data: plansResponse } = useNutritionPlans({ pageSize: 100 });
   const plans = plansResponse?.data?.items ?? [];
+
+  const planOptions = useMemo(
+    () => plans.map((p) => ({ value: String(p.id), label: p.name })),
+    [plans],
+  );
 
   const isAllPlans = planFilter === "all";
 
@@ -137,55 +151,139 @@ export function AssignmentsList({ onAssignmentClick }: AssignmentsListProps) {
     return groups;
   }, [filteredAssignments]);
 
-  const selectCls =
-    "w-full px-3 py-1.5 text-xs border border-slate-700 rounded-md bg-slate-800/80 text-slate-300 focus:outline-none focus:ring-1 focus:ring-primary/50 appearance-none";
+  const activeFilterCount = [
+    planFilter !== "all",
+    sourceFilter !== "all",
+    statusFilter !== "all",
+  ].filter(Boolean).length;
+
+  const getSourceLabel = (source: AssignmentSource) => {
+    switch (source) {
+      case "all":
+        return t("assignments.filters.allSources");
+      case "group":
+        return t("assignments.filters.groupOnly");
+      case "individual":
+        return t("assignments.filters.individualOnly");
+    }
+  };
+
+  const getStatusLabel = (status: AssignmentStatus | "all") => {
+    switch (status) {
+      case "all":
+        return t("assignments.filters.allStatuses");
+      case "active":
+        return t("assignments.status.active");
+      case "upcoming":
+        return t("assignments.status.upcoming");
+      case "ended":
+        return t("assignments.status.ended");
+    }
+  };
 
   return (
-    <div className="space-y-4">
-      {/* Filters */}
-      <div className="flex gap-2">
-        <select value={planFilter} onChange={(e) => setPlanFilter(e.target.value)} className={selectCls}>
-          <option value="all">{t("assignments.filters.allPlans")}</option>
-          {plans.map((plan) => (
-            <option key={plan.id} value={plan.id}>{plan.name}</option>
-          ))}
-        </select>
+    <div className="space-y-5">
+      {/* Controls Bar & Filters */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between pb-4 border-b border-border">
+        {/* 3 Filters Row Side-by-Side */}
+        <div className="flex flex-wrap items-end gap-3">
+          {/* Plan Filter */}
+          <ComboboxSelect
+            label={t("assignments.filters.planLabel")}
+            placeholder={t("assignments.filters.allPlans")}
+            clearLabel={t("assignments.filters.allPlans")}
+            searchPlaceholder={t("assignments.filters.searchPlans")}
+            options={planOptions}
+            value={planFilter === "all" ? "" : planFilter}
+            onValueChange={(val) => setPlanFilter(val || "all")}
+            hasValue={planFilter !== "all"}
+            className="w-full sm:w-44"
+          />
 
-        <select
-          value={sourceFilter}
-          onChange={(e) => setSourceFilter(e.target.value as AssignmentSource)}
-          className={selectCls}
-        >
-          <option value="all">{t("assignments.filters.allSources")}</option>
-          <option value="group">{t("assignments.filters.groupOnly")}</option>
-          <option value="individual">{t("assignments.filters.individualOnly")}</option>
-        </select>
+          {/* Source Filter */}
+          <div className="flex flex-col gap-1 w-full sm:w-44">
+            <Label className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/80 px-0.5">
+              {t("assignments.filters.sourceLabel")}
+            </Label>
+            <Select
+              value={sourceFilter}
+              onValueChange={(val) => setSourceFilter(val as AssignmentSource)}
+            >
+              <SelectTrigger className="h-9 w-full text-xs rounded-lg cursor-pointer">
+                <SelectValue>{getSourceLabel(sourceFilter)}</SelectValue>
+              </SelectTrigger>
+              <SelectContent alignItemWithTrigger={false}>
+                <SelectItem value="all" className="text-xs text-muted-foreground">
+                  {t("assignments.filters.allSources")}
+                </SelectItem>
+                <SelectItem value="group" className="text-xs">
+                  {t("assignments.filters.groupOnly")}
+                </SelectItem>
+                <SelectItem value="individual" className="text-xs">
+                  {t("assignments.filters.individualOnly")}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as AssignmentStatus | "all")}
-          className={selectCls}
-        >
-          <option value="all">{t("assignments.filters.allStatuses")}</option>
-          <option value="active">{t("assignments.status.active")}</option>
-          <option value="upcoming">{t("assignments.status.upcoming")}</option>
-          <option value="ended">{t("assignments.status.ended")}</option>
-        </select>
-      </div>
+          {/* Status Filter */}
+          <div className="flex flex-col gap-1 w-full sm:w-44">
+            <Label className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/80 px-0.5">
+              {t("assignments.filters.statusLabel")}
+            </Label>
+            <Select
+              value={statusFilter}
+              onValueChange={(val) => setStatusFilter(val as AssignmentStatus | "all")}
+            >
+              <SelectTrigger className="h-9 w-full text-xs rounded-lg cursor-pointer">
+                <SelectValue>{getStatusLabel(statusFilter)}</SelectValue>
+              </SelectTrigger>
+              <SelectContent alignItemWithTrigger={false}>
+                <SelectItem value="all" className="text-xs text-muted-foreground">
+                  {t("assignments.filters.allStatuses")}
+                </SelectItem>
+                <SelectItem value="active" className="text-xs">
+                  {t("assignments.status.active")}
+                </SelectItem>
+                <SelectItem value="upcoming" className="text-xs">
+                  {t("assignments.status.upcoming")}
+                </SelectItem>
+                <SelectItem value="ended" className="text-xs">
+                  {t("assignments.status.ended")}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
-      {/* Count */}
-      <div className="text-right text-[11px] text-slate-500">
-        {filteredAssignments.length} {t("assignments.assignmentsCount")}
+        {/* Assignments Count on the Far Opposite Side */}
+        <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground sm:self-end mb-1 shrink-0">
+          <Badge
+            variant="outline"
+            className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-xs font-semibold px-2.5 py-0.5"
+          >
+            <span className="font-extrabold text-emerald-600 dark:text-emerald-400 me-1">{filteredAssignments.length}</span>
+            {t("assignments.assignmentsCount")}
+          </Badge>
+          {activeFilterCount > 0 && (
+            <Badge
+              variant="secondary"
+              className="text-[11px] bg-primary/10 text-primary border-primary/20"
+            >
+              {activeFilterCount}
+            </Badge>
+          )}
+        </div>
       </div>
 
       {/* Grouped Assignments */}
       <div className="space-y-4">
         {assignmentsLoading ? (
-          <div className="text-center py-10 text-xs text-slate-500">
+          <div className="text-center py-10 text-xs text-muted-foreground">
             {t("common:loading")}
           </div>
         ) : filteredAssignments.length === 0 ? (
-          <div className="text-center py-10 text-xs text-slate-500">
+          <div className="text-center py-10 text-xs text-muted-foreground">
             {t("assignments.noAssignments")}
           </div>
         ) : (
@@ -196,34 +294,34 @@ export function AssignmentsList({ onAssignmentClick }: AssignmentsListProps) {
             return (
               <div
                 key={groupKey}
-                className="rounded-lg border border-slate-700/70 bg-slate-800/30 overflow-hidden"
+                className="rounded-lg border border-border bg-card overflow-hidden"
               >
                 {/* Group Header */}
-                <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-700/60 bg-slate-800/50">
+                <div className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-muted/50">
                   <div>
                     <div className="flex items-center gap-1.5">
                       {isGroup ? (
                         <MdGroup className="size-3.5 text-primary shrink-0" />
                       ) : (
-                        <MdPerson className="size-3.5 text-slate-400 shrink-0" />
+                        <MdPerson className="size-3.5 text-muted-foreground shrink-0" />
                       )}
-                      <span className="text-sm font-semibold text-white">
+                      <span className="text-sm font-semibold text-foreground">
                         {isGroup ? (groupName ?? `Group ${groupKey}`) : "Individual Assignments"}
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-400 mt-0.5 ms-5">
+                    <p className="text-[11px] text-muted-foreground mt-0.5 ms-5">
                       {isGroup ? "Assigned via group" : "Direct assignments"} · {groupAssignments.length} athletes
                     </p>
                   </div>
                   {isGroup ? (
-                    <MdGroup className="size-4 text-slate-600" />
+                    <MdGroup className="size-4 text-muted-foreground" />
                   ) : (
-                    <MdPerson className="size-4 text-slate-600" />
+                    <MdPerson className="size-4 text-muted-foreground" />
                   )}
                 </div>
 
                 {/* Assignment Rows */}
-                <div className="divide-y divide-slate-700/40">
+                <div className="divide-y divide-border">
                   {groupAssignments.map((assignment) => {
                     const status = getAssignmentStatus(assignment);
 
@@ -238,18 +336,18 @@ export function AssignmentsList({ onAssignmentClick }: AssignmentsListProps) {
                       <div
                         key={assignment.id}
                         onClick={() => onAssignmentClick?.(assignment)}
-                        className="flex items-center gap-4 px-4 py-2.5 hover:bg-slate-700/30 cursor-pointer transition-colors"
+                        className="flex items-center gap-4 px-4 py-2.5 hover:bg-muted/50 cursor-pointer transition-colors"
                       >
                         {/* Athlete Name */}
                         <div className="w-36 shrink-0">
-                          <span className="text-sm font-medium text-white truncate block">
+                          <span className="text-sm font-medium text-foreground truncate block">
                             {athleteName}
                           </span>
                         </div>
 
                         {/* Plan Name */}
                         <div className="flex-1 min-w-0">
-                          <span className="text-xs text-slate-400 truncate block">
+                          <span className="text-xs text-muted-foreground truncate block">
                             {assignment.nutritionPlanName ?? "—"}
                           </span>
                         </div>
@@ -257,16 +355,16 @@ export function AssignmentsList({ onAssignmentClick }: AssignmentsListProps) {
                         {/* Source Tag */}
                         <div className="hidden sm:block">
                           {assignment.groupId != null ? (
-                            <span className="text-[11px] text-slate-400 whitespace-nowrap">
+                            <span className="text-[11px] text-muted-foreground whitespace-nowrap">
                               assigned via {assignedViaName ?? "Group"}
                             </span>
                           ) : (
-                            <span className="text-[11px] text-slate-500">individual</span>
+                            <span className="text-[11px] text-muted-foreground/80">individual</span>
                           )}
                         </div>
 
                         {/* Date Range */}
-                        <div className="text-[11px] text-slate-400 whitespace-nowrap min-w-[110px] text-right">
+                        <div className="text-[11px] text-muted-foreground whitespace-nowrap min-w-[110px] text-end">
                           {formatDateRange(assignment.startDate, assignment.endDate)}
                         </div>
 
@@ -291,3 +389,4 @@ export function AssignmentsList({ onAssignmentClick }: AssignmentsListProps) {
     </div>
   );
 }
+
