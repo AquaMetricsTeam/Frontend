@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { MdPersonAdd, MdCheckCircle, MdCancel, MdStickyNote2 } from "react-icons/md";
+import { MdPersonAdd, MdCheckCircle, MdCancel } from "react-icons/md";
 import {
   Table,
   TableHeader,
@@ -19,7 +19,11 @@ interface AdminAthletesTableProps {
   isError: boolean;
   onRetry: () => void;
   onOpenAssignModal: (athlete: AdminAthlete) => void;
-  onOpenNotes?: (athlete: { id: string; fullName: string; email?: string }) => void;
+  onOpenNotes?: (athlete: {
+    id: string;
+    fullName: string;
+    email?: string;
+  }) => void;
 }
 
 function getInitials(name: string) {
@@ -53,8 +57,7 @@ const ROLE_BADGE_CLASS: Record<string, string> = {
     "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
 };
 
-const DEFAULT_BADGE_CLASS =
-  "bg-primary/10 text-primary border-primary/30";
+const DEFAULT_BADGE_CLASS = "bg-primary/10 text-primary border-primary/30";
 
 function CoachBadge({ name, role }: { name: string; role: string }) {
   const cls = ROLE_BADGE_CLASS[role] ?? DEFAULT_BADGE_CLASS;
@@ -74,7 +77,6 @@ export function AdminAthletesTable({
   isError,
   onRetry,
   onOpenAssignModal,
-  onOpenNotes,
 }: AdminAthletesTableProps) {
   const { t } = useTranslation("athletes");
 
@@ -189,23 +191,6 @@ export function AdminAthletesTable({
                 {/* Actions */}
                 <TableCell className="py-3.5 pe-6 text-end">
                   <div className="flex items-center justify-end gap-2">
-                    {onOpenNotes && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-8 text-xs gap-1.5 rounded-lg text-primary hover:text-primary hover:bg-primary/10 cursor-pointer"
-                        onClick={() =>
-                          onOpenNotes({
-                            id: athlete.athleteId || athlete.id,
-                            fullName: athlete.fullName,
-                            email: athlete.email,
-                          })
-                        }
-                      >
-                        <MdStickyNote2 className="size-4" />
-                        <span>Notes</span>
-                      </Button>
-                    )}
                     <Button
                       size="sm"
                       variant="outline"
