@@ -19,6 +19,7 @@
     "noCoaches": "لا يوجد مدربون معينون",
     "assignCoach": "تعيين مدرب",
     "manageCoaches": "إدارة المدربين",
+    "viewProfile": "عرض الملف",
     "gender": "الجنس",
     "age": "العمر",
     "groups": "المجموعات",
@@ -26,7 +27,8 @@
   },
   "status": {
     "active": "نشط",
-    "inactive": "غير نشط"
+    "inactive": "غير نشط",
+    "pending": "قيد الانتظار"
   },
   "gender": {
     "male": "ذكر",
@@ -54,5 +56,112 @@
     "removing": "جارٍ الإزالة...",
     "assignedSuccess": "تم تعيين المدرب بنجاح",
     "removedSuccess": "تمت إزالة تعيين المدرب بنجاح"
+  },
+  "profile": {
+    "backToAthletes": "العودة إلى الرياضيين",
+    "notes": "ملاحظات المدرب",
+    "yearsOld": "سنة",
+    "tabs": {
+      "overview": "نظرة عامة والتحليلات",
+      "swimming": "جلسات السباحة",
+      "fitness": "جلسات اللياقة البدنية",
+      "trainingPlans": "الخطط التدريبية",
+      "medical": "المعلومات الطبية والحيوية",
+      "coaches": "المدربون والمجموعات"
+    },
+    "metrics": {
+      "totalSessions": "إجمالي الجلسات",
+      "completed": "المكتملة",
+      "avgRating": "متوسط الأداء",
+      "avgFatigue": "مستوى الإجهاد",
+      "trainingVolume": "حجم التدريب",
+      "completionRate": "نسبة الإنجاز",
+      "sessionsCount": "جلسة",
+      "excellent": "أداء استثنائي",
+      "good": "أداء جيد",
+      "needsFocus": "يحتاج إلى لياقة",
+      "injuryAlertTitle": "تنبيه إصابة مسجل",
+      "injuryAlertDesc": "تم تسجيل {{count}} جلسة مصحوبة بمؤشر إصابة. يرجى متابعة التعافي.",
+      "session": "الجلسة"
+    },
+    "charts": {
+      "performanceTrend": "مؤشر تطور الأداء",
+      "performanceTrendSubtitle": "تقييم الأداء عبر الجلسات المتتالية (مقياس 1-10)",
+      "fatigueTrend": "منحنى الإجهاد والجاهزية",
+      "fatigueTrendSubtitle": "تتبع الإجهاد البدني ومراقبة الاستشفاء (مقياس 1-10)",
+      "lowFatigue": "استشفاء مثالي (0-4)",
+      "moderateFatigue": "حمل تدريبي معتدل (5-7)",
+      "highFatigue": "إجهاد مرتفع (8-10)",
+      "noPerformanceData": "لا توجد بيانات أداء مسجلة",
+      "noPerformanceDataDesc": "ستظهر سجلات تطور الأداء فور تسجيل الجلسات التدريبية.",
+      "noFatigueData": "لا توجد بيانات إجهاد",
+      "noFatigueDataDesc": "سيتم رسم قيم مؤشر الإجهاد فور إتمام الجلسات."
+    },
+    "swimming": {
+      "title": "جلسات السباحة",
+      "subtitle": "تم تسجيل {{count}} جلسة تدريب سباحة",
+      "searchPlaceholder": "البحث في جلسات السباحة...",
+      "noSessionsFound": "لم يتم العثور على جلسات سباحة",
+      "tryDifferentSearch": "جرب تغيير كلمات البحث.",
+      "noSessionsRecorded": "لم يتم جدولة أي جلسات تدريب سباحة بعد."
+    },
+    "fitness": {
+      "title": "جلسات اللياقة البدنية",
+      "subtitle": "تم تسجيل {{count}} جلسة لياقة وتقوية بدنية",
+      "searchPlaceholder": "البحث في جلسات اللياقة...",
+      "noSessionsFound": "لم يتم العثور على جلسات لياقة بدنية",
+      "tryDifferentSearch": "جرب تغيير كلمات البحث.",
+      "noSessionsRecorded": "لم يتم جدولة أي جلسات لياقة بدنية بعد."
+    },
+    "plans": {
+      "title": "الخطط التدريبية",
+      "subtitle": "تم تعيين {{count}} برنامج تدريبي لهذا الرياضي",
+      "searchPlaceholder": "البحث في الخطط التدريبية...",
+      "noPlansFound": "لم يتم العثور على خطط تدريبية",
+      "tryDifferentSearch": "جرب تغيير كلمات البحث.",
+      "noPlansAssigned": "لم يتم تعيين أي خطة تدريبية بعد.",
+      "minutes": "دقيقة"
+    },
+    "medical": {
+      "title": "المعلومات الطبية والحيوية",
+      "subtitle": "جهات الاتصال في حالات الطوارئ والاحتياطات الصحية والملف الحيوي",
+      "emergencyContact": "رقم الطوارئ",
+      "urgentPriority": "أولوية عاجلة",
+      "emergencyContactDesc": "جهة الاتصال المباشرة في حالات الطوارئ أو الإصابة أثناء التدريب.",
+      "noEmergencyContact": "لا يوجد رقم طوارئ مسجل.",
+      "callEmergency": "اتصال بالطوارئ",
+      "copyNumber": "نسخ الرقم",
+      "medicalNotes": "الملاحظات والاحتياطات الطبية",
+      "hasNotes": "توجد ملاحظة طبية نشطة",
+      "clear": "سليم / لا توجد عوارض طبية",
+      "noMedicalNotes": "لا توجد أي حالات صحية أو حساسيات موثقة.",
+      "confidentialNotice": "السجلات الطبية سرية تماماً ومتاحة فقط للطاقم التدريبي المصرح له.",
+      "biometricsTitle": "الملف البيولوجي",
+      "dateOfBirth": "تاريخ الميلاد"
+    },
+    "coaches": {
+      "title": "المدربون المعينون",
+      "subtitle": "{{count}} مدرب معين لهذا الرياضي",
+      "noCoachesAssignedDesc": "قم بتعيين مدربي سباحة أو لياقة أو أخصائيي تغذية لهذا الرياضي."
+    },
+    "groups": {
+      "title": "الفرق والمجموعات المعينة",
+      "subtitle": "{{count}} مجموعة وفريق تدريبي",
+      "noGroupsFound": "لا توجد مجموعات تدريبية معينة",
+      "noGroupsDesc": "لم تتم إضافة هذا الرياضي إلى أي مجموعة تدريبية بعد."
+    },
+    "sessions": {
+      "recordAvailable": "تم تسجيل التقرير",
+      "pendingRecord": "بانتظار التسجيل",
+      "recorded": "مسجلة",
+      "scheduled": "مجدولة",
+      "noSwimmingSessions": "لا توجد جلسات سباحة حديثة لعرضها.",
+      "noFitnessSessions": "لا توجد جلسات لياقة حديثة لعرضها."
+    },
+    "error": {
+      "title": "فشل تحميل ملف الرياضي",
+      "description": "تعذر جلب بيانات الرياضي. يرجى التحقق من الاتصال بالإنترنت والمحاولة مجدداً.",
+      "retry": "إعادة المحاولة"
+    }
   }
 }

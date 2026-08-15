@@ -84,3 +84,100 @@ export interface RemoveCoachAssignmentPayload {
   athleteId: string;
   assignmentId: number;
 }
+
+// ─── Athlete Overview API Shapes: GET /athletes/{athleteId}/... ───────────────
+
+export interface AthleteOverviewGroupResponse {
+  id: number;
+  name: string;
+  domainId: number;
+  domainName: string;
+}
+
+export interface AthleteOverviewCoachResponse {
+  coachId: string;
+  coachName: string;
+  profilePictureUrl?: string | null;
+  domainId: number;
+  domainName: string;
+}
+
+export interface AthleteOverviewSwimmingSessionResponse {
+  id: number;
+  title: string;
+  description?: string | null;
+  sessionDate: string;
+  startTime: string;
+  endTime: string;
+  location?: string | null;
+  notes?: string | null;
+  trainingPlanId: number;
+  trainingPlanTitle: string;
+  coachId: string;
+  coachName: string;
+  hasTrainingRecord: boolean;
+}
+
+export interface AthleteOverviewFitnessSessionResponse {
+  id: number;
+  title: string;
+  description?: string | null;
+  sessionDate: string;
+  startTime: string;
+  endTime: string;
+  location?: string | null;
+  notes?: string | null;
+  trainingPlanId: number;
+  trainingPlanTitle: string;
+  coachId: string;
+  coachName: string;
+  hasTrainingRecord: boolean;
+}
+
+export interface AthleteOverviewResponse {
+  id: string;
+  fullName: string;
+  email: string;
+  profilePictureUrl?: string | null;
+  gender: string | number;
+  dateOfBirth: string;
+  age: number;
+  registrationStatus: string | number;
+  emergencyContact?: string | null;
+  medicalNotes?: string | null;
+  groups: AthleteOverviewGroupResponse[];
+  coaches: AthleteOverviewCoachResponse[];
+  swimmingSessions: AthleteOverviewSwimmingSessionResponse[];
+  fitnessSessions: AthleteOverviewFitnessSessionResponse[];
+}
+
+export interface AthleteOverviewTrainingPlanResponse {
+  id: number;
+  title: string;
+  description?: string | null;
+  estimatedDurationMinutes?: number | null;
+  planSource?: string | null;
+  approvalStatus?: string | null;
+  domainId?: number;
+  domainName?: string;
+}
+
+export interface AthleteOverviewPerformancePointResponse {
+  trainingRecordId: number;
+  trainingSessionId: number;
+  sessionDate: string;
+  sessionTitle: string;
+  domainId: number;
+  value: number;
+}
+
+export interface AthleteOverviewPerformanceResponse {
+  performanceTrend: AthleteOverviewPerformancePointResponse[];
+  fatigueTrend: AthleteOverviewPerformancePointResponse[];
+  totalSessions: number;
+  completedSessions: number;
+  injuredSessions: number;
+  averagePerformanceRating: number;
+  averageFatigueLevel: number;
+}
+

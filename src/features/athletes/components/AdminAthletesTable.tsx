@@ -1,5 +1,11 @@
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { MdPersonAdd, MdCheckCircle, MdCancel } from "react-icons/md";
+import {
+  MdPersonAdd,
+  MdCheckCircle,
+  MdCancel,
+  MdVisibility,
+} from "react-icons/md";
 import {
   Table,
   TableHeader,
@@ -19,11 +25,6 @@ interface AdminAthletesTableProps {
   isError: boolean;
   onRetry: () => void;
   onOpenAssignModal: (athlete: AdminAthlete) => void;
-  onOpenNotes?: (athlete: {
-    id: string;
-    fullName: string;
-    email?: string;
-  }) => void;
 }
 
 function getInitials(name: string) {
@@ -118,7 +119,10 @@ export function AdminAthletesTable({
               >
                 {/* Name + Avatar */}
                 <TableCell className="py-3.5 ps-6 font-medium">
-                  <div className="flex items-center gap-3">
+                  <Link
+                    to={`/athletes/${athlete.athleteId || athlete.id}`}
+                    className="flex items-center gap-3 group/link hover:opacity-90 transition-opacity"
+                  >
                     {athlete.profilePictureUrl ? (
                       <img
                         src={athlete.profilePictureUrl}
@@ -131,14 +135,14 @@ export function AdminAthletesTable({
                       </div>
                     )}
                     <div>
-                      <div className="font-semibold text-foreground text-sm">
+                      <div className="font-semibold text-foreground text-sm group-hover/link:text-primary transition-colors">
                         {athlete.fullName}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {new Date(athlete.createdAt).toLocaleDateString()}
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </TableCell>
 
                 {/* Email */}
@@ -191,6 +195,16 @@ export function AdminAthletesTable({
                 {/* Actions */}
                 <TableCell className="py-3.5 pe-6 text-end">
                   <div className="flex items-center justify-end gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 text-xs gap-1.5 rounded-lg border-border hover:border-primary/50 hover:bg-primary/5 cursor-pointer"
+                    >
+                      <Link to={`/athletes/${athlete.athleteId || athlete.id}`}>
+                        <MdVisibility className="size-3.5 text-primary" />
+                        <span>{t("table.viewProfile")}</span>
+                      </Link>
+                    </Button>
                     <Button
                       size="sm"
                       variant="outline"
