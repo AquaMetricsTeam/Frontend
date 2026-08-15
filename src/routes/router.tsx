@@ -8,6 +8,7 @@ import LoginPage from "@/pages/login";
 import UnauthorizedPage from "@/pages/unauthorized";
 import UsersPage from "@/pages/users";
 import AthletesPage from "@/pages/athletes";
+import AthleteProfilePage from "@/pages/athlete-profile";
 import GroupsPage from "@/pages/groups";
 import ExercisesPage from "@/pages/exercises";
 import TrainingTemplatesPage from "@/pages/training-templates";
@@ -77,6 +78,14 @@ const router = createBrowserRouter([
                 element: (
                   <ProtectedRoute allowedRoles={DASHBOARD_ROLES}>
                     <AthletesPage />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/athletes/:athleteId",
+                element: (
+                  <ProtectedRoute allowedRoles={DASHBOARD_ROLES}>
+                    <AthleteProfilePage />
                   </ProtectedRoute>
                 ),
               },

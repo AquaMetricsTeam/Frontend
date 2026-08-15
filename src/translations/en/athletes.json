@@ -19,6 +19,7 @@
     "noCoaches": "No coaches assigned",
     "assignCoach": "Assign Coach",
     "manageCoaches": "Manage Coaches",
+    "viewProfile": "View Profile",
     "gender": "Gender",
     "age": "Age",
     "groups": "Groups",
@@ -26,7 +27,8 @@
   },
   "status": {
     "active": "Active",
-    "inactive": "Inactive"
+    "inactive": "Inactive",
+    "pending": "Pending"
   },
   "gender": {
     "male": "Male",
@@ -54,5 +56,112 @@
     "removing": "Removing...",
     "assignedSuccess": "Coach assigned successfully",
     "removedSuccess": "Coach assignment removed successfully"
+  },
+  "profile": {
+    "backToAthletes": "Back to Athletes",
+    "notes": "Coach Notes",
+    "yearsOld": "years old",
+    "tabs": {
+      "overview": "Overview & Analytics",
+      "swimming": "Swimming Sessions",
+      "fitness": "Fitness Sessions",
+      "trainingPlans": "Training Plans",
+      "medical": "Medical & Biometrics",
+      "coaches": "Coaches & Squads"
+    },
+    "metrics": {
+      "totalSessions": "Total Sessions",
+      "completed": "Completed",
+      "avgRating": "Avg Performance",
+      "avgFatigue": "Avg Fatigue",
+      "trainingVolume": "Training Volume",
+      "completionRate": "Completion Rate",
+      "sessionsCount": "sessions",
+      "excellent": "Peak Performance",
+      "good": "Solid Performance",
+      "needsFocus": "Needs Conditioning",
+      "injuryAlertTitle": "Injury Reported",
+      "injuryAlertDesc": "{{count}} session recorded with an injury indicator. Please monitor recovery.",
+      "session": "Session"
+    },
+    "charts": {
+      "performanceTrend": "Performance Rating Trend",
+      "performanceTrendSubtitle": "Session-by-session performance evaluation (Scale 1-10)",
+      "fatigueTrend": "Fatigue & Readiness Curve",
+      "fatigueTrendSubtitle": "Exertion level tracking and recovery monitoring (Scale 1-10)",
+      "lowFatigue": "Optimal Recovery (0-4)",
+      "moderateFatigue": "Manageable Load (5-7)",
+      "highFatigue": "High Fatigue (8-10)",
+      "noPerformanceData": "No Performance Data",
+      "noPerformanceDataDesc": "Performance records will appear here as sessions are logged.",
+      "noFatigueData": "No Fatigue Data",
+      "noFatigueDataDesc": "Fatigue monitoring values will be charted once sessions are completed."
+    },
+    "swimming": {
+      "title": "Swimming Sessions",
+      "subtitle": "{{count}} swimming training sessions recorded",
+      "searchPlaceholder": "Search swimming sessions...",
+      "noSessionsFound": "No swimming sessions found",
+      "tryDifferentSearch": "Try adjusting your search query.",
+      "noSessionsRecorded": "No swimming training sessions have been scheduled yet."
+    },
+    "fitness": {
+      "title": "Fitness Sessions",
+      "subtitle": "{{count}} strength and conditioning sessions recorded",
+      "searchPlaceholder": "Search fitness sessions...",
+      "noSessionsFound": "No fitness sessions found",
+      "tryDifferentSearch": "Try adjusting your search query.",
+      "noSessionsRecorded": "No fitness training sessions have been scheduled yet."
+    },
+    "plans": {
+      "title": "Training Plans",
+      "subtitle": "{{count}} training programs assigned to this athlete",
+      "searchPlaceholder": "Search training plans...",
+      "noPlansFound": "No training plans found",
+      "tryDifferentSearch": "Try adjusting your search query.",
+      "noPlansAssigned": "No training plans assigned yet.",
+      "minutes": "mins"
+    },
+    "medical": {
+      "title": "Medical & Biometric Information",
+      "subtitle": "Emergency contacts, health precautions, and biological overview",
+      "emergencyContact": "Emergency Contact",
+      "urgentPriority": "High Priority",
+      "emergencyContactDesc": "Immediate point of contact in case of emergency or injury during training.",
+      "noEmergencyContact": "No emergency contact number on file.",
+      "callEmergency": "Call Emergency Contact",
+      "copyNumber": "Copy Phone Number",
+      "medicalNotes": "Medical Notes & Precautions",
+      "hasNotes": "Active Medical Note",
+      "clear": "Clear / No Medical Issues",
+      "noMedicalNotes": "No medical conditions or allergies documented.",
+      "confidentialNotice": "Medical records are strictly confidential and visible only to authorized coaching staff.",
+      "biometricsTitle": "Biological Profile",
+      "dateOfBirth": "Date of Birth"
+    },
+    "coaches": {
+      "title": "Assigned Coaches",
+      "subtitle": "{{count}} coaching staff members assigned to this athlete",
+      "noCoachesAssignedDesc": "Assign swimming, fitness, or nutrition specialists to this athlete."
+    },
+    "groups": {
+      "title": "Assigned Squads & Groups",
+      "subtitle": "{{count}} training squads and domain groups",
+      "noGroupsFound": "No Squad Groups Assigned",
+      "noGroupsDesc": "This athlete has not been added to any squad groups yet."
+    },
+    "sessions": {
+      "recordAvailable": "Record Logged",
+      "pendingRecord": "Pending Record",
+      "recorded": "Recorded",
+      "scheduled": "Scheduled",
+      "noSwimmingSessions": "No recent swimming sessions to display.",
+      "noFitnessSessions": "No recent fitness sessions to display."
+    },
+    "error": {
+      "title": "Failed to load athlete profile",
+      "description": "Could not retrieve athlete overview data. Please check your network and try again.",
+      "retry": "Try Again"
+    }
   }
 }

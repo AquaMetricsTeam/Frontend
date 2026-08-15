@@ -124,7 +124,6 @@ export default function AthletesPage() {
               isError={adminQuery.isError}
               onRetry={adminQuery.refetch}
               onOpenAssignModal={handleOpenAssignModal}
-              onOpenNotes={(ath) => setNotesAthlete(ath)}
             />
           ) : (
             <CoachAthletesTable
