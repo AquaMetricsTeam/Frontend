@@ -49,11 +49,15 @@
       "ended": "Ended"
     },
     "filters": {
+      "planLabel": "Plan",
+      "sourceLabel": "Source",
+      "statusLabel": "Status",
       "allPlans": "All plans",
       "allSources": "All sources",
       "allStatuses": "All statuses",
       "groupOnly": "Group assignments",
-      "individualOnly": "Individual assignments"
+      "individualOnly": "Individual assignments",
+      "searchPlans": "Search plans..."
     },
     "viaGroup": "Group: {{groupId}}",
     "viaIndividual": "Individual"
@@ -93,7 +97,7 @@
       "dietaryNotesLabel": "Dietary Notes (Optional)",
       "dietaryNotesPlaceholder": "e.g., Swap whey for pea protein if lactose intolerant",
       "addMeal": "+ Add Meal",
-      "useMealLibrary": "📚 Use Existing Meal",
+      "useMealLibrary": " Use Existing Meal",
       "noMeals": "No meals added yet. Add one to get started.",
       "validationError": "At least one meal is required to proceed.",
       "nextButton": "Next: Review"

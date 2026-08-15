@@ -1,24 +1,7 @@
-/**
- * AssignPlanSlideOver
- *
- * Right-side drawer for assigning a nutrition plan to either:
- *   • Individual Athletes — searchable, multi-checkbox list
- *   • Group              — single-select scrollable list
- *
- * Data comes exclusively from the real lookup endpoints already in the project:
- *   GET /groups/available-athletes  (or /users/athletes-lookup as fallback)
- *   GET /groups/groups-lookup
- *
- * Assignment fires one POST per athlete (sequential) via useAssignMultipleAthletes,
- * or one POST for group via useAssignPlanToGroup. Both paths show a per-item
- * success/failure result inside the drawer after the requests settle.
- */
-
 import { useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import {
   MdClose,
-  MdSearch,
   MdCheckCircle,
   MdWarning,
   MdPeople,
@@ -33,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { SearchInput } from "@/components/common/SearchInput";
 import { useAssignMultipleAthletes } from "../hooks/useAssignMultipleAthletes";
 import { useAssignPlanToGroup } from "../hooks/useAssignPlanToGroup";
 import { useGroupsLookup } from "@/features/lookups/hooks/useGroupsLookup";
@@ -52,10 +36,10 @@ type TargetMode = "athlete" | "group";
 
 // ─── Small pure sub-components (defined outside to avoid re-creating on render)
 
-/** Cyan pill showing the plan name under the drawer title */
+/** Primary pill showing the plan name under the drawer title */
 function PlanNamePill({ name }: { name: string }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full border border-cyan-500/40 bg-cyan-500/10 px-2.5 py-0.5 text-xs font-medium text-cyan-400 max-w-full">
+    <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-1.5 py-px text-[11px] font-medium text-primary max-w-full">
       <span className="truncate">{name}</span>
     </span>
   );
@@ -77,7 +61,7 @@ function ModeToggle({
     { key: "group",   icon: <MdPeople  className="size-3.5 shrink-0" /> },
   ];
   return (
-    <div className="flex rounded-lg border border-slate-700 bg-slate-900/60 p-0.5 gap-0.5">
+    <div className="flex rounded-lg border border-border bg-muted/50 p-0.5 gap-0.5">
       {modes.map(({ key, icon }) => (
         <button
           key={key}
@@ -85,10 +69,10 @@ function ModeToggle({
           disabled={disabled}
           onClick={() => onChange(key)}
           className={[
-            "flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-all select-none",
+            "flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-all select-none cursor-pointer",
             value === key
-              ? "border border-cyan-500/50 bg-cyan-500/15 text-cyan-400"
-              : "border border-transparent text-slate-400 hover:text-slate-200",
+              ? "border border-primary/30 bg-primary/15 text-primary shadow-xs"
+              : "border border-transparent text-muted-foreground hover:text-foreground",
           ].join(" ")}
         >
           {icon}
@@ -120,14 +104,14 @@ function AthleteRow({
       type="button"
       onClick={() => onToggle(athlete.athleteId)}
       className={[
-        "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/50",
+        "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 cursor-pointer",
         checked
-          ? "border border-cyan-500/30 bg-cyan-500/10"
-          : "border border-transparent hover:bg-slate-800/80",
+          ? "border border-primary/30 bg-primary/10"
+          : "border border-transparent hover:bg-muted/50",
       ].join(" ")}
     >
       {/* Avatar */}
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-700 text-xs font-semibold text-slate-300">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-xs font-semibold text-muted-foreground">
         {athlete.profilePictureUrl ? (
           <img
             src={athlete.profilePictureUrl}
@@ -140,7 +124,7 @@ function AthleteRow({
       </div>
 
       {/* Name */}
-      <span className="flex-1 truncate text-sm font-medium text-slate-200">
+      <span className="flex-1 truncate text-sm font-medium text-foreground">
         {athlete.fullName}
       </span>
 
@@ -150,8 +134,8 @@ function AthleteRow({
         className={[
           "flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors",
           checked
-            ? "border-cyan-500 bg-cyan-500"
-            : "border-slate-600 bg-transparent",
+            ? "border-primary bg-primary"
+            : "border-border bg-transparent",
         ].join(" ")}
       >
         {checked && (
@@ -187,21 +171,21 @@ function GroupRow({
       type="button"
       onClick={() => onToggle(group.id)}
       className={[
-        "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/50",
+        "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 cursor-pointer",
         checked
-          ? "border border-cyan-500/30 bg-cyan-500/10"
-          : "border border-transparent hover:bg-slate-800/80",
+          ? "border border-primary/30 bg-primary/10"
+          : "border border-transparent hover:bg-muted/50",
       ].join(" ")}
     >
       {/* Icon */}
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-700 text-slate-300">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
         <MdPeople className="size-4" />
       </div>
 
       <div className="flex flex-1 flex-col min-w-0">
-        <span className="truncate text-sm font-medium text-slate-200">{group.name}</span>
+        <span className="truncate text-sm font-medium text-foreground">{group.name}</span>
         {group.athleteCount != null && (
-          <span className="text-xs text-slate-500">{group.athleteCount} athletes</span>
+          <span className="text-xs text-muted-foreground">{group.athleteCount} athletes</span>
         )}
       </div>
 
@@ -211,8 +195,8 @@ function GroupRow({
         className={[
           "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-colors",
           checked
-            ? "border-cyan-500 bg-cyan-500"
-            : "border-slate-600 bg-transparent",
+            ? "border-primary bg-primary"
+            : "border-border bg-transparent",
         ].join(" ")}
       >
         {checked && (
@@ -240,19 +224,19 @@ function BatchResultPanel({
         {succeeded.length > 0 && (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <MdCheckCircle className="size-4 shrink-0 text-emerald-400" />
-              <span className="text-sm font-semibold text-emerald-400">
+              <MdCheckCircle className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
                 {t("modal.assignmentResult.assigned")}
               </span>
-              <Badge className="ml-auto border-0 bg-emerald-600/80 text-white">
+              <Badge className="ms-auto border-0 bg-emerald-600 text-white">
                 {succeeded.length}
               </Badge>
             </div>
             <div className="divide-y divide-emerald-500/10 rounded-lg border border-emerald-500/20 bg-emerald-500/5">
               {succeeded.map((r) => (
                 <div key={r.athleteId} className="flex items-center gap-2 px-3 py-2">
-                  <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
-                  <span className="text-sm text-slate-200">{r.fullName}</span>
+                  <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                  <span className="text-sm text-foreground">{r.fullName}</span>
                 </div>
               ))}
             </div>
@@ -262,11 +246,11 @@ function BatchResultPanel({
         {failed.length > 0 && (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <MdWarning className="size-4 shrink-0 text-amber-400" />
-              <span className="text-sm font-semibold text-amber-400">
+              <MdWarning className="size-4 shrink-0 text-amber-600 dark:text-amber-400" />
+              <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">
                 {t("modal.assignmentResult.skipped")}
               </span>
-              <Badge className="ml-auto border-0 bg-amber-600/80 text-white">
+              <Badge className="ms-auto border-0 bg-amber-600 text-white">
                 {failed.length}
               </Badge>
             </div>
@@ -274,11 +258,11 @@ function BatchResultPanel({
               {failed.map((r) => (
                 <div key={r.athleteId} className="px-3 py-2">
                   <div className="flex items-center gap-2">
-                    <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
-                    <span className="text-sm text-slate-200">{r.fullName}</span>
+                    <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                    <span className="text-sm text-foreground">{r.fullName}</span>
                   </div>
                   {r.message && (
-                    <p className="ml-3.5 mt-0.5 text-xs text-slate-500">{r.message}</p>
+                    <p className="ms-3.5 mt-0.5 text-xs text-muted-foreground">{r.message}</p>
                   )}
                 </div>
               ))}
@@ -287,9 +271,9 @@ function BatchResultPanel({
         )}
       </div>
 
-      <div className="border-t border-slate-800 p-4">
+      <div className="border-t border-border p-4">
         <Button
-          className="w-full bg-cyan-500 hover:bg-cyan-600 text-white"
+          className="w-full cursor-pointer"
           onClick={onDone}
         >
           {t("common:close")}
@@ -450,274 +434,267 @@ export function AssignPlanSlideOver({
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <>
-      <Drawer open={open} onOpenChange={handleClose} direction="right" modal={true}>
-        <DrawerContent className="w-full sm:max-w-xl flex flex-col overflow-hidden">
+    <Drawer open={open} onOpenChange={handleClose} direction="right" modal={true}>
+      <DrawerContent className="w-full sm:max-w-xl flex flex-col overflow-hidden">
 
-          {/* ── Header ───────────────────────────────────────────────────── */}
-          <DrawerHeader className="shrink-0 flex flex-col gap-2 border-b border-slate-800 pb-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex flex-col gap-1.5 min-w-0">
-                <h2 className="text-base font-semibold text-slate-100 leading-snug">
-                  {t("assign.title")}
-                </h2>
-                <PlanNamePill name={plan.name} />
+        {/* ── Header ───────────────────────────────────────────────────── */}
+        <DrawerHeader className="shrink-0 flex flex-col gap-2 border-b border-border pb-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex flex-col gap-1.5 min-w-0">
+              <h2 className="text-base font-semibold text-foreground leading-snug">
+                {t("assign.title")}
+              </h2>
+              <PlanNamePill name={plan.name} />
+            </div>
+            <Button
+              size="icon-sm"
+              variant="ghost"
+              onClick={handleClose}
+              disabled={isLoading}
+              className="mt-0.5 shrink-0 cursor-pointer"
+            >
+              <MdClose className="size-5" />
+            </Button>
+          </div>
+        </DrawerHeader>
+
+        {/* ── Body: form OR result ──────────────────────────────────────── */}
+        {batchResult ? (
+          <BatchResultPanel result={batchResult} onDone={handleClose} />
+        ) : groupAssignedCount !== null ? (
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
+            <MdCheckCircle className="size-12 text-emerald-600 dark:text-emerald-400" />
+            <div className="space-y-1">
+              <p className="text-base font-semibold text-foreground">
+                {t("modal.assignmentResult.assigned")}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {groupAssignedCount}{" "}
+                {groupAssignedCount === 1 ? "athlete" : "athletes"} assigned successfully
+              </p>
+            </div>
+            <Button
+              className="mt-2 cursor-pointer"
+              onClick={handleClose}
+            >
+              {t("common:close")}
+            </Button>
+          </div>
+        ) : (
+          <>
+            <div className="flex-1 overflow-y-auto p-4 space-y-5">
+
+              {/* Mode toggle */}
+              <div className="space-y-2">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  {t("assign.targetMode")}
+                </p>
+                <ModeToggle
+                  value={targetMode}
+                  onChange={handleModeChange}
+                  disabled={isLoading}
+                />
               </div>
+
+              {/* ── Athlete mode ────────────────────────────────────────── */}
+              {targetMode === "athlete" && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                      {t("assign.selectAthlete")}
+                      <span className="text-destructive ms-0.5">*</span>
+                    </p>
+                    {selectedAthleteIds.size > 0 && (
+                      <span className="text-xs text-primary font-medium">
+                        {selectedAthleteIds.size}{" "}
+                        {selectedAthleteIds.size === 1 ? "athlete" : "athletes"} selected
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Search */}
+                  <SearchInput
+                    value={athleteSearch}
+                    onChange={setAthleteSearch}
+                    placeholder={t("assign.athleteSearch")}
+                    className="w-full sm:max-w-full"
+                  />
+
+                  {/* Scrollable list */}
+                  <div className="max-h-52 overflow-y-auto rounded-lg border border-border bg-card p-2 space-y-0.5">
+                    {athletesLoading ? (
+                      <div className="py-8 text-center text-xs text-muted-foreground">
+                        {t("common:loading")}
+                      </div>
+                    ) : athletesError ? (
+                      <div className="py-8 text-center text-xs text-destructive">
+                        Failed to load athletes. Please try again.
+                      </div>
+                    ) : filteredAthletes.length === 0 ? (
+                      <div className="py-8 text-center text-xs text-muted-foreground">
+                        {athleteSearch
+                          ? t("assign.noAthletesFound")
+                          : t("assign.noAthletesAvailable")}
+                      </div>
+                    ) : (
+                      filteredAthletes.map((a) => (
+                        <AthleteRow
+                          key={a.athleteId}
+                          athlete={a}
+                          checked={selectedAthleteIds.has(a.athleteId)}
+                          onToggle={toggleAthlete}
+                        />
+                      ))
+                    )}
+                  </div>
+
+                  {selectionError && (
+                    <p className="text-xs text-destructive">{selectionError}</p>
+                  )}
+                </div>
+              )}
+
+              {/* ── Group mode ──────────────────────────────────────────── */}
+              {targetMode === "group" && (
+                <div className="space-y-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                    {t("assign.selectGroup")}
+                    <span className="text-destructive ms-0.5">*</span>
+                  </p>
+
+                  <div className="max-h-52 overflow-y-auto rounded-lg border border-border bg-card p-2 space-y-0.5">
+                    {groupsLoading ? (
+                      <div className="py-8 text-center text-xs text-muted-foreground">
+                        {t("common:loading")}
+                      </div>
+                    ) : groupsError ? (
+                      <div className="py-8 text-center text-xs text-destructive">
+                        Failed to load groups. Please try again.
+                      </div>
+                    ) : groups.length === 0 ? (
+                      <div className="py-8 text-center text-xs text-muted-foreground">
+                        No groups available
+                      </div>
+                    ) : (
+                      groups.map((g) => (
+                        <GroupRow
+                          key={g.id}
+                          group={g}
+                          checked={selectedGroupId === g.id}
+                          onToggle={setSelectedGroupId}
+                        />
+                      ))
+                    )}
+                  </div>
+
+                  {selectionError && (
+                    <p className="text-xs text-destructive">{selectionError}</p>
+                  )}
+                </div>
+              )}
+
+              {/* ── Date range ──────────────────────────────────────────── */}
+              <div className="space-y-3">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  {t("assign.dateRange")}
+                </p>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground">
+                      {t("assign.startDate")}
+                      <span className="text-destructive ms-0.5">*</span>
+                    </label>
+                    <Input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="text-sm cursor-pointer [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-70 [&::-webkit-calendar-picker-indicator]:hover:opacity-100 dark:[&::-webkit-calendar-picker-indicator]:![filter:none]"
+                    />
+                    {startDateError && (
+                      <p className="text-xs text-destructive">{startDateError}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground">
+                      {t("assign.endDate")}
+                      <span className="text-muted-foreground/60 ms-1 font-normal text-[10px]">
+                        ({t("assign.endDateOptional")})
+                      </span>
+                    </label>
+                    <Input
+                      type="date"
+                      value={endDate}
+                      min={startDate || undefined}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="text-sm cursor-pointer [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-70 [&::-webkit-calendar-picker-indicator]:hover:opacity-100 dark:[&::-webkit-calendar-picker-indicator]:![filter:none]"
+                    />
+                    {endDateInvalid && (
+                      <p className="text-xs text-destructive">{t("assign.endDateError")}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Assignment summary ──────────────────────────────────── */}
+              {canSubmit && (
+                <div className="rounded-lg border border-border bg-muted/40 px-4 py-3 space-y-1">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                    {t("assign.summary.title")}
+                  </p>
+                  <p className="text-sm text-foreground leading-snug">
+                    <span className="font-medium text-primary">"{plan.name}"</span>
+                    {" → "}
+                    {targetMode === "athlete" ? (
+                      <span className="text-foreground">
+                        {selectedAthleteIds.size === 1
+                          ? athletes.find((a) => selectedAthleteIds.has(a.athleteId))?.fullName
+                          : `${selectedAthleteIds.size} athletes`}
+                      </span>
+                    ) : (
+                      <span className="text-foreground">{selectedGroupName}</span>
+                    )}
+                  </p>
+                  {dateLabel && (
+                    <p className="text-xs text-muted-foreground">{dateLabel}</p>
+                  )}
+                </div>
+              )}
+
+            </div>
+
+            {/* ── Footer ───────────────────────────────────────────────── */}
+            <DrawerFooter className="shrink-0 border-t border-border flex-row items-center justify-between gap-3 px-6 py-4 bg-card">
               <Button
-                size="icon-sm"
-                variant="ghost"
+                size="sm"
+                variant="outline"
                 onClick={handleClose}
                 disabled={isLoading}
-                className="mt-0.5 shrink-0"
+                className="cursor-pointer"
               >
-                <MdClose className="size-5" />
+                {t("common:cancel")}
               </Button>
-            </div>
-          </DrawerHeader>
-
-          {/* ── Body: form OR result ──────────────────────────────────────── */}
-          {batchResult ? (
-            <BatchResultPanel result={batchResult} onDone={handleClose} />
-          ) : groupAssignedCount !== null ? (
-            <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
-              <MdCheckCircle className="size-12 text-emerald-400" />
-              <div className="space-y-1">
-                <p className="text-base font-semibold text-slate-100">
-                  {t("modal.assignmentResult.assigned")}
-                </p>
-                <p className="text-sm text-slate-400">
-                  {groupAssignedCount}{" "}
-                  {groupAssignedCount === 1 ? "athlete" : "athletes"} assigned successfully
-                </p>
-              </div>
               <Button
-                className="mt-2 bg-cyan-500 hover:bg-cyan-600 text-white"
-                onClick={handleClose}
+                size="sm"
+                disabled={isLoading}
+                onClick={handleConfirm}
+                className="min-w-32 cursor-pointer"
               >
-                {t("common:close")}
+                {isLoading ? (
+                  <span className="flex items-center gap-1.5">
+                    <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    {t("common:processing")}
+                  </span>
+                ) : (
+                  t("assign.confirmButton")
+                )}
               </Button>
-            </div>
-          ) : (
-            <>
-              <div className="flex-1 overflow-y-auto p-4 space-y-5">
-
-                {/* Mode toggle */}
-                <div className="space-y-2">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
-                    {t("assign.targetMode")}
-                  </p>
-                  <ModeToggle
-                    value={targetMode}
-                    onChange={handleModeChange}
-                    disabled={isLoading}
-                  />
-                </div>
-
-                {/* ── Athlete mode ────────────────────────────────────────── */}
-                {targetMode === "athlete" && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
-                        {t("assign.selectAthlete")}
-                        <span className="text-cyan-500 ml-0.5">*</span>
-                      </p>
-                      {selectedAthleteIds.size > 0 && (
-                        <span className="text-xs text-cyan-400 font-medium">
-                          {selectedAthleteIds.size}{" "}
-                          {selectedAthleteIds.size === 1 ? "athlete" : "athletes"} selected
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Search */}
-                    <div className="relative">
-                      <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-500 pointer-events-none" />
-                      <Input
-                        type="text"
-                        placeholder={t("assign.athleteSearch")}
-                        value={athleteSearch}
-                        onChange={(e) => setAthleteSearch(e.target.value)}
-                        className="pl-9 bg-slate-900/60 border-slate-700 text-sm text-slate-200 placeholder:text-slate-500 focus-visible:ring-cyan-500/40"
-                      />
-                    </div>
-
-                    {/* Scrollable list */}
-                    <div className="max-h-52 overflow-y-auto rounded-lg border border-slate-800 bg-slate-900/60 p-2 space-y-0.5">
-                      {athletesLoading ? (
-                        <div className="py-8 text-center text-xs text-slate-500">
-                          {t("common:loading")}
-                        </div>
-                      ) : athletesError ? (
-                        <div className="py-8 text-center text-xs text-red-400">
-                          Failed to load athletes. Please try again.
-                        </div>
-                      ) : filteredAthletes.length === 0 ? (
-                        <div className="py-8 text-center text-xs text-slate-500">
-                          {athleteSearch
-                            ? t("assign.noAthletesFound")
-                            : t("assign.noAthletesAvailable")}
-                        </div>
-                      ) : (
-                        filteredAthletes.map((a) => (
-                          <AthleteRow
-                            key={a.athleteId}
-                            athlete={a}
-                            checked={selectedAthleteIds.has(a.athleteId)}
-                            onToggle={toggleAthlete}
-                          />
-                        ))
-                      )}
-                    </div>
-
-                    {selectionError && (
-                      <p className="text-xs text-red-400">{selectionError}</p>
-                    )}
-                  </div>
-                )}
-
-                {/* ── Group mode ──────────────────────────────────────────── */}
-                {targetMode === "group" && (
-                  <div className="space-y-2">
-                    <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
-                      {t("assign.selectGroup")}
-                      <span className="text-cyan-500 ml-0.5">*</span>
-                    </p>
-
-                    <div className="max-h-52 overflow-y-auto rounded-lg border border-slate-800 bg-slate-900/60 p-2 space-y-0.5">
-                      {groupsLoading ? (
-                        <div className="py-8 text-center text-xs text-slate-500">
-                          {t("common:loading")}
-                        </div>
-                      ) : groupsError ? (
-                        <div className="py-8 text-center text-xs text-red-400">
-                          Failed to load groups. Please try again.
-                        </div>
-                      ) : groups.length === 0 ? (
-                        <div className="py-8 text-center text-xs text-slate-500">
-                          No groups available
-                        </div>
-                      ) : (
-                        groups.map((g) => (
-                          <GroupRow
-                            key={g.id}
-                            group={g}
-                            checked={selectedGroupId === g.id}
-                            onToggle={setSelectedGroupId}
-                          />
-                        ))
-                      )}
-                    </div>
-
-                    {selectionError && (
-                      <p className="text-xs text-red-400">{selectionError}</p>
-                    )}
-                  </div>
-                )}
-
-                {/* ── Date range ──────────────────────────────────────────── */}
-                <div className="space-y-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
-                    {t("assign.dateRange")}
-                  </p>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-xs font-medium text-slate-400">
-                        {t("assign.startDate")}
-                        <span className="text-cyan-500 ml-0.5">*</span>
-                      </label>
-                      <Input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="bg-slate-900/60 border-slate-700 text-sm text-slate-200 focus-visible:ring-cyan-500/40"
-                      />
-                      {startDateError && (
-                        <p className="text-xs text-red-400">{startDateError}</p>
-                      )}
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-xs font-medium text-slate-400">
-                        {t("assign.endDate")}
-                        <span className="text-slate-600 ml-1 font-normal text-[10px]">
-                          ({t("assign.endDateOptional")})
-                        </span>
-                      </label>
-                      <Input
-                        type="date"
-                        value={endDate}
-                        min={startDate || undefined}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="bg-slate-900/60 border-slate-700 text-sm text-slate-200 focus-visible:ring-cyan-500/40"
-                      />
-                      {endDateInvalid && (
-                        <p className="text-xs text-red-400">{t("assign.endDateError")}</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* ── Assignment summary ──────────────────────────────────── */}
-                {canSubmit && (
-                  <div className="rounded-lg border border-slate-700/60 bg-slate-800/40 px-4 py-3 space-y-1">
-                    <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
-                      {t("assign.summary.title")}
-                    </p>
-                    <p className="text-sm text-slate-300 leading-snug">
-                      <span className="font-medium text-cyan-400">"{plan.name}"</span>
-                      {" → "}
-                      {targetMode === "athlete" ? (
-                        <span className="text-slate-200">
-                          {selectedAthleteIds.size === 1
-                            ? athletes.find((a) => selectedAthleteIds.has(a.athleteId))?.fullName
-                            : `${selectedAthleteIds.size} athletes`}
-                        </span>
-                      ) : (
-                        <span className="text-slate-200">{selectedGroupName}</span>
-                      )}
-                    </p>
-                    {dateLabel && (
-                      <p className="text-xs text-slate-500">{dateLabel}</p>
-                    )}
-                  </div>
-                )}
-
-              </div>
-
-              {/* ── Footer ───────────────────────────────────────────────── */}
-              <DrawerFooter className="shrink-0 border-t border-slate-800 flex-row justify-between gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleClose}
-                  disabled={isLoading}
-                  className="border-slate-700 text-slate-300 hover:text-slate-100"
-                >
-                  {t("common:cancel")}
-                </Button>
-                <Button
-                  size="sm"
-                  disabled={isLoading}
-                  onClick={handleConfirm}
-                  className="bg-cyan-500 hover:bg-cyan-600 text-white min-w-32"
-                >
-                  {isLoading ? (
-                    <span className="flex items-center gap-1.5">
-                      <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      {t("common:processing")}
-                    </span>
-                  ) : (
-                    t("assign.confirmButton")
-                  )}
-                </Button>
-              </DrawerFooter>
-            </>
-          )}
-        </DrawerContent>
-      </Drawer>
-
-
-    </>
+            </DrawerFooter>
+          </>
+        )}
+      </DrawerContent>
+    </Drawer>
   );
 }
+

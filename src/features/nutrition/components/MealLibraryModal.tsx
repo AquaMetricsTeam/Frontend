@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MdSearch } from "react-icons/md";
 import {
   Dialog,
   DialogContent,
@@ -8,7 +7,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { SearchInput } from "@/components/common/SearchInput";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -100,14 +99,12 @@ export function MealLibraryModal({
         {/* Content with scroll */}
         <div className="flex-1 overflow-y-auto space-y-4">
           {/* Search Bar */}
-          <div className="relative px-4 pt-4">
-            <MdSearch className="absolute start-7 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
-            <Input
-              type="text"
-              placeholder={t("modal.mealLibrary.searchPlaceholder")}
+          <div className="px-4 pt-4">
+            <SearchInput
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="ps-9"
+              onChange={setSearch}
+              placeholder={t("modal.mealLibrary.searchPlaceholder")}
+              className="w-full sm:max-w-full"
             />
           </div>
 
@@ -121,7 +118,7 @@ export function MealLibraryModal({
                 variant={selectedMealType === null ? "default" : "outline"}
                 size="sm"
                 onClick={() => setSelectedMealType(null)}
-                className="text-xs"
+                className="text-xs cursor-pointer"
               >
                 {t("common:all")}
               </Button>
@@ -133,7 +130,7 @@ export function MealLibraryModal({
                     variant={selectedMealType === mealType ? "default" : "outline"}
                     size="sm"
                     onClick={() => setSelectedMealType(mealType as MealType)}
-                    className="text-xs"
+                    className="text-xs cursor-pointer"
                   >
                     {getMealTypeLabel(mealType as MealType)}
                   </Button>
@@ -155,8 +152,9 @@ export function MealLibraryModal({
               filteredMeals.map((meal, idx) => (
                 <button
                   key={`${meal.mealType}-${meal.description}-${idx}`}
+                  type="button"
                   onClick={() => handleSelectMeal(meal)}
-                  className="w-full text-start p-3 rounded-lg border border-border hover:bg-accent hover:border-primary/50 transition-colors group"
+                  className="w-full text-start p-3 rounded-lg border border-border hover:bg-accent hover:border-primary/50 transition-colors group cursor-pointer"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
@@ -211,7 +209,7 @@ export function MealLibraryModal({
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="shrink-0"
+                      className="shrink-0 cursor-pointer"
                     >
                       +
                     </Button>
@@ -225,3 +223,4 @@ export function MealLibraryModal({
     </Dialog>
   );
 }
+
