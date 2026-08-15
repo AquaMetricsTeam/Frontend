@@ -7,12 +7,14 @@ export function useAthleteFilters() {
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
   const searchParam = searchParams.get("search") || "";
 
+  const [prevSearchParam, setPrevSearchParam] = useState(searchParam);
   const [localSearch, setLocalSearch] = useState(searchParam);
   const [debouncedSearch, setDebouncedSearch] = useState(searchParam);
 
-  useEffect(() => {
+  if (prevSearchParam !== searchParam) {
+    setPrevSearchParam(searchParam);
     setLocalSearch(searchParam);
-  }, [searchParam]);
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {

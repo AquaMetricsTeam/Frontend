@@ -1,5 +1,12 @@
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { MdMale, MdFemale, MdPerson, MdStickyNote2 } from "react-icons/md";
+import {
+  MdMale,
+  MdFemale,
+  MdPerson,
+  MdStickyNote2,
+  MdVisibility,
+} from "react-icons/md";
 import {
   Table,
   TableHeader,
@@ -18,7 +25,11 @@ interface CoachAthletesTableProps {
   isLoading: boolean;
   isError: boolean;
   onRetry: () => void;
-  onOpenNotes?: (athlete: { id: string; fullName: string; email?: string }) => void;
+  onOpenNotes?: (athlete: {
+    id: string;
+    fullName: string;
+    email?: string;
+  }) => void;
 }
 
 function getInitials(name: string) {
@@ -52,8 +63,7 @@ const ROLE_BADGE_CLASS: Record<string, string> = {
     "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
 };
 
-const DEFAULT_BADGE_CLASS =
-  "bg-primary/10 text-primary border-primary/30";
+const DEFAULT_BADGE_CLASS = "bg-primary/10 text-primary border-primary/30";
 
 function CoachBadge({ name, role }: { name: string; role?: string }) {
   const cls = (role && ROLE_BADGE_CLASS[role]) ?? DEFAULT_BADGE_CLASS;
@@ -67,7 +77,9 @@ function CoachBadge({ name, role }: { name: string; role?: string }) {
   );
 }
 
-function getCoachesList(athlete: CoachAthlete): { id: string; name: string; role?: string }[] {
+function getCoachesList(
+  athlete: CoachAthlete,
+): { id: string; name: string; role?: string }[] {
   if (Array.isArray(athlete.coaches) && athlete.coaches.length > 0) {
     return athlete.coaches.map((c, i) => {
       if (typeof c === "string") {
@@ -185,19 +197,22 @@ export function CoachAthletesTable({
                 >
                   {/* Name + Avatar */}
                   <TableCell className="py-3.5 ps-6 font-medium">
-                    <div className="flex items-center gap-3">
+                    <Link
+                      to={`/athletes/${athlete.athleteId || athlete.id}`}
+                      className="flex items-center gap-3 group/link hover:opacity-90 transition-opacity"
+                    >
                       <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-xs border border-primary/20 shrink-0">
                         {getInitials(athlete.fullName)}
                       </div>
                       <div>
-                        <div className="font-semibold text-foreground text-sm">
+                        <div className="font-semibold text-foreground text-sm group-hover/link:text-primary transition-colors">
                           {athlete.fullName}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {athlete.email}
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   </TableCell>
 
                   {/* Gender */}
@@ -242,27 +257,41 @@ export function CoachAthletesTable({
                     )}
                   </TableCell>
 
-                  {/* Registration Status */}
+                  {/* Registration Status & Actions */}
                   <TableCell className="py-3.5 pe-6">
                     <div className="flex items-center justify-between gap-3">
                       <RegistrationBadge status={athlete.registrationStatus} />
-                      {onOpenNotes && (
+                      <div className="flex items-center gap-1.5">
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="h-8 gap-1.5 px-2.5 text-xs text-primary hover:text-primary hover:bg-primary/10 rounded-lg cursor-pointer"
-                          onClick={() =>
-                            onOpenNotes({
-                              id: athlete.id || athlete.athleteId || "",
-                              fullName: athlete.fullName,
-                              email: athlete.email,
-                            })
-                          }
+                          className="h-8 gap-1 px-2 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg cursor-pointer"
                         >
-                          <MdStickyNote2 className="size-4" />
-                          <span>Notes</span>
+                          <Link
+                            to={`/athletes/${athlete.athleteId || athlete.id}`}
+                          >
+                            <MdVisibility className="size-3.5 text-primary" />
+                            <span>{t("table.viewProfile")}</span>
+                          </Link>
                         </Button>
-                      )}
+                        {onOpenNotes && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-8 gap-1.5 px-2 text-xs text-primary hover:text-primary hover:bg-primary/10 rounded-lg cursor-pointer"
+                            onClick={() =>
+                              onOpenNotes({
+                                id: athlete.id || athlete.athleteId || "",
+                                fullName: athlete.fullName,
+                                email: athlete.email,
+                              })
+                            }
+                          >
+                            <MdStickyNote2 className="size-4" />
+                            <span>Notes</span>
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </TableCell>
                 </TableRow>
