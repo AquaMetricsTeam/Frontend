@@ -2,6 +2,7 @@ import {
   MdDashboard,
   MdPeople,
   MdDirectionsRun,
+  MdHowToReg,
   MdPool,
   MdStickyNote2,
   MdAutoAwesome,
@@ -51,6 +52,13 @@ export const NAV_GROUPS: NavGroup[] = [
           "FitnessCoach",
           "NutritionSpecialist",
         ],
+      },
+      {
+        key: "athleteRegistrations",
+        labelKey: "common:nav.items.athleteRegistrations",
+        icon: MdHowToReg,
+        path: "/athlete-registrations",
+        allowedRoles: ["Admin"],
       },
       {
         key: "groups",

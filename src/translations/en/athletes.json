@@ -163,5 +163,71 @@
       "description": "Could not retrieve athlete overview data. Please check your network and try again.",
       "retry": "Try Again"
     }
+  },
+  "registration": {
+    "page": {
+      "title": "Pending Registrations",
+      "description": "Review and verify incoming athlete account registrations and eligibility proofs",
+      "pendingCount": "{{count}} pending",
+      "viewAllAthletes": "All Athletes"
+    },
+    "search": {
+      "placeholder": "Search pending athletes by name, email, or ID..."
+    },
+    "banner": {
+      "title": "Athlete Registration Review",
+      "pendingBadge": "Awaiting Review",
+      "description": "Review eligibility documents, personal information, and approve or reject athlete account requests.",
+      "verificationNotice": "Official Verification Queue",
+      "pendingAlert": "{{count}} athlete registration(s) awaiting your review."
+    },
+    "table": {
+      "eligibilityDoc": "Eligibility Document",
+      "hasDocument": "Document Attached",
+      "noDocument": "No document uploaded"
+    },
+    "actions": {
+      "review": "Review",
+      "approve": "Approve",
+      "reject": "Reject",
+      "reviewNow": "Review Now",
+      "pendingRegistrations": "Pending Registrations"
+    },
+    "sheet": {
+      "title": "Athlete Registration Details",
+      "description": "Review athlete profile and eligibility proof before approving or rejecting",
+      "accountType": "Account Type",
+      "athleteAccount": "Athlete Account",
+      "verificationStatus": "Verification Status",
+      "awaitingApproval": "Awaiting Admin Approval",
+      "eligibilityDocument": "Eligibility Verification Document"
+    },
+    "documentViewer": {
+      "noDocumentTitle": "No Eligibility Document Attached",
+      "noDocumentDesc": "This applicant did not attach an eligibility proof or certificate with their registration.",
+      "pdfDocument": "PDF Document",
+      "imageDocument": "Certificate / Image Proof",
+      "eligibilityProof": "Eligibility Document",
+      "preview": "Preview",
+      "open": "Open",
+      "download": "Download",
+      "failedToLoad": "Unable to preview document directly.",
+      "openDirectly": "Click here to open document directly",
+      "clickToZoom": "Click to view full image",
+      "externalDocument": "External document attachment",
+      "viewExternal": "View Document Attachment",
+      "documentPreview": "Document Preview"
+    },
+    "dialog": {
+      "approveTitle": "Approve Athlete Registration",
+      "approveDescription": "Are you sure you want to approve {{name}}'s registration? This will activate their athlete account and allow coach and group assignments.",
+      "rejectTitle": "Reject Athlete Registration",
+      "rejectDescription": "Are you sure you want to reject {{name}}'s registration? This will mark the application as suspended and deny access.",
+      "confirmApprove": "Approve Registration",
+      "confirmReject": "Reject Application",
+      "approving": "Approving...",
+      "rejecting": "Rejecting...",
+      "cancel": "Cancel"
+    }
   }
 }
