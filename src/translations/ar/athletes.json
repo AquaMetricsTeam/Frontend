@@ -163,5 +163,71 @@
       "description": "تعذر جلب بيانات الرياضي. يرجى التحقق من الاتصال بالإنترنت والمحاولة مجدداً.",
       "retry": "إعادة المحاولة"
     }
+  },
+  "registration": {
+    "page": {
+      "title": "طلبات التسجيل المعلقة",
+      "description": "مراجعة والتحقق من حسابات الرياضيين المسجلين الجدد ومستندات الأهلية",
+      "pendingCount": "{{count}} طلب معلق",
+      "viewAllAthletes": "جميع الرياضيين"
+    },
+    "search": {
+      "placeholder": "البحث في طلبات الرياضيين بالاسم أو البريد أو المعرف..."
+    },
+    "banner": {
+      "title": "مراجعة تسجيل الرياضيين",
+      "pendingBadge": "بانتظار المراجعة",
+      "description": "فحص وثائق الأهلية والبيانات الشخصية والموافقة على طلبات حسابات الرياضيين أو رفضها.",
+      "verificationNotice": "طابور التحقق الرسمي",
+      "pendingAlert": "يوجد {{count}} طلب تسجيل رياضي بانتظار مراجعتك."
+    },
+    "table": {
+      "eligibilityDoc": "مستند الأهلية",
+      "hasDocument": "مستند مرفق",
+      "noDocument": "لم يتم إرفاق مستند"
+    },
+    "actions": {
+      "review": "مراجعة",
+      "approve": "قبول",
+      "reject": "رفض",
+      "reviewNow": "المراجعة الآن",
+      "pendingRegistrations": "طلبات التسجيل"
+    },
+    "sheet": {
+      "title": "تفاصيل طلب تسجيل الرياضي",
+      "description": "مراجعة ملف الرياضي وإثبات الأهلية قبل اتخاذ قرار القبول أو الرفض",
+      "accountType": "نوع الحساب",
+      "athleteAccount": "حساب رياضي",
+      "verificationStatus": "حالة التحقق",
+      "awaitingApproval": "بانتظار موافقة الإدارة",
+      "eligibilityDocument": "مستند إثبات الأهلية"
+    },
+    "documentViewer": {
+      "noDocumentTitle": "لم يتم إرفاق مستند أهلية",
+      "noDocumentDesc": "لم يقم هذا المتقدم بإرفاق شهادة أو وثيقة إثبات أهلية مع طلب التسجيل.",
+      "pdfDocument": "مستند PDF",
+      "imageDocument": "شهادة / وثيقة مصورة",
+      "eligibilityProof": "مستند الأهلية",
+      "preview": "معاينة",
+      "open": "فتح",
+      "download": "تنزيل",
+      "failedToLoad": "تعذر عرض المستند بشكل مباشر.",
+      "openDirectly": "انقر هنا لفتح المستند مباشرة",
+      "clickToZoom": "انقر لتكبير الصورة",
+      "externalDocument": "مرفق مستند خارجي",
+      "viewExternal": "عرض المستند المرفق",
+      "documentPreview": "معاينة المستند"
+    },
+    "dialog": {
+      "approveTitle": "الموافقة على تسجيل الرياضي",
+      "approveDescription": "هل أنت متأكد من رغبتك في الموافقة على تسجيل {{name}}؟ سيؤدي ذلك إلى تفعيل حساب الرياضي وإتاحته للتعيين في المجموعات ومع المدربين.",
+      "rejectTitle": "رفض تسجيل الرياضي",
+      "rejectDescription": "هل أنت متأكد من رفض طلب تسجيل {{name}}؟ سيتم وضع الحساب في حالة معلق/موقوف ورفض وصوله.",
+      "confirmApprove": "تأكيد الموافقة",
+      "confirmReject": "تأكيد الرفض",
+      "approving": "جارٍ القبول...",
+      "rejecting": "جارٍ الرفض...",
+      "cancel": "إلغاء"
+    }
   }
 }
