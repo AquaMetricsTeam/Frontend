@@ -269,6 +269,7 @@ export function CoachAthletesTable({
                         >
                           <Link
                             to={`/athletes/${athlete.athleteId || athlete.id}`}
+                            className="flex items-center gap-1"
                           >
                             <MdVisibility className="size-3.5 text-primary" />
                             <span>{t("table.viewProfile")}</span>

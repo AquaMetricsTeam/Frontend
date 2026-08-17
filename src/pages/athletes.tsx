@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MdAdd } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { MdAdd, MdHowToReg, MdHourglassTop } from "react-icons/md";
 import PageWrapper from "@/components/layouts/PageWrapper";
 import WithPagination from "@/components/HOCs/WithPagination";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SearchInput } from "@/components/common/SearchInput";
 import Box from "@/components/layouts/Box";
+import { cn } from "@/lib/utils";
 import { useMe } from "@/features/auth/hooks/useMe";
 import { useAdminAthletes } from "@/features/athletes/hooks/useAdminAthletes";
 import { useCoachAthletes } from "@/features/athletes/hooks/useCoachAthletes";
 import { useAthleteFilters } from "@/features/athletes/hooks/useAthleteFilters";
+import { usePendingAthletes } from "@/features/athlete-registration/hooks/usePendingAthletes";
 import { AdminAthletesTable } from "@/features/athletes/components/AdminAthletesTable";
 import { CoachAthletesTable } from "@/features/athletes/components/CoachAthletesTable";
 import { AssignCoachModal } from "@/features/athletes/components/AssignCoachModal";
@@ -53,6 +56,7 @@ export default function AthletesPage() {
   // Only one query fires — gated by roleKnown + role
   const adminQuery = useAdminAthletes(queryParams, roleKnown && isAdmin);
   const coachQuery = useCoachAthletes(queryParams, roleKnown && !isAdmin);
+  const pendingQuery = usePendingAthletes(roleKnown && isAdmin);
 
   const activeQuery = isAdmin ? adminQuery : coachQuery;
   const responseData = activeQuery.data?.data;
@@ -61,6 +65,7 @@ export default function AthletesPage() {
 
   const adminAthletes = adminQuery.data?.data?.items ?? [];
   const coachAthletes = coachQuery.data?.data?.items ?? [];
+  const pendingCount = pendingQuery.data?.data?.length ?? 0;
 
   function handleOpenAssignModal(athlete: AdminAthlete) {
     setSelectedAthlete(athlete);
@@ -92,27 +97,62 @@ export default function AthletesPage() {
             {t("page.description")}
           </p>
         </div>
+
+        {isAdmin && (
+          <div className="flex items-center gap-2.5">
+            <Link
+              to="/athlete-registrations"
+              className={cn(
+                buttonVariants({ variant: "outline", size: "sm" }),
+                "h-9 gap-1.5 rounded-lg border-amber-500/30 text-amber-700 dark:text-amber-400 hover:bg-amber-500/10 hover:border-amber-500 cursor-pointer",
+              )}
+            >
+              <MdHowToReg className="size-4" />
+              <span>{t("registration.actions.pendingRegistrations")}</span>
+              {pendingCount > 0 && (
+                <span className="ms-1 rounded-full bg-amber-500/20 px-1.5 py-0.2 text-[11px] font-bold">
+                  {pendingCount}
+                </span>
+              )}
+            </Link>
+            <Button
+              size="sm"
+              className="h-9 rounded-lg gap-1.5 cursor-pointer"
+              onClick={() => setIsCreateModalOpen(true)}
+            >
+              <MdAdd className="size-4" />
+              {t("page.createButton")}
+            </Button>
+          </div>
+        )}
       </div>
 
+      {/* Admin Notice for Pending Registrations */}
+      {isAdmin && pendingCount > 0 && (
+        <div className="mb-4 flex items-center justify-between rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-800 dark:text-amber-300">
+          <div className="flex items-center gap-2">
+            <MdHourglassTop className="size-4 shrink-0 text-amber-600 dark:text-amber-400" />
+            <span>
+              {t("registration.banner.pendingAlert", { count: pendingCount })}
+            </span>
+          </div>
+          <Link
+            to="/athlete-registrations"
+            className="font-semibold underline hover:text-amber-900 dark:hover:text-amber-100"
+          >
+            {t("registration.actions.reviewNow")} &rarr;
+          </Link>
+        </div>
+      )}
+
       <Box>
-        {/* Controls Row: Search & Create Action for Admin */}
+        {/* Controls Row: Search */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
           <SearchInput
             value={localSearch}
             onChange={setLocalSearch}
             placeholder={t("search.placeholder")}
           />
-
-          {isAdmin && (
-            <Button
-              size="sm"
-              className="h-9 rounded-lg gap-1.5 self-start sm:self-auto cursor-pointer"
-              onClick={() => setIsCreateModalOpen(true)}
-            >
-              <MdAdd className="size-4" />
-              {t("page.createButton")}
-            </Button>
-          )}
         </div>
 
         {/* Table — role-gated */}

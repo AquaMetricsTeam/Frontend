@@ -198,9 +198,12 @@ export function AdminAthletesTable({
                     <Button
                       size="sm"
                       variant="outline"
-                      className="h-8 text-xs gap-1.5 rounded-lg border-border hover:border-primary/50 hover:bg-primary/5 cursor-pointer"
+                      className="h-8 text-xs   gap-1.5 rounded-lg border-border hover:border-primary/50 hover:bg-primary/5 cursor-pointer"
                     >
-                      <Link to={`/athletes/${athlete.athleteId || athlete.id}`}>
+                      <Link
+                        to={`/athletes/${athlete.athleteId || athlete.id}`}
+                        className="flex items-center gap-1"
+                      >
                         <MdVisibility className="size-3.5 text-primary" />
                         <span>{t("table.viewProfile")}</span>
                       </Link>
