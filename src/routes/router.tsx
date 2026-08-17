@@ -119,7 +119,6 @@ const router = createBrowserRouter([
                     allowedRoles={[
                       "SwimmingCoach",
                       "FitnessCoach",
-                      "NutritionSpecialist",
                     ]}
                   >
                     <ExercisesPage />
@@ -188,7 +187,6 @@ const router = createBrowserRouter([
                     allowedRoles={[
                       "SwimmingCoach",
                       "FitnessCoach",
-                      "NutritionSpecialist",
                       "Admin",
                     ]}
                   >
