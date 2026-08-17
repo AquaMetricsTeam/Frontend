@@ -36,7 +36,11 @@ export function useLogin() {
       });
 
       toast.success(response.message || "Logged in successfully!");
-      navigate("/", { replace: true });
+      const userRoles = response.data.roles || [];
+      const isNutritionOnly =
+        userRoles.includes("NutritionSpecialist") &&
+        !userRoles.some((r) => ["Admin", "SwimmingCoach", "FitnessCoach"].includes(r));
+      navigate(isNutritionOnly ? "/athletes" : "/", { replace: true });
     },
 
     onError: (error: { message?: string }) => {
