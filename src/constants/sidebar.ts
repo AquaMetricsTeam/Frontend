@@ -27,6 +27,7 @@ export const NAV_GROUPS: NavGroup[] = [
         labelKey: "common:nav.items.dashboard",
         icon: MdDashboard,
         path: "/",
+        allowedRoles: ["Admin", "SwimmingCoach", "FitnessCoach"],
       },
     ],
   },
@@ -78,7 +79,7 @@ export const NAV_GROUPS: NavGroup[] = [
         labelKey: "common:nav.items.exercises",
         icon: MdSportsGymnastics,
         path: "/exercises",
-        allowedRoles: ["SwimmingCoach", "FitnessCoach", "NutritionSpecialist"],
+        allowedRoles: ["SwimmingCoach", "FitnessCoach"],
       },
       {
         key: "trainingTemplates",
@@ -134,7 +135,7 @@ export const NAV_GROUPS: NavGroup[] = [
         labelKey: "common:nav.items.coachNotes",
         icon: MdStickyNote2,
         path: "/coach-notes",
-        allowedRoles: ["FitnessCoach", "SwimmingCoach", "NutritionSpecialist"],
+        allowedRoles: ["FitnessCoach", "SwimmingCoach"],
       },
       {
         key: "aiRecommendations",
