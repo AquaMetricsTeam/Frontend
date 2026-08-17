@@ -86,7 +86,8 @@ export function AdminDashboard({ data: d }: AdminDashboardProps) {
           iconBg="bg-primary/10"
           strokeColor="var(--primary)"
           gradientId="admin-perf-grad"
-          valueLabel="score"
+          valueLabel="/ 10"
+          maxValue={10}
         />
         <DashboardTrendChart
           data={d.fatigueTrend}

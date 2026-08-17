@@ -1,3 +1,4 @@
+import { type ReactNode } from "react";
 import {
   type FieldValues,
   type FieldPath,
@@ -12,7 +13,7 @@ import { MdErrorOutline } from "react-icons/md";
 
 interface TextareaFieldProps<TFieldValues extends FieldValues = FieldValues> {
   name: FieldPath<TFieldValues>;
-  label: string;
+  label: ReactNode;
   placeholder?: string;
   rows?: number;
   required?: boolean;

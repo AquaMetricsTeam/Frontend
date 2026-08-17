@@ -10,7 +10,7 @@ import { MdInfoOutline } from "react-icons/md";
 
 interface LabelFieldProps {
   htmlFor?: string;
-  label: string;
+  label: ReactNode;
   required?: boolean;
   hint?: string;
   className?: string;
@@ -27,10 +27,10 @@ export function LabelField({
 }: LabelFieldProps) {
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 w-full">
         <Label
           htmlFor={htmlFor}
-          className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+          className="text-xs font-medium uppercase tracking-wide text-muted-foreground w-full"
         >
           {label}
           {required && (

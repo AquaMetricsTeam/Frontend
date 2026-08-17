@@ -27,7 +27,7 @@ export function DashboardTrendChart({
   strokeColor = "var(--primary)",
   gradientId,
   valueLabel = "",
-  maxValue = 100,
+  maxValue = 10,
   emptyMessage = "No data available",
 }: DashboardTrendChartProps) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
@@ -153,7 +153,8 @@ export function DashboardTrendChart({
 
           {/* Grid lines */}
           {[0, 0.25, 0.5, 0.75, 1].map((frac) => {
-            const val = Math.round(min + frac * range);
+            const rawVal = min + frac * range;
+            const val = Number.isInteger(rawVal) ? rawVal : Number(rawVal.toFixed(1));
             const y = padTop + chartH - frac * chartH;
             return (
               <g key={frac}>

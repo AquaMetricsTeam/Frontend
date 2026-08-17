@@ -59,11 +59,20 @@
       "exerciseLabel": "التمرين",
       "sets": "مجموعات",
       "reps": "تكرارات",
+      "meters": "أمتار",
       "minutes": "دقيقة",
       "rest": "راحة",
       "addExercise": "إضافة تمرين",
       "next": "التالي: التكليف",
       "back": "رجوع"
+    },
+    "labels": {
+      "reps": "تكرارات",
+      "meters": "أمتار",
+      "repsUnit": "تكرار",
+      "metersUnit": "م",
+      "totalReps": "إجمالي التكرارات",
+      "totalMeters": "إجمالي المسافة"
     },
     "step3": {
       "question": "كيف تريد تكليف هذه الخطة؟",

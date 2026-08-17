@@ -10,7 +10,7 @@ import TableLoadingAndError from "@/components/HOCs/TableLoadingAndError";
 import type { Exercise } from "../types/index";
 import { ExerciseTableRow } from "./ExerciseTableRow";
 
-const COLUMNS = ["title", "description", "createdAt", "actions"] as const;
+const COLUMNS = ["title", "description", "category", "actions"] as const;
 
 interface ExercisesTableProps {
   exercises: Exercise[];

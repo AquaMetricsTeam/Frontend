@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import {
   type FieldValues,
   type FieldPath,
@@ -30,7 +30,7 @@ export interface SelectOption {
 
 interface SelectFieldProps<TFieldValues extends FieldValues = FieldValues> {
   name: FieldPath<TFieldValues>;
-  label: string;
+  label: ReactNode;
   options: SelectOption[];
   placeholder?: string;
   searchPlaceholder?: string;

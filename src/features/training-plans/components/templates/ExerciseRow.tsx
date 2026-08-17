@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import {
   MdUnfoldMore,
@@ -29,7 +29,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useMe } from "@/features/auth/hooks/useMe";
 import { useExercisesLookup } from "@/features/lookups/hooks/useExercisesLookup";
+import { useExercises } from "@/features/exercises/hooks/useExercises";
+import { MUSCLE_GROUP_META } from "@/features/exercises/constants/muscleGroups";
+import { SWIMMING_CATEGORY_META } from "@/features/exercises/constants/swimmingCategories";
+import { useRepsLabel } from "@/components/common/RepsLabel";
 import type { ExercisesStepFormValues } from "../../constants/validations";
 
 const INTENSITY_OPTIONS = [
@@ -75,16 +80,95 @@ export function ExerciseRow({
     register,
     formState: { errors },
     watch,
+    setValue,
   } = useFormContext<ExercisesStepFormValues>();
 
-  const { data: lookupRes, isLoading } = useExercisesLookup();
-  const exercises = lookupRes?.data ?? [];
-  const [open, setOpen] = useState(false);
+  const { data: meData } = useMe();
+  const roles = meData?.data?.roles ?? [];
+  const isSwimmingCoach = roles.includes("SwimmingCoach");
+  const isFitnessCoach = roles.includes("FitnessCoach");
+  const canSwitchType =
+    (!isSwimmingCoach && !isFitnessCoach) || roles.includes("Admin");
+
+  const [filterType, setFilterType] = useState<"fitness" | "swimming">(
+    isSwimmingCoach && !isFitnessCoach ? "swimming" : "fitness",
+  );
+  const repsMeta = useRepsLabel({ type: filterType });
+  const [filterId, setFilterId] = useState<number | null>(null);
+
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [exerciseOpen, setExerciseOpen] = useState(false);
 
   const selectedId = watch(`exercises.${index}.exerciseId`);
-  const selectedExercise = exercises.find((e) => e.id === selectedId);
+
+  // Fetch full exercise list for edit mode auto-detection
+  const { data: allExercisesRes } = useExercises({ pageSize: 100 });
+  const allExercises = allExercisesRes?.data?.items ?? [];
+
+  // Edit mode: auto-detect muscleGroup / category if exerciseId is present
+  useEffect(() => {
+    if (selectedId > 0 && filterId === null && allExercises.length > 0) {
+      const matched = allExercises.find((e) => e.id === selectedId);
+      if (matched) {
+        if (matched.category != null) {
+          setFilterType("swimming");
+          setFilterId(matched.category);
+        } else if (matched.muscleGroup != null) {
+          setFilterType("fitness");
+          setFilterId(matched.muscleGroup);
+        }
+      }
+    }
+  }, [selectedId, filterId, allExercises]);
+
+  // Lookup exercises filtered by selected muscle group / category
+  const { data: lookupRes, isLoading: lookupLoading } = useExercisesLookup(
+    {
+      muscleGroup: filterType === "fitness" ? filterId : null,
+      category: filterType === "swimming" ? filterId : null,
+    },
+    filterId !== null,
+  );
+
+  const exercises = lookupRes?.data ?? [];
+  const selectedExercise =
+    exercises.find((e) => e.id === selectedId) ||
+    allExercises.find((e) => e.id === selectedId);
 
   const rowErrors = errors.exercises?.[index];
+
+  // Options list based on type
+  const filterOptions =
+    filterType === "fitness"
+      ? Object.entries(MUSCLE_GROUP_META).map(([val, meta]) => ({
+          id: Number(val),
+          label: meta.label,
+          Icon: meta.Icon,
+          colorVar: meta.colorVar,
+        }))
+      : Object.entries(SWIMMING_CATEGORY_META).map(([val, meta]) => ({
+          id: Number(val),
+          label: meta.label,
+          Icon: meta.Icon,
+          colorVar: meta.colorVar,
+        }));
+
+  const selectedFilterMeta = filterOptions.find((f) => f.id === filterId);
+
+  function handleFilterChange(newId: number) {
+    if (newId === filterId) return;
+    setFilterId(newId);
+    setFilterOpen(false);
+    // Clear exercise selection when filter changes
+    setValue(`exercises.${index}.exerciseId`, 0, { shouldValidate: true });
+  }
+
+  function handleTypeChange(newType: "fitness" | "swimming") {
+    if (newType === filterType) return;
+    setFilterType(newType);
+    setFilterId(null);
+    setValue(`exercises.${index}.exerciseId`, 0, { shouldValidate: true });
+  }
 
   return (
     <div className="flex flex-col gap-3.5 p-4 rounded-xl border border-border/80 bg-card hover:border-primary/30 transition-all duration-200 shadow-2xs group relative overflow-hidden">
@@ -154,32 +238,151 @@ export function ExerciseRow({
 
       {/* Card Content Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5 items-start ps-2">
-        {/* Exercise Select */}
-        <div className="sm:col-span-4 h-full">
+        {/* ROW 1: Muscle Group or Category Filter Select */}
+        <div className="col-span-12 sm:col-span-6 h-full">
+          <LabelField
+            label={
+              <div className="flex items-center justify-between w-full">
+                <span>
+                  {filterType === "fitness" ? "Muscle Group" : "Category"}
+                </span>
+                {canSwitchType && (
+                  <div className="flex items-center gap-1 text-[10px]">
+                    <button
+                      type="button"
+                      onClick={() => handleTypeChange("fitness")}
+                      className={cn(
+                        "px-1.5 py-0.5 rounded font-medium transition-colors",
+                        filterType === "fitness"
+                          ? "bg-primary/20 text-primary font-bold"
+                          : "text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      Fitness
+                    </button>
+                    <span className="text-muted-foreground">/</span>
+                    <button
+                      type="button"
+                      onClick={() => handleTypeChange("swimming")}
+                      className={cn(
+                        "px-1.5 py-0.5 rounded font-medium transition-colors",
+                        filterType === "swimming"
+                          ? "bg-secondary-500/20 text-secondary-400 font-bold"
+                          : "text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      Swim
+                    </button>
+                  </div>
+                )}
+              </div>
+            }
+            className="h-full"
+          >
+            <Popover open={filterOpen} onOpenChange={setFilterOpen}>
+              <PopoverTrigger
+                type="button"
+                className={cn(
+                  "flex h-9 w-full items-center  justify-between rounded-lg border border-input bg-background px-3 text-xs font-medium transition-colors",
+                  "hover:border-ring/50 focus:outline-none focus:ring-2 focus:ring-primary/40",
+                  !selectedFilterMeta && "text-muted-foreground",
+                )}
+              >
+                <span className="truncate flex items-center gap-2">
+                  {selectedFilterMeta ? (
+                    <>
+                      <selectedFilterMeta.Icon
+                        className="size-3.5 shrink-0"
+                        style={{ color: selectedFilterMeta.colorVar }}
+                      />
+                      <span>{selectedFilterMeta.label}</span>
+                    </>
+                  ) : filterType === "fitness" ? (
+                    "Select muscle group..."
+                  ) : (
+                    "Select swimming category..."
+                  )}
+                </span>
+                <MdUnfoldMore className="ms-2 size-4 shrink-0 text-muted-foreground" />
+              </PopoverTrigger>
+              <PopoverContent className="w-64 p-0" align="start">
+                <Command>
+                  <CommandInput
+                    placeholder={`Search ${filterType === "fitness" ? "muscles" : "categories"}...`}
+                    className="h-9 text-xs"
+                  />
+                  <CommandList>
+                    <CommandEmpty className="py-2.5 text-xs text-center text-muted-foreground">
+                      No matching options found.
+                    </CommandEmpty>
+                    <CommandGroup>
+                      {filterOptions.map((opt) => (
+                        <CommandItem
+                          key={opt.id}
+                          value={opt.label}
+                          onSelect={() => handleFilterChange(opt.id)}
+                          className="flex items-center justify-between text-xs cursor-pointer"
+                        >
+                          <div className="flex items-center gap-2">
+                            <opt.Icon
+                              className="size-3.5"
+                              style={{ color: opt.colorVar }}
+                            />
+                            <span>{opt.label}</span>
+                          </div>
+                          {filterId === opt.id && (
+                            <MdCheck className="size-4 text-primary" />
+                          )}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          </LabelField>
+        </div>
+
+        {/* ROW 1: Exercise Select (Disabled until filter picked) */}
+        <div className="col-span-12 sm:col-span-6 h-full">
           <Controller
             name={`exercises.${index}.exerciseId`}
             control={control}
             render={({ field }) => {
-              const selected = exercises.find((e) => e.id === field.value);
+              const isDisabled = filterId === null;
+              const isSelected = selectedId > 0 && selectedExercise;
+
               return (
                 <LabelField
                   htmlFor={`exercises.${index}.exerciseId`}
                   label="Exercise"
                   className="h-full"
                 >
-                  <Popover open={open} onOpenChange={setOpen}>
+                  <Popover
+                    open={exerciseOpen && !isDisabled}
+                    onOpenChange={(op) => {
+                      if (!isDisabled) setExerciseOpen(op);
+                    }}
+                  >
                     <PopoverTrigger
                       id={`exercises.${index}.exerciseId`}
                       type="button"
+                      disabled={isDisabled}
                       className={cn(
                         "flex h-9 w-full items-center mt-auto justify-between rounded-lg border border-input bg-background px-3 text-xs font-medium transition-colors",
                         "hover:border-ring/50 focus:outline-none focus:ring-2 focus:ring-primary/40",
-                        !selected && "text-muted-foreground",
+                        isDisabled &&
+                          "cursor-not-allowed opacity-60 bg-muted/40",
+                        !isSelected && "text-muted-foreground",
                         rowErrors?.exerciseId && "border-destructive",
                       )}
                     >
                       <span className="truncate text-start">
-                        {selected?.title ?? "Select exercise..."}
+                        {isDisabled
+                          ? `Choose ${filterType === "fitness" ? "muscle" : "category"} first...`
+                          : isSelected
+                            ? selectedExercise.title
+                            : "Select exercise..."}
                       </span>
                       <MdUnfoldMore className="ms-2 size-4 shrink-0 text-muted-foreground" />
                     </PopoverTrigger>
@@ -191,20 +394,22 @@ export function ExerciseRow({
                         />
                         <CommandList>
                           <CommandEmpty className="py-2.5 text-xs text-center text-muted-foreground">
-                            {isLoading ? "Loading..." : "No exercises found."}
+                            {lookupLoading
+                              ? "Loading exercises..."
+                              : "No exercises found for this category."}
                           </CommandEmpty>
                           <CommandGroup>
                             {exercises.map((ex) => (
                               <CommandItem
                                 key={ex.id}
-                                value={String(ex.id)}
+                                value={ex.title}
                                 onSelect={() => {
                                   field.onChange(ex.id);
-                                  setOpen(false);
+                                  setExerciseOpen(false);
                                 }}
                                 className="flex items-center justify-between text-xs cursor-pointer"
                               >
-                                {ex.title}
+                                <span>{ex.title}</span>
                                 {field.value === ex.id && (
                                   <MdCheck className="size-4 text-primary" />
                                 )}
@@ -227,12 +432,12 @@ export function ExerciseRow({
           />
         </div>
 
-        {/* Sets */}
-        <div className="col-span-3 sm:col-span-2 h-full">
+        {/* ROW 2: Sets */}
+        <div className="col-span-6 sm:col-span-2 h-full">
           <LabelField
             htmlFor={`exercises.${index}.sets`}
             label="Sets"
-            className="h-full "
+            className="h-full"
           >
             <Input
               id={`exercises.${index}.sets`}
@@ -245,30 +450,30 @@ export function ExerciseRow({
           </LabelField>
         </div>
 
-        {/* Reps */}
-        <div className="col-span-3 sm:col-span-2 h-full">
+        {/* ROW 2: Reps / Meters */}
+        <div className="col-span-6 sm:col-span-2 h-full">
           <LabelField
             htmlFor={`exercises.${index}.reps`}
-            label="Reps"
-            className="h-full "
+            label={repsMeta.label}
+            className="h-full"
           >
             <Input
               id={`exercises.${index}.reps`}
               type="number"
               min={0}
-              placeholder="10"
+              placeholder={filterType === "swimming" ? "100" : "10"}
               className="h-9 text-xs mt-auto"
               {...register(`exercises.${index}.reps`, { valueAsNumber: true })}
             />
           </LabelField>
         </div>
 
-        {/* Duration (Min) */}
-        <div className="col-span-3 sm:col-span-2 h-full">
+        {/* ROW 2: Duration (Min) */}
+        <div className="col-span-6 sm:col-span-2 h-full">
           <LabelField
             htmlFor={`exercises.${index}.duration`}
             label="Duration (min)"
-            className="h-full "
+            className="h-full"
           >
             <Input
               id={`exercises.${index}.duration`}
@@ -283,19 +488,19 @@ export function ExerciseRow({
           </LabelField>
         </div>
 
-        {/* Rest (Sec) */}
-        <div className="col-span-3 sm:col-span-2 h-full">
+        {/* ROW 2: Rest (Sec) */}
+        <div className="col-span-6 sm:col-span-2 h-full">
           <LabelField
             htmlFor={`exercises.${index}.restSeconds`}
             label="Rest (sec)"
-            className="h-full mt-auto"
+            className="h-full"
           >
             <Input
               id={`exercises.${index}.restSeconds`}
               type="number"
               min={0}
               placeholder="30"
-              className="h-9 text-xs"
+              className="h-9 text-xs mt-auto"
               {...register(`exercises.${index}.restSeconds`, {
                 valueAsNumber: true,
               })}
@@ -303,16 +508,16 @@ export function ExerciseRow({
           </LabelField>
         </div>
 
-        {/* Segmented Intensity Control (Low = 1, Medium = 2, High = 3) */}
-        <div className="sm:col-span-5">
+        {/* ROW 2: Segmented Intensity Control */}
+        <div className="col-span-12 sm:col-span-4 h-full">
           <Controller
             name={`exercises.${index}.intensity`}
             control={control}
             render={({ field }) => {
               const currentVal = field.value ?? 2;
               return (
-                <LabelField label="Intensity">
-                  <div className="flex items-center gap-1 p-1 rounded-lg border border-input bg-background h-9">
+                <LabelField label="Intensity" className="h-full">
+                  <div className="flex items-center mt-auto gap-1 p-1 rounded-lg border border-input bg-background h-9">
                     {INTENSITY_OPTIONS.map((opt) => {
                       const isSelected = currentVal === opt.value;
                       return (
@@ -338,8 +543,8 @@ export function ExerciseRow({
           />
         </div>
 
-        {/* Notes / Instructions */}
-        <div className="sm:col-span-7">
+        {/* ROW 3: Notes / Instructions (Full Width) */}
+        <div className="col-span-12">
           <LabelField
             htmlFor={`exercises.${index}.notes`}
             label="Notes / Instructions"

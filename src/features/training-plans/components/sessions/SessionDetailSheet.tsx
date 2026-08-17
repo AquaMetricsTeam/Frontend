@@ -31,6 +31,8 @@ import { useTrainingSession } from "../../hooks/useTrainingSession";
 import { useSessionAttendance } from "../../hooks/useSessionAttendance";
 import { useMarkAttendance } from "../../hooks/useMarkAttendance";
 import { useTrainingPlan } from "../../hooks/useTrainingPlan";
+import { useExercisesLookup } from "@/features/lookups/hooks/useExercisesLookup";
+import { RepsLabel } from "@/components/common/RepsLabel";
 import { AttendanceStatusEnum, type TrainingSession } from "../../types/index";
 import { cn } from "@/lib/utils";
 
@@ -138,6 +140,9 @@ export function SessionDetailSheet({
   // Fetch plan details for exercises breakdown
   const { data: planRes } = useTrainingPlan(planId, open && planId > 0);
   const planExercises = planRes?.data?.planExercises ?? [];
+  const { data: lookupRes } = useExercisesLookup(undefined, open);
+  const exerciseLookup = lookupRes?.data ?? [];
+  const exerciseMap = new Map(exerciseLookup.map((e) => [e.id, e.title]));
 
   // Fetch single session detail (includes athletes via GET /api/training-sessions/{id})
   const { data: sessionDetailRes } = useTrainingSession(
@@ -322,7 +327,9 @@ export function SessionDetailSheet({
                           </span>
                           <div className="min-w-0">
                             <span className="text-xs font-semibold text-foreground truncate block">
-                              {pe.exerciseName}
+                              {pe.exerciseName ||
+                                exerciseMap.get(pe.exerciseId) ||
+                                `Exercise #${pe.exerciseId}`}
                             </span>
                             {pe.notes && (
                               <p className="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1">
@@ -347,7 +354,20 @@ export function SessionDetailSheet({
                               variant="secondary"
                               className="text-[10px] px-1.5 py-0"
                             >
-                              {pe.reps} reps
+                              <RepsLabel
+                                value={pe.reps}
+                                isSwimming={
+                                  isSwimmingCoach ||
+                                  pe.exerciseName?.toLowerCase().includes("swim") ||
+                                  pe.exerciseName?.toLowerCase().includes("freestyle") ||
+                                  pe.exerciseName?.toLowerCase().includes("back") ||
+                                  pe.exerciseName?.toLowerCase().includes("breast") ||
+                                  pe.exerciseName?.toLowerCase().includes("butterfly") ||
+                                  pe.exerciseName?.toLowerCase().includes("kick") ||
+                                  pe.exerciseName?.toLowerCase().includes("pull") ||
+                                  pe.exerciseName?.toLowerCase().includes("drill")
+                                }
+                              />
                             </Badge>
                           )}
                           {pe.duration && (
@@ -555,7 +575,7 @@ export function SessionDetailSheet({
                             {strokeMeta?.shortLabel || "Free"}
                           </Badge>
                           <span className="text-xs font-bold text-primary">
-                            {item.distanceMeters}m × {item.repetitions} reps
+                            {item.distanceMeters}m × {item.repetitions}
                           </span>
                         </div>
                         <div className="flex items-center justify-between text-xs font-mono">

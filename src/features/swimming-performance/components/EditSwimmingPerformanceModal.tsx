@@ -49,7 +49,8 @@ export function EditSwimmingPerformanceModal({
         stroke: performance.stroke,
         distanceMeters: performance.distanceMeters,
         repetitions: performance.repetitions,
-        restIntervalSeconds: performance.restIntervalSeconds,
+        duration: performance.duration ?? null,
+        restIntervalSeconds: performance.restIntervalSeconds ?? 0,
         bestRepTime: performance.bestRepTime || "00:01:00",
         averageRepTime: performance.averageRepTime || "00:01:05",
         worstRepTime: performance.worstRepTime || "00:01:10",
@@ -71,6 +72,7 @@ export function EditSwimmingPerformanceModal({
     updateMutation.mutate(
       {
         ...values,
+        restIntervalSeconds: values.restIntervalSeconds ?? 0,
         stroke: values.stroke as StrokeType,
         status: values.status as PerformanceStatus,
         technique: values.technique as PerformanceGrade,
