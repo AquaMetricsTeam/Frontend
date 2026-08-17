@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { MdFitnessCenter } from "react-icons/md";
+import { Badge } from "@/components/ui/badge";
 import type { Exercise } from "../types/index";
+import { MUSCLE_GROUP_META } from "../constants/muscleGroups";
+import { SWIMMING_CATEGORY_META } from "../constants/swimmingCategories";
 import { ExerciseActionsMenu } from "./ExerciseActionsMenu";
 
 interface ExerciseTableRowProps {
@@ -12,13 +14,26 @@ export function ExerciseTableRow({ exercise }: ExerciseTableRowProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
+  const muscleMeta = exercise.muscleGroup != null ? MUSCLE_GROUP_META[exercise.muscleGroup] : null;
+  const swimMeta = exercise.category != null ? SWIMMING_CATEGORY_META[exercise.category] : null;
+  const categoryMeta = muscleMeta ?? swimMeta;
+
   return (
     <TableRow className="border-border transition-colors hover:bg-muted/40">
       <TableCell className="py-3">
         <div className="flex items-center gap-3">
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-secondary/20">
-            <MdFitnessCenter className="size-4 text-secondary-foreground" />
-          </div>
+          {categoryMeta && (
+            <span
+              className="flex size-8 shrink-0 items-center justify-center rounded-lg"
+              style={{ background: `color-mix(in oklch, ${categoryMeta.colorVar} 15%, transparent)` }}
+            >
+              <categoryMeta.Icon
+                className="size-4"
+                style={{ color: categoryMeta.colorVar }}
+                strokeWidth={1.75}
+              />
+            </span>
+          )}
           <span className="font-semibold text-sm text-foreground">
             {exercise.title}
           </span>
@@ -33,9 +48,23 @@ export function ExerciseTableRow({ exercise }: ExerciseTableRowProps) {
         )}
       </TableCell>
 
-
-      <TableCell className="text-sm text-muted-foreground py-3 whitespace-nowrap">
-        {new Date(exercise.createdAt).toLocaleDateString()}
+      <TableCell className="py-3">
+        {categoryMeta ? (
+          <Badge
+            variant="secondary"
+            className="text-xs font-medium gap-1.5"
+            style={{
+              background: `color-mix(in oklch, ${categoryMeta.colorVar} 12%, transparent)`,
+              color: categoryMeta.colorVar,
+              borderColor: `color-mix(in oklch, ${categoryMeta.colorVar} 25%, transparent)`,
+            }}
+          >
+            <categoryMeta.Icon className="size-3" strokeWidth={2} />
+            {categoryMeta.label}
+          </Badge>
+        ) : (
+          <span className="italic text-muted-foreground/50 text-sm">—</span>
+        )}
       </TableCell>
 
       <TableCell className="py-3 text-start">

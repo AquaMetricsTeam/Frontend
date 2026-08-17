@@ -85,7 +85,8 @@ export function CoachDashboard({ data: d }: CoachDashboardProps) {
           iconBg="bg-primary/10"
           strokeColor="var(--primary)"
           gradientId="coach-perf-grad"
-          valueLabel="score"
+          valueLabel="/ 10"
+          maxValue={10}
         />
         <DashboardTrendChart
           data={d.fatigueTrend}

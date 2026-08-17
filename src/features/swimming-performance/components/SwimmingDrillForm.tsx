@@ -36,9 +36,12 @@ export function SwimmingDrillForm({
   // Explicit useWatch hooks for reactive UI re-renders on field changes
   const currentStroke = useWatch({ control, name: getFieldName("stroke") });
   const currentStatus = useWatch({ control, name: getFieldName("status") });
-  const bestTime = useWatch({ control, name: getFieldName("bestRepTime") }) || "00:01:08";
-  const avgTime = useWatch({ control, name: getFieldName("averageRepTime") }) || "00:01:10";
-  const worstTime = useWatch({ control, name: getFieldName("worstRepTime") }) || "00:01:13";
+  const bestTime =
+    useWatch({ control, name: getFieldName("bestRepTime") }) || "00:01:08";
+  const avgTime =
+    useWatch({ control, name: getFieldName("averageRepTime") }) || "00:01:10";
+  const worstTime =
+    useWatch({ control, name: getFieldName("worstRepTime") }) || "00:01:13";
   const rpeVal = useWatch({ control, name: getFieldName("rpe") });
 
   const techniqueVal = useWatch({ control, name: getFieldName("technique") });
@@ -109,11 +112,10 @@ export function SwimmingDrillForm({
           required
         />
         <InputField
-          name={getFieldName("restIntervalSeconds") as any}
-          label={t("builder.restInterval")}
+          name={getFieldName("duration") as any}
+          label={t("builder.duration")}
           type="number"
           inputClassName="h-9 text-xs font-semibold"
-          required
         />
       </div>
 
@@ -188,12 +190,7 @@ export function SwimmingDrillForm({
               {t("builder.gradesTitle")}
             </Label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {[
-                "technique",
-                "start",
-                "turns",
-                "finish",
-              ].map((field) => (
+              {["technique", "start", "turns", "finish"].map((field) => (
                 <SegmentedRatingControl
                   key={field}
                   label={t(`builder.${field}`)}

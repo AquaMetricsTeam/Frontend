@@ -22,6 +22,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loading } from "@/components/feedbacks/Loading";
 import { useTrainingPlan } from "../../hooks/useTrainingPlan";
 import { useAssignments } from "../../hooks/useAssignments";
+import { useExercisesLookup } from "@/features/lookups/hooks/useExercisesLookup";
+import { useMe } from "@/features/auth/hooks/useMe";
+import { RepsLabel, useRepsLabel } from "@/components/common/RepsLabel";
 import { calculatePlanDuration, type TrainingPlan } from "../../types/index";
 
 interface TemplateDetailSheetProps {
@@ -48,20 +51,47 @@ export function TemplateDetailSheet({
   );
   const { data: assignmentsRes, isLoading: assignmentsLoading } =
     useAssignments(planId, open && planId > 0);
+  const { data: lookupRes } = useExercisesLookup(undefined, open);
+  const { data: meData } = useMe();
+  const roles = meData?.data?.roles ?? [];
+  const isSwimmingCoach = roles.includes("SwimmingCoach") && !roles.includes("FitnessCoach");
+
+  const exerciseLookup = lookupRes?.data ?? [];
+  const lookupMap = new Map(exerciseLookup.map((e) => [e.id, e]));
 
   const activePlan = detailRes?.data ?? plan;
   const assignments = assignmentsRes?.data ?? [];
+  const exercises = activePlan?.planExercises ?? [];
+
+  const isSwimmingPlan =
+    isSwimmingCoach ||
+    exercises.some((ex) => {
+      const lookup = lookupMap.get(ex.exerciseId);
+      const title = ex.exerciseName || lookup?.title || "";
+      return (
+        (ex as any).category != null ||
+        title.toLowerCase().includes("swim") ||
+        title.toLowerCase().includes("freestyle") ||
+        title.toLowerCase().includes("backstroke") ||
+        title.toLowerCase().includes("breaststroke") ||
+        title.toLowerCase().includes("butterfly") ||
+        title.toLowerCase().includes("kick") ||
+        title.toLowerCase().includes("pull") ||
+        title.toLowerCase().includes("drill")
+      );
+    });
+
+  const planRepsMeta = useRepsLabel({ isSwimming: isSwimmingPlan });
 
   if (!activePlan) return null;
 
   const totalDuration = calculatePlanDuration(activePlan);
-  const exercises = activePlan.planExercises ?? [];
   const totalSets = exercises.reduce(
     (acc, ex) => acc + (Number(ex.sets) || 0),
     0,
   );
   const totalReps = exercises.reduce(
-    (acc, ex) => acc + (Number(ex.reps) || 0),
+    (acc, ex) => acc + (Number(ex.sets) || 0) * (Number(ex.reps) || 0),
     0,
   );
 
@@ -147,10 +177,11 @@ export function TemplateDetailSheet({
 
                 <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-accent/40 border border-border/70 text-center">
                   <span className="text-[11px] font-medium text-muted-foreground">
-                    Reps
+                    {planRepsMeta.label}
                   </span>
                   <span className="text-sm font-bold text-foreground mt-0.5">
                     {totalReps}
+                    {isSwimmingPlan ? "m" : ""}
                   </span>
                 </div>
               </div>
@@ -169,75 +200,94 @@ export function TemplateDetailSheet({
                   </div>
                 ) : (
                   <div className="space-y-2.5">
-                    {exercises.map((ex, index) => (
-                      <div
-                        key={ex.id ?? index}
-                        className="rounded-xl border border-border bg-card p-3.5 transition-all hover:border-primary/40 hover:shadow-2xs"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-center gap-2.5">
-                            <span className="flex size-6 items-center justify-center rounded-lg bg-primary/10 text-primary text-xs font-bold shrink-0">
-                              {index + 1}
-                            </span>
-                            <h4 className="text-sm font-semibold text-foreground">
-                              {ex.exerciseName || `Exercise #${ex.exerciseId}`}
-                            </h4>
-                          </div>
+                    {exercises.map((ex, index) => {
+                      const lookup = lookupMap.get(ex.exerciseId);
+                      const exerciseTitle =
+                        ex.exerciseName ||
+                        lookup?.title ||
+                        `Exercise #${ex.exerciseId}`;
 
-                          <div className="flex items-center gap-1.5 shrink-0">
+                      const isSwimEx =
+                        isSwimmingCoach ||
+                        (ex as any).category != null ||
+                        exerciseTitle.toLowerCase().includes("swim") ||
+                        exerciseTitle.toLowerCase().includes("freestyle") ||
+                        exerciseTitle.toLowerCase().includes("backstroke") ||
+                        exerciseTitle.toLowerCase().includes("breaststroke") ||
+                        exerciseTitle.toLowerCase().includes("butterfly") ||
+                        exerciseTitle.toLowerCase().includes("kick") ||
+                        exerciseTitle.toLowerCase().includes("pull") ||
+                        exerciseTitle.toLowerCase().includes("drill");
+
+                      return (
+                        <div
+                          key={ex.id ?? index}
+                          className="rounded-xl border border-border bg-card p-3.5 transition-all hover:border-primary/40 hover:shadow-2xs"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <span className="flex size-6 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary">
+                                {ex.orderIndex || index + 1}
+                              </span>
+                              <span className="text-sm font-semibold text-foreground truncate">
+                                {exerciseTitle}
+                              </span>
+                            </div>
+
                             {ex.duration > 0 && (
                               <Badge
-                                variant="outline"
-                                className="text-[11px] px-2 py-0.5 gap-1 font-normal bg-accent/30"
+                                variant="secondary"
+                                className="text-xs font-medium shrink-0 bg-muted/60"
                               >
-                                <MdTimer className="size-3 text-primary" />
+                                <MdTimer className="size-3 me-1 text-primary" />
                                 {ex.duration} min
                               </Badge>
                             )}
                           </div>
-                        </div>
 
-                        {/* Exercise Metrics Badges */}
-                        <div className="mt-2.5 flex flex-wrap items-center gap-2">
-                          <span className="inline-flex items-center gap-1 rounded-md bg-secondary/20 px-2 py-1 text-xs font-medium text-foreground">
-                            <span className="text-muted-foreground font-normal">
-                              Sets:
-                            </span>{" "}
-                            {ex.sets}
-                          </span>
-                          <span className="inline-flex items-center gap-1 rounded-md bg-secondary/20 px-2 py-1 text-xs font-medium text-foreground">
-                            <span className="text-muted-foreground font-normal">
-                              Reps:
-                            </span>{" "}
-                            {ex.reps}
-                          </span>
-                          {ex.restSeconds !== undefined && ex.restSeconds !== null && ex.restSeconds > 0 && (
-                            <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
-                              <span className="font-normal opacity-80">
-                                Rest:
+                          {/* Exercise Metrics Badges */}
+                          <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                            <span className="inline-flex items-center gap-1 rounded-md bg-secondary/20 px-2 py-1 text-xs font-medium text-foreground">
+                              <span className="text-muted-foreground font-normal">
+                                Sets:
                               </span>{" "}
-                              {ex.restSeconds}s
+                              {ex.sets}
                             </span>
-                          )}
-                          {ex.intensity && (
-                            <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-600 dark:text-amber-400">
-                              <span className="font-normal opacity-80">
-                                Intensity:
+                            <span className="inline-flex items-center gap-1 rounded-md bg-secondary/20 px-2 py-1 text-xs font-medium text-foreground">
+                              <span className="text-muted-foreground font-normal">
+                                <RepsLabel isSwimming={isSwimEx} />:
                               </span>{" "}
-                              {ex.intensity}
+                              {ex.reps}
+                              {isSwimEx ? "m" : ""}
                             </span>
-                          )}
-                        </div>
-
-                        {/* Exercise Notes */}
-                        {ex.notes && (
-                          <div className="mt-2.5 flex items-start gap-1.5 rounded-lg bg-muted/40 p-2 text-xs text-muted-foreground border border-border/40">
-                            <MdNotes className="size-3.5 shrink-0 text-muted-foreground mt-0.5" />
-                            <span className="italic">{ex.notes}</span>
+                            {ex.restSeconds !== undefined && ex.restSeconds !== null && ex.restSeconds > 0 && (
+                              <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                                <span className="font-normal opacity-80">
+                                  Rest:
+                                </span>{" "}
+                                {ex.restSeconds}s
+                              </span>
+                            )}
+                            {ex.intensity && (
+                              <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-600 dark:text-amber-400">
+                                <span className="font-normal opacity-80">
+                                  Intensity:
+                                </span>{" "}
+                                {ex.intensity}
+                              </span>
+                            )}
                           </div>
-                        )}
-                      </div>
-                    ))}
+
+                          {/* Exercise Notes */}
+                          {ex.notes && (
+                            <div className="mt-2.5 flex items-start gap-1.5 rounded-lg bg-muted/40 p-2 text-xs text-muted-foreground border border-border/40">
+                              <MdNotes className="size-3.5 shrink-0 mt-0.5 text-muted-foreground/70" />
+                              <span className="leading-relaxed">{ex.notes}</span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>

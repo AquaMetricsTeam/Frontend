@@ -15,7 +15,7 @@ export interface InputFieldProps<
   TFieldValues extends FieldValues = FieldValues,
 > {
   name: FieldPath<TFieldValues>;
-  label: string;
+  label: ReactNode;
   placeholder?: string;
   type?: React.InputHTMLAttributes<HTMLInputElement>["type"];
   required?: boolean;

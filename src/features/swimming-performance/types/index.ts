@@ -48,7 +48,8 @@ export interface SwimmingPerformance {
   stroke: StrokeType;
   distanceMeters: number;
   repetitions: number;
-  restIntervalSeconds: number;
+  duration?: number | null;
+  restIntervalSeconds?: number;
   bestRepTime: string; // e.g. "00:01:08"
   averageRepTime: string; // e.g. "00:01:10"
   worstRepTime: string; // e.g. "00:01:13"
@@ -105,7 +106,8 @@ export interface SwimmingDrillRequest {
   stroke: StrokeType;
   distanceMeters: number;
   repetitions: number;
-  restIntervalSeconds: number;
+  duration?: number | null;
+  restIntervalSeconds?: number;
   bestRepTime: string; // "00:mm:ss"
   averageRepTime: string; // "00:mm:ss"
   worstRepTime: string; // "00:mm:ss"
@@ -128,7 +130,8 @@ export interface UpdateSwimmingPerformancePayload {
   stroke: StrokeType;
   distanceMeters: number;
   repetitions: number;
-  restIntervalSeconds: number;
+  duration?: number | null;
+  restIntervalSeconds?: number;
   bestRepTime: string;
   averageRepTime: string;
   worstRepTime: string;

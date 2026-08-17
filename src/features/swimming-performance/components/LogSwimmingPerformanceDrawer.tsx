@@ -31,6 +31,7 @@ const DEFAULT_DRILL: SwimmingDrillRequest = {
   stroke: StrokeType.Freestyle,
   distanceMeters: 100,
   repetitions: 4,
+  duration: 10,
   restIntervalSeconds: 30,
   bestRepTime: "00:01:08",
   averageRepTime: "00:01:10",
@@ -62,6 +63,7 @@ function mapPlanExerciseToDrill(pe: PlanExercise): SwimmingDrillRequest {
     stroke,
     distanceMeters,
     repetitions: pe.sets || pe.reps || 4,
+    duration: pe.duration || (pe as any).durationMinutes || 10,
     restIntervalSeconds: pe.restSeconds || 30,
     bestRepTime: "00:01:08",
     averageRepTime: "00:01:10",
@@ -191,6 +193,7 @@ export function LogSwimmingPerformanceDrawer({
       stroke: last.stroke,
       distanceMeters: last.distanceMeters,
       repetitions: last.repetitions,
+      duration: last.duration,
       restIntervalSeconds: last.restIntervalSeconds,
     });
   }

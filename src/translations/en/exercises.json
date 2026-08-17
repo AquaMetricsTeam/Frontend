@@ -1,7 +1,8 @@
 {
   "page": {
     "title": "Exercises",
-    "description": "Create and manage training exercises for your athletes.",
+    "description": "Browse and manage exercises for your athletes.",
+    "landingDescription": "Choose a category to browse and manage exercises.",
     "createButton": "New Exercise",
     "exerciseCount": "{{count}} exercise",
     "exerciseCount_plural": "{{count}} exercises"
@@ -12,6 +13,7 @@
   "table": {
     "title": "Title",
     "description": "Description",
+    "category": "Category",
     "body": "Instructions",
     "createdAt": "Created",
     "actions": "Actions"
@@ -29,6 +31,10 @@
     "descriptionPlaceholder": "Brief summary of the exercise...",
     "bodyLabel": "Instructions",
     "bodyPlaceholder": "Step-by-step exercise instructions...",
+    "muscleGroupLabel": "Muscle Group",
+    "muscleGroupPlaceholder": "Select muscle group...",
+    "categoryLabel": "Swimming Category",
+    "categoryPlaceholder": "Select category...",
     "creating": "Creating…",
     "submit": "Create Exercise"
   },
@@ -46,3 +52,4 @@
     "deleting": "Deleting…"
   }
 }
+

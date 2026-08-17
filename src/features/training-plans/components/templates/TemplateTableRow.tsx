@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useArchiveTrainingPlan } from "../../hooks/useArchiveTrainingPlan";
 import { useRestoreTrainingPlan } from "../../hooks/useRestoreTrainingPlan";
+import { useExercisesLookup } from "@/features/lookups/hooks/useExercisesLookup";
 import { calculatePlanDuration, type TrainingPlan } from "../../types/index";
 
 interface TemplateTableRowProps {
@@ -50,6 +51,9 @@ export function TemplateTableRow({
   const [confirmArchive, setConfirmArchive] = useState(false);
   const archiveMutation = useArchiveTrainingPlan();
   const restoreMutation = useRestoreTrainingPlan();
+  const { data: lookupRes } = useExercisesLookup();
+  const exerciseLookup = lookupRes?.data ?? [];
+  const exerciseMap = new Map(exerciseLookup.map((e) => [e.id, e.title]));
   const totalDuration = calculatePlanDuration(plan);
 
   return (
@@ -80,7 +84,9 @@ export function TemplateTableRow({
                   variant="secondary"
                   className="text-[11px] font-normal bg-primary/10 text-primary border-primary/20 shrink-0"
                 >
-                  {ex.exerciseName || `Exercise #${ex.exerciseId}`}
+                  {ex.exerciseName ||
+                    exerciseMap.get(ex.exerciseId) ||
+                    `Exercise #${ex.exerciseId}`}
                 </Badge>
               ))}
               {plan.planExercises.length > 2 && (

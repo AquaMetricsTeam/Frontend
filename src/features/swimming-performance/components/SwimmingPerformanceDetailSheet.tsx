@@ -47,14 +47,16 @@ export function SwimmingPerformanceDetailSheet({
   canManage = false,
 }: SwimmingPerformanceDetailSheetProps) {
   const { t } = useTranslation("swimming");
-  const [selectedDrill, setSelectedDrill] = useState<SwimmingPerformance | null>(null);
+  const [selectedDrill, setSelectedDrill] =
+    useState<SwimmingPerformance | null>(null);
   const [isEditDrillOpen, setIsEditDrillOpen] = useState(false);
 
   // 1. Fetch drills list for this training record
-  const { data: detailRes, isLoading: isDrillsLoading } = useSwimmingPerformancesByTrainingRecord(
-    record?.id ?? 0,
-    open && (record?.id ?? 0) > 0,
-  );
+  const { data: detailRes, isLoading: isDrillsLoading } =
+    useSwimmingPerformancesByTrainingRecord(
+      record?.id ?? 0,
+      open && (record?.id ?? 0) > 0,
+    );
 
   // 2. Fetch full training record details for overallComment
   const { data: recordDetailRes } = useTrainingRecordDetail(
@@ -250,7 +252,9 @@ export function SwimmingPerformanceDetailSheet({
                                 strokeMeta?.badgeClass,
                               )}
                             >
-                              {strokeMeta ? t(strokeMeta.labelKey) : "Freestyle"}
+                              {strokeMeta
+                                ? t(strokeMeta.labelKey)
+                                : "Freestyle"}
                             </Badge>
                             <div className="flex items-center gap-2">
                               <span className="text-xs font-bold text-primary">
@@ -259,7 +263,10 @@ export function SwimmingPerformanceDetailSheet({
                               {statusMeta && (
                                 <Badge
                                   variant="outline"
-                                  className={cn("text-xs font-semibold px-2 py-0.5", statusMeta.badgeClass)}
+                                  className={cn(
+                                    "text-xs font-semibold px-2 py-0.5",
+                                    statusMeta.badgeClass,
+                                  )}
                                 >
                                   {t(statusMeta.labelKey)}
                                 </Badge>
@@ -319,7 +326,10 @@ export function SwimmingPerformanceDetailSheet({
                               <MdStars className="size-4 text-amber-500" />
                               {t("details.ratingsHeader")}
                             </h4>
-                            <Badge variant="secondary" className="text-xs font-bold">
+                            <Badge
+                              variant="secondary"
+                              className="text-xs font-bold"
+                            >
                               {avgGrade.toFixed(1)} / 5.0
                             </Badge>
                           </div>
