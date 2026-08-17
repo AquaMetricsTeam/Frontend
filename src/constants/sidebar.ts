@@ -27,6 +27,7 @@ export const NAV_GROUPS: NavGroup[] = [
         labelKey: "common:nav.items.dashboard",
         icon: MdDashboard,
         path: "/",
+        allowedRoles: ["Admin", "SwimmingCoach", "FitnessCoach"],
       },
     ],
   },

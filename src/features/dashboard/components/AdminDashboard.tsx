@@ -1,0 +1,126 @@
+import {
+  MdDirectionsRun,
+  MdEvent,
+  MdLocalHospital,
+  MdTrendingUp,
+  MdBatteryChargingFull,
+  MdWarning,
+} from "react-icons/md";
+import { useMe } from "@/features/auth/hooks/useMe";
+import { DashboardGreeting } from "./DashboardGreeting";
+import { DashboardStatCard } from "./DashboardStatCard";
+import { DashboardTrendChart } from "./DashboardTrendChart";
+import { DashboardScatterChart } from "./DashboardScatterChart";
+import { AdminDomainDonutChart } from "./AdminDomainDonutChart";
+import type { AdminDashboardData } from "../types/index";
+
+interface AdminDashboardProps {
+  data: AdminDashboardData;
+}
+
+export function AdminDashboard({ data: d }: AdminDashboardProps) {
+  const { data: meRes } = useMe();
+  const displayName = meRes?.data?.fullName?.split(" ")[0];
+  const injuryRate =
+    d.totalSessions > 0 ? Math.round((d.totalInjuries / d.totalSessions) * 100) : 0;
+
+  return (
+    <div className="space-y-6 pb-12">
+      <DashboardGreeting
+        name={displayName}
+        subtitle="Here's the full picture across all athletes and coaches."
+      />
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <DashboardStatCard
+          label="Total Athletes"
+          value={d.totalAthletes}
+          icon={MdDirectionsRun}
+          iconColor="text-primary"
+          iconBg="bg-primary/10"
+          valueColor="text-primary"
+        />
+        <DashboardStatCard
+          label="Total Sessions"
+          value={d.totalSessions}
+          icon={MdEvent}
+          iconColor="text-secondary-500"
+          iconBg="bg-secondary-500/10"
+          valueColor="text-foreground"
+        />
+        <DashboardStatCard
+          label="Total Injuries"
+          value={d.totalInjuries}
+          sub={`${injuryRate}% of sessions`}
+          icon={MdLocalHospital}
+          iconColor="text-rose-500"
+          iconBg="bg-rose-500/10"
+          valueColor={d.totalInjuries > 0 ? "text-rose-600 dark:text-rose-400" : "text-foreground"}
+          trend={Math.min(100, injuryRate * 5)}
+          trendColor={d.totalInjuries > 5 ? "bg-rose-500" : "bg-amber-500"}
+        />
+      </div>
+
+      {/* Injury alert banner */}
+      {d.totalInjuries > 0 && (
+        <div className="flex items-center gap-3 rounded-2xl border border-rose-500/25 bg-rose-500/8 p-4 text-rose-700 dark:text-rose-400">
+          <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-rose-500/15">
+            <MdWarning className="size-4 text-rose-500" />
+          </div>
+          <div className="text-xs">
+            <span className="font-bold">{d.totalInjuries} injuries</span> recorded across all sessions.
+            Review athlete medical records and adjust training loads accordingly.
+          </div>
+        </div>
+      )}
+
+      {/* Trend Charts Row */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <DashboardTrendChart
+          data={d.performanceTrend}
+          title="Performance Trend"
+          subtitle="Average performance rating over time"
+          icon={MdTrendingUp}
+          iconColor="text-primary"
+          iconBg="bg-primary/10"
+          strokeColor="var(--primary)"
+          gradientId="admin-perf-grad"
+          valueLabel="score"
+        />
+        <DashboardTrendChart
+          data={d.fatigueTrend}
+          title="Fatigue Trend"
+          subtitle="Average fatigue level over time"
+          icon={MdBatteryChargingFull}
+          iconColor="text-amber-500"
+          iconBg="bg-amber-500/10"
+          strokeColor="#f59e0b"
+          gradientId="admin-fatigue-grad"
+          valueLabel="/ 10"
+          maxValue={10}
+        />
+      </div>
+
+      {/* Injuries + Domain Charts Row */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <DashboardTrendChart
+          data={d.injuriesOverTime}
+          title="Injuries Over Time"
+          subtitle="Injury count per period"
+          icon={MdLocalHospital}
+          iconColor="text-rose-500"
+          iconBg="bg-rose-500/10"
+          strokeColor="#f43f5e"
+          gradientId="admin-injury-grad"
+          valueLabel="injuries"
+          maxValue={Math.max(5, ...d.injuriesOverTime.map((p) => p.value))}
+        />
+        <AdminDomainDonutChart data={d.athletesPerDomain} />
+      </div>
+
+      {/* Scatter Chart */}
+      <DashboardScatterChart data={d.performanceVsFatigue} />
+    </div>
+  );
+}
