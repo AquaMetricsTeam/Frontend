@@ -21,3 +21,9 @@ export interface ExerciseLookupItem {
   id: number;
   title: string;
 }
+
+export interface FetchExercisesLookupParams {
+  search?: string;
+  muscleGroup?: number | null;
+  category?: number | null;
+}

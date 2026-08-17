@@ -15,9 +15,11 @@ export const swimmingDrillSchema = z.object({
   repetitions: z
     .number()
     .min(1, "Repetitions must be at least 1"),
+  duration: z.number().min(0).optional().nullable(),
   restIntervalSeconds: z
     .number()
-    .min(0, "Rest interval cannot be negative"),
+    .min(0, "Rest interval cannot be negative")
+    .optional(),
   bestRepTime: z.string().min(1, "Best rep time is required"),
   averageRepTime: z.string().min(1, "Average rep time is required"),
   worstRepTime: z.string().min(1, "Worst rep time is required"),

@@ -46,15 +46,19 @@ export function DrillCard({
                 <>
                   {plannedExercise.exerciseName && <span>•</span>}
                   <span>
-                    {plannedExercise.sets || 1}×{plannedExercise.reps || 1} planned
+                    {plannedExercise.sets || 1}×{plannedExercise.reps || 1}m
+                    planned
                   </span>
                 </>
               )}
-              {(plannedExercise.duration || (plannedExercise as any).durationMinutes) ? (
+              {plannedExercise.duration ||
+              (plannedExercise as any).durationMinutes ? (
                 <>
                   <span>•</span>
                   <span>
-                    {plannedExercise.duration || (plannedExercise as any).durationMinutes} min planned
+                    {plannedExercise.duration ||
+                      (plannedExercise as any).durationMinutes}{" "}
+                    min planned
                   </span>
                 </>
               ) : null}

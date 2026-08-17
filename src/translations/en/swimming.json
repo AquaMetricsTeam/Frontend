@@ -54,6 +54,7 @@
     "stroke": "Stroke / Drill Type",
     "distance": "Distance (m)",
     "repetitions": "Repetitions",
+    "duration": "Duration (min)",
     "restInterval": "Rest (sec)",
     "splitLapTiming": "Split Lap Timing",
     "bestRepTime": "Best",

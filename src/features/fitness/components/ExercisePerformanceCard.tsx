@@ -51,7 +51,11 @@ export function ExercisePerformanceCard({
   prefix = `exercisePerformances.${index}`,
   onRemove,
 }: ExercisePerformanceCardProps) {
-  const { control, setValue, formState: { errors } } = useFormContext();
+  const {
+    control,
+    setValue,
+    formState: { errors },
+  } = useFormContext();
 
   const getFieldName = (field: string) =>
     prefix ? `${prefix}.${field}` : field;
@@ -102,11 +106,14 @@ export function ExercisePerformanceCard({
               <span>
                 {selectedExercise.sets}×{selectedExercise.reps} planned
               </span>
-              {(selectedExercise.duration || (selectedExercise as any).durationMinutes) ? (
+              {selectedExercise.duration ||
+              (selectedExercise as any).durationMinutes ? (
                 <>
                   <span>•</span>
                   <span>
-                    {selectedExercise.duration || (selectedExercise as any).durationMinutes} min planned
+                    {selectedExercise.duration ||
+                      (selectedExercise as any).durationMinutes}{" "}
+                    min planned
                   </span>
                 </>
               ) : null}
@@ -150,7 +157,9 @@ export function ExercisePerformanceCard({
           onValueChange={(val) => {
             const chosenId = Number(val);
             setFieldValue("planExerciseId", chosenId);
-            const found = planExercises.find((ex) => getExerciseId(ex) === chosenId);
+            const found = planExercises.find(
+              (ex) => getExerciseId(ex) === chosenId,
+            );
             if (found) {
               if (found.sets !== undefined && found.sets !== null) {
                 setFieldValue("completedSets", found.sets);
@@ -166,9 +175,14 @@ export function ExercisePerformanceCard({
               }
             }
           }}
-          hasValue={!!currentPlanExerciseId && Number(currentPlanExerciseId) > 0}
+          hasValue={
+            !!currentPlanExerciseId && Number(currentPlanExerciseId) > 0
+          }
           disabled={planExercises.length === 0}
-          error={(errors.exercisePerformances as any)?.[index]?.planExerciseId?.message}
+          error={
+            (errors.exercisePerformances as any)?.[index]?.planExerciseId
+              ?.message
+          }
         />
 
         <div className="grid grid-cols-2 gap-3">

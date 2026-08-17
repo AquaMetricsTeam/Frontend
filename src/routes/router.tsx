@@ -12,6 +12,7 @@ import AthleteProfilePage from "@/pages/athlete-profile";
 import AthleteRegistrationsPage from "@/pages/athlete-registrations";
 import GroupsPage from "@/pages/groups";
 import ExercisesPage from "@/pages/exercises";
+import ExercisesLandingPage from "@/pages/exercises-landing";
 import TrainingTemplatesPage from "@/pages/training-templates";
 import TrainingAssignmentsPage from "@/pages/training-assignments";
 import TrainingSessionsPage from "@/pages/training-sessions";
@@ -119,6 +120,21 @@ const router = createBrowserRouter([
                     allowedRoles={[
                       "SwimmingCoach",
                       "FitnessCoach",
+                      "Admin",
+                    ]}
+                  >
+                    <ExercisesLandingPage />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/exercises/:type/:value",
+                element: (
+                  <ProtectedRoute
+                    allowedRoles={[
+                      "SwimmingCoach",
+                      "FitnessCoach",
+                      "Admin",
                     ]}
                   >
                     <ExercisesPage />
