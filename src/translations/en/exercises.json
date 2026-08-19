@@ -25,6 +25,9 @@
   "createModal": {
     "title": "Create Exercise",
     "description": "Add a new exercise to the library.",
+    "typeLabel": "Exercise Type",
+    "fitness": "Fitness",
+    "swimming": "Swimming",
     "titleLabel": "Title",
     "titlePlaceholder": "e.g. Freestyle Sprint",
     "descriptionLabel": "Description",

@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
+import { Dumbbell, Waves } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -39,22 +40,26 @@ export function CreateExerciseModal({
   const { data: meData } = useMe();
   const roles = meData?.data?.roles ?? [];
 
-  const isFitness = roles.includes("FitnessCoach");
-  const isSwimming = roles.includes("SwimmingCoach");
+  const isFitnessOnly =
+    roles.includes("FitnessCoach") &&
+    !roles.includes("SwimmingCoach") &&
+    !roles.includes("Admin");
+  const isSwimmingOnly =
+    roles.includes("SwimmingCoach") &&
+    !roles.includes("FitnessCoach") &&
+    !roles.includes("Admin");
 
-  const showMuscle =
-    defaultMuscleGroup != null
-      ? true
-      : defaultCategory != null
-        ? false
-        : isFitness || (!isFitness && !isSwimming);
+  const canSwitchType =
+    defaultMuscleGroup == null &&
+    defaultCategory == null &&
+    !isFitnessOnly &&
+    !isSwimmingOnly;
 
-  const showCategory =
-    defaultCategory != null
-      ? true
-      : defaultMuscleGroup != null
-        ? false
-        : isSwimming || (!isFitness && !isSwimming);
+  const initialType =
+    defaultCategory != null || isSwimmingOnly ? "swimming" : "fitness";
+  const [exerciseType, setExerciseType] = useState<"fitness" | "swimming">(
+    initialType,
+  );
 
   const methods = useForm<CreateExerciseFormValues>({
     resolver: zodResolver(createExerciseSchema),
@@ -72,6 +77,9 @@ export function CreateExerciseModal({
 
   useEffect(() => {
     if (open) {
+      const type =
+        defaultCategory != null || isSwimmingOnly ? "swimming" : "fitness";
+      setExerciseType(type);
       methods.reset({
         title: "",
         description: "",
@@ -79,24 +87,21 @@ export function CreateExerciseModal({
         category: defaultCategory ?? null,
       });
     }
-  }, [open, methods, defaultMuscleGroup, defaultCategory]);
+  }, [open, methods, defaultMuscleGroup, defaultCategory, isSwimmingOnly]);
 
   function onSubmit(values: CreateExerciseFormValues) {
+    const isSwimmingMode = exerciseType === "swimming";
     create({
       title: values.title.trim(),
       description: values.description?.trim() || undefined,
       muscleGroup:
-        isSwimming || defaultCategory != null
+        isSwimmingMode || values.muscleGroup == null
           ? null
-          : values.muscleGroup
-            ? (Number(values.muscleGroup) as MuscleGroup)
-            : null,
+          : (Number(values.muscleGroup) as MuscleGroup),
       category:
-        isFitness || defaultMuscleGroup != null
+        !isSwimmingMode || values.category == null
           ? null
-          : values.category
-            ? (Number(values.category) as SwimmingExerciseCategory)
-            : null,
+          : (Number(values.category) as SwimmingExerciseCategory),
     });
   }
 
@@ -117,6 +122,46 @@ export function CreateExerciseModal({
             className="flex flex-col gap-4 py-2"
             noValidate
           >
+            {canSwitchType && (
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-foreground">
+                  {t("exercises:createModal.typeLabel")}
+                </label>
+                <div className="grid grid-cols-2 p-1 bg-muted rounded-lg gap-1 border border-border">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setExerciseType("fitness");
+                      methods.setValue("category", null);
+                    }}
+                    className={`flex items-center justify-center gap-2 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                      exerciseType === "fitness"
+                        ? "bg-card text-foreground shadow-xs border border-border"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Dumbbell className="size-3.5" />
+                    {t("exercises:createModal.fitness")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setExerciseType("swimming");
+                      methods.setValue("muscleGroup", null);
+                    }}
+                    className={`flex items-center justify-center gap-2 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                      exerciseType === "swimming"
+                        ? "bg-card text-foreground shadow-xs border border-border"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Waves className="size-3.5" />
+                    {t("exercises:createModal.swimming")}
+                  </button>
+                </div>
+              </div>
+            )}
+
             <InputField<CreateExerciseFormValues>
               name="title"
               label={t("exercises:createModal.titleLabel")}
@@ -131,7 +176,7 @@ export function CreateExerciseModal({
               rows={2}
             />
 
-            {showMuscle && (
+            {exerciseType === "fitness" && (
               <SelectField<CreateExerciseFormValues>
                 name="muscleGroup"
                 label={t("exercises:createModal.muscleGroupLabel")}
@@ -141,7 +186,7 @@ export function CreateExerciseModal({
               />
             )}
 
-            {showCategory && (
+            {exerciseType === "swimming" && (
               <SelectField<CreateExerciseFormValues>
                 name="category"
                 label={t("exercises:createModal.categoryLabel")}
@@ -155,7 +200,7 @@ export function CreateExerciseModal({
               <Button
                 type="submit"
                 disabled={isPending}
-                className="min-w-24"
+                className="min-w-24 cursor-pointer"
               >
                 {isPending
                   ? t("exercises:createModal.creating")
