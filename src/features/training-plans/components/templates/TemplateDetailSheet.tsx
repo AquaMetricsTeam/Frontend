@@ -263,19 +263,31 @@ export function TemplateDetailSheet({
                             {ex.restSeconds !== undefined && ex.restSeconds !== null && ex.restSeconds > 0 && (
                               <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
                                 <span className="font-normal opacity-80">
-                                  Rest:
+                                  {t("labels.rest", { defaultValue: "Rest" })}:
                                 </span>{" "}
                                 {ex.restSeconds}s
                               </span>
                             )}
-                            {ex.intensity && (
-                              <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-600 dark:text-amber-400">
+                            {ex.restAfter !== undefined && ex.restAfter !== null && ex.restAfter > 0 && (
+                              <span className="inline-flex items-center gap-1 rounded-md bg-sky-500/10 px-2 py-1 text-xs font-medium text-sky-600 dark:text-sky-400">
                                 <span className="font-normal opacity-80">
-                                  Intensity:
+                                  {t("labels.restAfter", { defaultValue: "Rest After" })}:
                                 </span>{" "}
-                                {ex.intensity}
+                                {ex.restAfter}s
                               </span>
                             )}
+                            {ex.intensity ? (
+                              <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-600 dark:text-amber-400">
+                                <span className="font-normal opacity-80">
+                                  {t("wizard.step2.intensity", { defaultValue: "Intensity" })}:
+                                </span>{" "}
+                                {ex.intensity === 1 || ex.intensity === "Low"
+                                  ? t("intensity.low", { defaultValue: "Low" })
+                                  : ex.intensity === 3 || ex.intensity === "High"
+                                    ? t("intensity.high", { defaultValue: "High" })
+                                    : t("intensity.medium", { defaultValue: "Medium" })}
+                              </span>
+                            ) : null}
                           </div>
 
                           {/* Exercise Notes */}

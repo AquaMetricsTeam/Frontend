@@ -104,7 +104,11 @@ export function FitnessRecordsTable({
             }}
           >
             {records.map((r) => (
-              <TableRow key={r.id} className="hover:bg-muted/30 transition-colors">
+              <TableRow
+                key={r.id}
+                onClick={() => onViewDetails(r)}
+                className="hover:bg-muted/50 transition-colors cursor-pointer"
+              >
                 <TableCell>
                   <div className="flex flex-col">
                     <span className="text-xs font-bold text-foreground">
@@ -162,7 +166,10 @@ export function FitnessRecordsTable({
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="text-end">
+                <TableCell
+                  className="text-end"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <DropdownMenu>
                     <DropdownMenuTrigger
                       render={

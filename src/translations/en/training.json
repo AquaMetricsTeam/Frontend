@@ -57,14 +57,23 @@
     },
     "step2": {
       "exerciseLabel": "Exercise",
+      "exerciseRequired": "Exercise is required",
       "sets": "Sets",
       "reps": "Reps",
       "meters": "Meters",
-      "minutes": "Min",
-      "rest": "Rest",
+      "minutes": "Duration (min)",
+      "rest": "Rest (sec)",
+      "restAfter": "Rest After (sec)",
+      "intensity": "Intensity",
+      "notes": "Notes / Instructions",
       "addExercise": "Add Exercise",
       "next": "Next: Assignment",
       "back": "Back"
+    },
+    "intensity": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
     },
     "labels": {
       "reps": "Reps",
@@ -72,7 +81,9 @@
       "repsUnit": "reps",
       "metersUnit": "m",
       "totalReps": "Total Reps",
-      "totalMeters": "Total Distance"
+      "totalMeters": "Total Distance",
+      "rest": "Rest",
+      "restAfter": "Rest After"
     },
     "step3": {
       "question": "How would you like to assign this plan?",
@@ -130,6 +141,52 @@
       "comingSoon": "Coming soon",
       "placeholderTitle": "Attendance recording is coming soon",
       "placeholderDescription": "You'll be able to mark athletes as Present, Absent, Late, or Excused once this feature is live."
+    }
+  },
+  "injury": {
+    "title": "Injury Information",
+    "occurred": "Injury Occurred",
+    "noInjury": "No Injury",
+    "typeLabel": "Injury Type",
+    "typePlaceholder": "Select injury type...",
+    "typeRequired": "Injury type is required",
+    "bodyPartLabel": "Affected Body Part",
+    "bodyPartPlaceholder": "Select body part...",
+    "bodyPartRequired": "Affected body part is required",
+    "commentLabel": "Injury Details / Description",
+    "commentPlaceholder": "Describe the injury, cause, or symptoms (optional)...",
+    "bodyPart": {
+      "shoulder": "Shoulder",
+      "elbow": "Elbow",
+      "wrist": "Wrist",
+      "upperBack": "Upper Back",
+      "lowerBack": "Lower Back",
+      "neck": "Neck",
+      "chest": "Chest",
+      "abdomen": "Abdomen",
+      "hip": "Hip",
+      "groin": "Groin",
+      "quadriceps": "Quadriceps",
+      "hamstring": "Hamstring",
+      "calf": "Calf",
+      "knee": "Knee",
+      "ankle": "Ankle",
+      "foot": "Foot",
+      "other": "Other"
+    },
+    "type": {
+      "muscleStrain": "Muscle Strain",
+      "muscleTear": "Muscle Tear",
+      "tendonInjury": "Tendon Injury",
+      "ligamentInjury": "Ligament Injury",
+      "jointInjury": "Joint Injury",
+      "sprain": "Sprain",
+      "overuseInjury": "Overuse Injury",
+      "cramp": "Cramp",
+      "contusion": "Contusion",
+      "dislocation": "Dislocation",
+      "fracture": "Fracture",
+      "other": "Other"
     }
   }
 }

@@ -1,4 +1,13 @@
 import type { SwimmingDrillRequest } from "@/features/swimming-performance/types";
+export {
+  InjuryBodyPart,
+  InjuryType,
+  INJURY_BODY_PART_OPTIONS,
+  INJURY_TYPE_OPTIONS,
+  getInjuryBodyPartLabel,
+  getInjuryTypeLabel,
+} from "../constants/injury";
+import type { InjuryBodyPart, InjuryType } from "../constants/injury";
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
@@ -65,6 +74,9 @@ export interface TrainingRecordResponse {
   fatigueLevel: number;
   sessionCompleted: boolean;
   injuryOccurred: boolean;
+  injuryType?: InjuryType | number | null;
+  injuryBodyPart?: InjuryBodyPart | number | null;
+  injuryComment?: string | null;
 }
 
 export interface TrainingRecordDetailsResponse {
@@ -78,6 +90,9 @@ export interface TrainingRecordDetailsResponse {
   fatigueLevel: number;
   sessionCompleted: boolean;
   injuryOccurred: boolean;
+  injuryType?: InjuryType | number | null;
+  injuryBodyPart?: InjuryBodyPart | number | null;
+  injuryComment?: string | null;
   overallComment?: string | null;
   exercisePerformances: ExercisePerformanceResponse[];
 }
@@ -91,6 +106,9 @@ export interface CreateTrainingRecordPayload {
   fatigueLevel: number;
   sessionCompleted: boolean;
   injuryOccurred: boolean;
+  injuryType?: InjuryType | number | null;
+  injuryBodyPart?: InjuryBodyPart | number | null;
+  injuryComment?: string | null;
   overallComment?: string | null;
   exercisePerformances: ExercisePerformanceRequest[];
   swimmingPerformances: SwimmingDrillRequest[];
@@ -101,6 +119,9 @@ export interface UpdateTrainingRecordPayload {
   fatigueLevel: number;
   sessionCompleted: boolean;
   injuryOccurred: boolean;
+  injuryType?: InjuryType | number | null;
+  injuryBodyPart?: InjuryBodyPart | number | null;
+  injuryComment?: string | null;
   overallComment?: string | null;
   exercisePerformances: ExercisePerformanceRequest[];
 }

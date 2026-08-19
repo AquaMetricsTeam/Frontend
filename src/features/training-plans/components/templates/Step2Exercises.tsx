@@ -24,6 +24,7 @@ const DEFAULT_EXERCISE: PlanExerciseFormValues = {
   reps: 10,
   duration: 0,
   restSeconds: 30,
+  restAfter: 0,
   intensity: 2,
   notes: "",
 };

@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
+import { Dumbbell, Waves } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -41,13 +42,22 @@ export function EditExerciseModal({
   const { data: meData } = useMe();
   const roles = meData?.data?.roles ?? [];
 
-  const isFitness = roles.includes("FitnessCoach");
-  const isSwimming = roles.includes("SwimmingCoach");
+  const isFitnessOnly =
+    roles.includes("FitnessCoach") &&
+    !roles.includes("SwimmingCoach") &&
+    !roles.includes("Admin");
+  const isSwimmingOnly =
+    roles.includes("SwimmingCoach") &&
+    !roles.includes("FitnessCoach") &&
+    !roles.includes("Admin");
 
-  const showMuscle =
-    isFitness || (!isSwimming && (exercise.muscleGroup != null || exercise.category == null));
-  const showCategory =
-    isSwimming || (!isFitness && (exercise.category != null || exercise.muscleGroup == null));
+  const canSwitchType = !isFitnessOnly && !isSwimmingOnly;
+
+  const initialType =
+    exercise.category != null || isSwimmingOnly ? "swimming" : "fitness";
+  const [exerciseType, setExerciseType] = useState<"fitness" | "swimming">(
+    initialType,
+  );
 
   const methods = useForm<UpdateExerciseFormValues>({
     resolver: zodResolver(updateExerciseSchema),
@@ -65,6 +75,9 @@ export function EditExerciseModal({
 
   useEffect(() => {
     if (open) {
+      const type =
+        exercise.category != null || isSwimmingOnly ? "swimming" : "fitness";
+      setExerciseType(type);
       methods.reset({
         title: exercise.title || "",
         description: exercise.description ?? "",
@@ -72,24 +85,23 @@ export function EditExerciseModal({
         category: exercise.category ?? null,
       });
     }
-  }, [open, exercise, methods]);
+  }, [open, exercise, methods, isSwimmingOnly]);
 
   function onSubmit(values: UpdateExerciseFormValues) {
+    const isSwimmingMode = exerciseType === "swimming";
     update({
       id: exercise.id,
       payload: {
         title: values.title.trim(),
         description: values.description?.trim() || undefined,
-        muscleGroup: isSwimming
-          ? null
-          : values.muscleGroup
-            ? (Number(values.muscleGroup) as MuscleGroup)
-            : null,
-        category: isFitness
-          ? null
-          : values.category
-            ? (Number(values.category) as SwimmingExerciseCategory)
-            : null,
+        muscleGroup:
+          isSwimmingMode || values.muscleGroup == null
+            ? null
+            : (Number(values.muscleGroup) as MuscleGroup),
+        category:
+          !isSwimmingMode || values.category == null
+            ? null
+            : (Number(values.category) as SwimmingExerciseCategory),
       },
     });
   }
@@ -106,12 +118,50 @@ export function EditExerciseModal({
 
         <FormProvider {...methods}>
           <form
-            onSubmit={methods.handleSubmit(onSubmit, (errors) => {
-              console.error("EditExercise form validation errors:", errors);
-            })}
+            onSubmit={methods.handleSubmit(onSubmit)}
             className="flex flex-col gap-4 py-2"
             noValidate
           >
+            {canSwitchType && (
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-foreground">
+                  {t("exercises:createModal.typeLabel")}
+                </label>
+                <div className="grid grid-cols-2 p-1 bg-muted rounded-lg gap-1 border border-border">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setExerciseType("fitness");
+                      methods.setValue("category", null);
+                    }}
+                    className={`flex items-center justify-center gap-2 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                      exerciseType === "fitness"
+                        ? "bg-card text-foreground shadow-xs border border-border"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Dumbbell className="size-3.5" />
+                    {t("exercises:createModal.fitness")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setExerciseType("swimming");
+                      methods.setValue("muscleGroup", null);
+                    }}
+                    className={`flex items-center justify-center gap-2 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                      exerciseType === "swimming"
+                        ? "bg-card text-foreground shadow-xs border border-border"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Waves className="size-3.5" />
+                    {t("exercises:createModal.swimming")}
+                  </button>
+                </div>
+              </div>
+            )}
+
             <InputField<UpdateExerciseFormValues>
               name="title"
               label={t("exercises:createModal.titleLabel")}
@@ -126,7 +176,7 @@ export function EditExerciseModal({
               rows={2}
             />
 
-            {showMuscle && (
+            {exerciseType === "fitness" && (
               <SelectField<UpdateExerciseFormValues>
                 name="muscleGroup"
                 label={t("exercises:createModal.muscleGroupLabel")}
@@ -136,7 +186,7 @@ export function EditExerciseModal({
               />
             )}
 
-            {showCategory && (
+            {exerciseType === "swimming" && (
               <SelectField<UpdateExerciseFormValues>
                 name="category"
                 label={t("exercises:createModal.categoryLabel")}
@@ -150,7 +200,7 @@ export function EditExerciseModal({
               <Button
                 type="submit"
                 disabled={isPending}
-                className="min-w-24"
+                className="min-w-24 cursor-pointer"
               >
                 {isPending
                   ? t("exercises:editModal.saving")

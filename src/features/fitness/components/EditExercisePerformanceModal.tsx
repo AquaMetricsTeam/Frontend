@@ -109,6 +109,15 @@ export function EditExercisePerformanceModal({
         fatigueLevel: parentRecord.fatigueLevel,
         sessionCompleted: parentRecord.sessionCompleted,
         injuryOccurred: parentRecord.injuryOccurred,
+        injuryType: parentRecord.injuryOccurred
+          ? parentRecord.injuryType ?? null
+          : null,
+        injuryBodyPart: parentRecord.injuryOccurred
+          ? parentRecord.injuryBodyPart ?? null
+          : null,
+        injuryComment: parentRecord.injuryOccurred
+          ? parentRecord.injuryComment ?? null
+          : null,
         overallComment: null,
         exercisePerformances: [
           {
