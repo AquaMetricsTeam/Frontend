@@ -2,6 +2,7 @@
   "page": {
     "title": "التمارين",
     "description": "إنشاء وإدارة تمارين التدريب لرياضييك.",
+    "landingDescription": "اختر فئة لتصفح وإدارة التمارين.",
     "createButton": "تمرين جديد",
     "exerciseCount": "تمرين واحد",
     "exerciseCount_plural": "{{count}} تمارين"
@@ -12,6 +13,7 @@
   "table": {
     "title": "العنوان",
     "description": "الوصف",
+    "category": "الفئة",
     "body": "التعليمات",
     "createdAt": "تاريخ الإنشاء",
     "actions": "الإجراءات"
@@ -23,18 +25,28 @@
   "createModal": {
     "title": "إنشاء تمرين",
     "description": "إضافة تمرين جديد إلى المكتبة.",
+    "typeLabel": "نوع التمرين",
+    "fitness": "لياقة بدنية",
+    "swimming": "سباحة",
     "titleLabel": "العنوان",
     "titlePlaceholder": "مثال: سباحة حرة سريعة",
     "descriptionLabel": "الوصف",
     "descriptionPlaceholder": "ملخص مختصر عن التمرين...",
     "bodyLabel": "التعليمات",
     "bodyPlaceholder": "خطوات تنفيذ التمرين...",
+    "muscleGroupLabel": "المجموعة العضلية",
+    "muscleGroupPlaceholder": "اختر المجموعة العضلية...",
+    "categoryLabel": "فئة السباحة",
+    "categoryPlaceholder": "اختر فئة السباحة...",
     "creating": "جارٍ الإنشاء…",
     "submit": "إنشاء التمرين"
   },
   "editModal": {
     "title": "تعديل التمرين",
     "description": "تحديث تفاصيل هذا التمرين.",
+    "typeLabel": "نوع التمرين",
+    "fitness": "لياقة بدنية",
+    "swimming": "سباحة",
     "saving": "جارٍ الحفظ…",
     "submit": "حفظ التغييرات"
   },

@@ -95,6 +95,9 @@ export interface SwimmingTrainingRecordDetailsResponse {
   fatigueLevel: number;
   sessionCompleted: boolean;
   injuryOccurred: boolean;
+  injuryType?: number | null;
+  injuryBodyPart?: number | null;
+  injuryComment?: string | null;
   overallComment?: string | null;
   swimmingPerformances?: SwimmingPerformance[];
   exercisePerformances?: ExercisePerformanceItem[];

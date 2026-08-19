@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useFormContext, Controller } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   MdUnfoldMore,
   MdCheck,
@@ -40,19 +41,22 @@ import type { ExercisesStepFormValues } from "../../constants/validations";
 const INTENSITY_OPTIONS = [
   {
     value: 1,
-    label: "Low",
+    labelKey: "intensity.low",
+    defaultLabel: "Low",
     activeClass:
       "bg-emerald-500/20 text-emerald-500 dark:text-emerald-400 border border-emerald-500/40 font-semibold shadow-2xs",
   },
   {
     value: 2,
-    label: "Medium",
+    labelKey: "intensity.medium",
+    defaultLabel: "Medium",
     activeClass:
       "bg-amber-500/20 text-amber-500 dark:text-amber-400 border border-amber-500/40 font-semibold shadow-2xs",
   },
   {
     value: 3,
-    label: "High",
+    labelKey: "intensity.high",
+    defaultLabel: "High",
     activeClass:
       "bg-rose-500/20 text-rose-500 dark:text-rose-400 border border-rose-500/40 font-semibold shadow-2xs",
   },
@@ -81,7 +85,10 @@ export function ExerciseRow({
     formState: { errors },
     watch,
     setValue,
+    clearErrors,
   } = useFormContext<ExercisesStepFormValues>();
+
+  const { t } = useTranslation("training");
 
   const { data: meData } = useMe();
   const roles = meData?.data?.roles ?? [];
@@ -90,36 +97,99 @@ export function ExerciseRow({
   const canSwitchType =
     (!isSwimmingCoach && !isFitnessCoach) || roles.includes("Admin");
 
+  const formFilterType = watch(`exercises.${index}.filterType`);
+  const formCategory = watch(`exercises.${index}.category`);
+  const formMuscleGroup = watch(`exercises.${index}.muscleGroup`);
+  const formExerciseName = watch(`exercises.${index}.exerciseName`);
+  const selectedId = watch(`exercises.${index}.exerciseId`);
+
+  const hasCategory = typeof formCategory === "number" && formCategory > 0;
+  const hasMuscleGroup =
+    typeof formMuscleGroup === "number" && formMuscleGroup > 0;
+
+  const initialFilterType =
+    formFilterType ??
+    (hasCategory
+      ? "swimming"
+      : hasMuscleGroup
+        ? "fitness"
+        : isSwimmingCoach && !isFitnessCoach
+          ? "swimming"
+          : "fitness");
+
+  const initialFilterId =
+    (initialFilterType === "swimming"
+      ? hasCategory
+        ? formCategory
+        : null
+      : hasMuscleGroup
+        ? formMuscleGroup
+        : null) ??
+    (hasCategory ? formCategory : null) ??
+    (hasMuscleGroup ? formMuscleGroup : null);
+
   const [filterType, setFilterType] = useState<"fitness" | "swimming">(
-    isSwimmingCoach && !isFitnessCoach ? "swimming" : "fitness",
+    initialFilterType,
   );
   const repsMeta = useRepsLabel({ type: filterType });
-  const [filterId, setFilterId] = useState<number | null>(null);
+  const [filterId, setFilterId] = useState<number | null>(initialFilterId);
 
   const [filterOpen, setFilterOpen] = useState(false);
   const [exerciseOpen, setExerciseOpen] = useState(false);
 
-  const selectedId = watch(`exercises.${index}.exerciseId`);
+  // Sync state if form values update (e.g. Back button in wizard or form reset)
+  useEffect(() => {
+    if (formFilterType) {
+      setFilterType(formFilterType);
+    }
+    const cat =
+      typeof formCategory === "number" && formCategory > 0
+        ? formCategory
+        : null;
+    const mus =
+      typeof formMuscleGroup === "number" && formMuscleGroup > 0
+        ? formMuscleGroup
+        : null;
+    const currentId =
+      (formFilterType === "swimming" ? cat : formFilterType === "fitness" ? mus : null) ??
+      cat ??
+      mus;
+    if (currentId !== null && currentId !== undefined) {
+      setFilterId(currentId);
+    }
+  }, [formFilterType, formCategory, formMuscleGroup]);
 
   // Fetch full exercise list for edit mode auto-detection
   const { data: allExercisesRes } = useExercises({ pageSize: 100 });
   const allExercises = allExercisesRes?.data?.items ?? [];
 
-  // Edit mode: auto-detect muscleGroup / category if exerciseId is present
+  // Edit mode: auto-detect muscleGroup / category if exerciseId is present but category/muscleGroup not saved
   useEffect(() => {
     if (selectedId > 0 && filterId === null && allExercises.length > 0) {
       const matched = allExercises.find((e) => e.id === selectedId);
       if (matched) {
-        if (matched.category != null) {
+        if (typeof matched.category === "number" && matched.category > 0) {
           setFilterType("swimming");
           setFilterId(matched.category);
-        } else if (matched.muscleGroup != null) {
+          setValue(`exercises.${index}.category`, matched.category);
+          setValue(`exercises.${index}.muscleGroup`, null);
+          setValue(`exercises.${index}.filterType`, "swimming");
+        } else if (
+          typeof matched.muscleGroup === "number" &&
+          matched.muscleGroup > 0
+        ) {
           setFilterType("fitness");
           setFilterId(matched.muscleGroup);
+          setValue(`exercises.${index}.muscleGroup`, matched.muscleGroup);
+          setValue(`exercises.${index}.category`, null);
+          setValue(`exercises.${index}.filterType`, "fitness");
+        }
+        if (matched.title) {
+          setValue(`exercises.${index}.exerciseName`, matched.title);
         }
       }
     }
-  }, [selectedId, filterId, allExercises]);
+  }, [selectedId, filterId, allExercises, setValue, index]);
 
   // Lookup exercises filtered by selected muscle group / category
   const { data: lookupRes, isLoading: lookupLoading } = useExercisesLookup(
@@ -133,7 +203,10 @@ export function ExerciseRow({
   const exercises = lookupRes?.data ?? [];
   const selectedExercise =
     exercises.find((e) => e.id === selectedId) ||
-    allExercises.find((e) => e.id === selectedId);
+    allExercises.find((e) => e.id === selectedId) ||
+    (selectedId > 0 && formExerciseName
+      ? { id: selectedId, title: formExerciseName }
+      : null);
 
   const rowErrors = errors.exercises?.[index];
 
@@ -159,15 +232,29 @@ export function ExerciseRow({
     if (newId === filterId) return;
     setFilterId(newId);
     setFilterOpen(false);
+    setValue(
+      `exercises.${index}.category`,
+      filterType === "swimming" ? newId : null,
+    );
+    setValue(
+      `exercises.${index}.muscleGroup`,
+      filterType === "fitness" ? newId : null,
+    );
+    setValue(`exercises.${index}.filterType`, filterType);
     // Clear exercise selection when filter changes
     setValue(`exercises.${index}.exerciseId`, 0, { shouldValidate: true });
+    setValue(`exercises.${index}.exerciseName`, "");
   }
 
   function handleTypeChange(newType: "fitness" | "swimming") {
     if (newType === filterType) return;
     setFilterType(newType);
     setFilterId(null);
+    setValue(`exercises.${index}.filterType`, newType);
+    setValue(`exercises.${index}.category`, null);
+    setValue(`exercises.${index}.muscleGroup`, null);
     setValue(`exercises.${index}.exerciseId`, 0, { shouldValidate: true });
+    setValue(`exercises.${index}.exerciseName`, "");
   }
 
   return (
@@ -374,7 +461,9 @@ export function ExerciseRow({
                         isDisabled &&
                           "cursor-not-allowed opacity-60 bg-muted/40",
                         !isSelected && "text-muted-foreground",
-                        rowErrors?.exerciseId && "border-destructive",
+                        rowErrors?.exerciseId &&
+                          (!field.value || field.value === 0) &&
+                          "border-destructive focus:ring-destructive/40",
                       )}
                     >
                       <span className="truncate text-start">
@@ -405,6 +494,34 @@ export function ExerciseRow({
                                 value={ex.title}
                                 onSelect={() => {
                                   field.onChange(ex.id);
+                                  setValue(
+                                    `exercises.${index}.exerciseName`,
+                                    ex.title,
+                                  );
+                                  setValue(
+                                    `exercises.${index}.filterType`,
+                                    filterType,
+                                  );
+                                  if (filterType === "swimming") {
+                                    setValue(
+                                      `exercises.${index}.category`,
+                                      filterId,
+                                    );
+                                    setValue(
+                                      `exercises.${index}.muscleGroup`,
+                                      null,
+                                    );
+                                  } else {
+                                    setValue(
+                                      `exercises.${index}.muscleGroup`,
+                                      filterId,
+                                    );
+                                    setValue(
+                                      `exercises.${index}.category`,
+                                      null,
+                                    );
+                                  }
+                                  clearErrors(`exercises.${index}.exerciseId`);
                                   setExerciseOpen(false);
                                 }}
                                 className="flex items-center justify-between text-xs cursor-pointer"
@@ -420,12 +537,17 @@ export function ExerciseRow({
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  {rowErrors?.exerciseId && (
-                    <div className="flex items-center gap-1 text-[10px] text-destructive mt-1">
-                      <MdErrorOutline className="size-3" />
-                      <span>Exercise is required</span>
-                    </div>
-                  )}
+                  {rowErrors?.exerciseId &&
+                    (!field.value || field.value === 0) && (
+                      <div className="flex items-center gap-1 text-[10px] text-destructive mt-1">
+                        <MdErrorOutline className="size-3" />
+                        <span>
+                          {t("wizard.step2.exerciseRequired", {
+                            defaultValue: "Exercise is required",
+                          })}
+                        </span>
+                      </div>
+                    )}
                 </LabelField>
               );
             }}
@@ -436,7 +558,7 @@ export function ExerciseRow({
         <div className="col-span-6 sm:col-span-2 h-full">
           <LabelField
             htmlFor={`exercises.${index}.sets`}
-            label="Sets"
+            label={t("wizard.step2.sets", { defaultValue: "Sets" })}
             className="h-full"
           >
             <Input
@@ -472,7 +594,9 @@ export function ExerciseRow({
         <div className="col-span-6 sm:col-span-2 h-full">
           <LabelField
             htmlFor={`exercises.${index}.duration`}
-            label="Duration (min)"
+            label={t("wizard.step2.minutes", {
+              defaultValue: "Duration (min)",
+            })}
             className="h-full"
           >
             <Input
@@ -489,10 +613,10 @@ export function ExerciseRow({
         </div>
 
         {/* ROW 2: Rest (Sec) */}
-        <div className="col-span-6 sm:col-span-2 h-full">
+        <div className="col-span-6 sm:col-span-3 h-full">
           <LabelField
             htmlFor={`exercises.${index}.restSeconds`}
-            label="Rest (sec)"
+            label={t("wizard.step2.rest", { defaultValue: "Rest (sec)" })}
             className="h-full"
           >
             <Input
@@ -508,16 +632,43 @@ export function ExerciseRow({
           </LabelField>
         </div>
 
+        {/* ROW 2: Rest After (Sec) */}
+        <div className="col-span-6 sm:col-span-3 h-full">
+          <LabelField
+            htmlFor={`exercises.${index}.restAfter`}
+            label={t("wizard.step2.restAfter", {
+              defaultValue: "Rest After (sec)",
+            })}
+            className="h-full"
+          >
+            <Input
+              id={`exercises.${index}.restAfter`}
+              type="number"
+              min={0}
+              placeholder="0"
+              className="h-9 text-xs mt-auto"
+              {...register(`exercises.${index}.restAfter`, {
+                valueAsNumber: true,
+              })}
+            />
+          </LabelField>
+        </div>
+
         {/* ROW 2: Segmented Intensity Control */}
-        <div className="col-span-12 sm:col-span-4 h-full">
+        <div className="col-span-12  h-full">
           <Controller
             name={`exercises.${index}.intensity`}
             control={control}
             render={({ field }) => {
               const currentVal = field.value ?? 2;
               return (
-                <LabelField label="Intensity" className="h-full">
-                  <div className="flex items-center mt-auto gap-1 p-1 rounded-lg border border-input bg-background h-9">
+                <LabelField
+                  label={t("wizard.step2.intensity", {
+                    defaultValue: "Intensity",
+                  })}
+                  className="h-full"
+                >
+                  <div className="flex items-center mt-auto gap-0.5 p-0.5 rounded-lg border border-input bg-background h-9">
                     {INTENSITY_OPTIONS.map((opt) => {
                       const isSelected = currentVal === opt.value;
                       return (
@@ -526,13 +677,13 @@ export function ExerciseRow({
                           type="button"
                           onClick={() => field.onChange(opt.value)}
                           className={cn(
-                            "flex-1 h-7 rounded-md text-xs font-medium transition-all duration-150 flex items-center justify-center cursor-pointer",
+                            "flex-1 h-7 rounded-md text-[11px] font-medium transition-all duration-150 flex items-center justify-center cursor-pointer px-0.5",
                             isSelected
                               ? opt.activeClass
                               : "text-muted-foreground hover:text-foreground hover:bg-muted/40",
                           )}
                         >
-                          {opt.label}
+                          {t(opt.labelKey, { defaultValue: opt.defaultLabel })}
                         </button>
                       );
                     })}
@@ -547,7 +698,9 @@ export function ExerciseRow({
         <div className="col-span-12">
           <LabelField
             htmlFor={`exercises.${index}.notes`}
-            label="Notes / Instructions"
+            label={t("wizard.step2.notes", {
+              defaultValue: "Notes / Instructions",
+            })}
           >
             <Textarea
               id={`exercises.${index}.notes`}

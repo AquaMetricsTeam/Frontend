@@ -35,7 +35,10 @@ export function SwimmingPerformanceTableRow({
   const { t } = useTranslation("swimming");
 
   return (
-    <TableRow className="hover:bg-muted/40 transition-colors">
+    <TableRow
+      onClick={() => onViewDetails(record)}
+      className="hover:bg-muted/50 transition-colors cursor-pointer"
+    >
       {/* Athlete */}
       <TableCell className="py-3.5">
         <div className="flex flex-col">
@@ -121,7 +124,10 @@ export function SwimmingPerformanceTableRow({
       </TableCell>
 
       {/* Actions */}
-      <TableCell className="py-3.5 text-end">
+      <TableCell
+        className="py-3.5 text-end"
+        onClick={(e) => e.stopPropagation()}
+      >
         <DropdownMenu>
           <DropdownMenuTrigger
             render={

@@ -56,23 +56,41 @@ export function EditTemplateSheet({
       setExercises({
         exercises:
           fullPlan.planExercises && fullPlan.planExercises.length > 0
-            ? fullPlan.planExercises.map((ex) => ({
-                planExerciseId: ex.planExerciseId ?? ex.id,
-                exerciseId: ex.exerciseId,
-                sets: ex.sets,
-                reps: ex.reps,
-                duration: ex.duration,
-                restSeconds: ex.restSeconds ?? 0,
-                intensity:
-                  typeof ex.intensity === "number"
-                    ? ex.intensity
-                    : ex.intensity === "High"
-                      ? 3
-                      : ex.intensity === "Low"
-                        ? 1
-                        : 2,
-                notes: ex.notes ?? "",
-              }))
+            ? fullPlan.planExercises.map((ex) => {
+                const hasCategory =
+                  typeof ex.category === "number" && ex.category > 0;
+                const hasMuscleGroup =
+                  typeof ex.muscleGroup === "number" && ex.muscleGroup > 0;
+                const filterType: "swimming" | "fitness" | undefined =
+                  hasCategory
+                    ? "swimming"
+                    : hasMuscleGroup
+                      ? "fitness"
+                      : undefined;
+
+                return {
+                  planExerciseId: ex.planExerciseId ?? ex.id,
+                  exerciseId: ex.exerciseId,
+                  exerciseName: ex.title ?? ex.exerciseName ?? null,
+                  muscleGroup: hasMuscleGroup ? ex.muscleGroup : null,
+                  category: hasCategory ? ex.category : null,
+                  filterType,
+                  sets: ex.sets,
+                  reps: ex.reps,
+                  duration: ex.duration,
+                  restSeconds: ex.restSeconds ?? 0,
+                  restAfter: ex.restAfter ?? 0,
+                  intensity:
+                    typeof ex.intensity === "number"
+                      ? ex.intensity
+                      : ex.intensity === "High"
+                        ? 3
+                        : ex.intensity === "Low"
+                          ? 1
+                          : 2,
+                  notes: ex.notes ?? "",
+                };
+              })
             : [
                 {
                   exerciseId: 0,
@@ -80,6 +98,7 @@ export function EditTemplateSheet({
                   reps: 10,
                   duration: 0,
                   restSeconds: 0,
+                  restAfter: 0,
                   intensity: 2,
                   notes: "",
                 },
@@ -113,10 +132,15 @@ export function EditTemplateSheet({
       planExercises: exercises.exercises.map((ex, i) => ({
         ...(ex.planExerciseId ? { planExerciseId: ex.planExerciseId } : {}),
         exerciseId: ex.exerciseId,
+        ...(ex.filterType === "swimming" ||
+        (typeof ex.category === "number" && ex.category > 0)
+          ? { category: ex.category ?? null, muscleGroup: null }
+          : { muscleGroup: ex.muscleGroup ?? null, category: null }),
         sets: ex.sets,
         reps: ex.reps,
         duration: ex.duration,
         restSeconds: ex.restSeconds ?? 0,
+        restAfter: ex.restAfter ?? 0,
         intensity: ex.intensity ?? null,
         notes: ex.notes || null,
         orderIndex: i + 1,

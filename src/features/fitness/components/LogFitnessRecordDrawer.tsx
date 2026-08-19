@@ -16,6 +16,7 @@ import { ComboboxSelect } from "@/components/common/ComboboxSelect";
 import { MdAdd, MdFitnessCenter } from "react-icons/md";
 import { TextareaField } from "@/components/fields/TextareaField";
 import { ExercisePerformanceCard } from "./ExercisePerformanceCard";
+import { InjuryFormFields } from "@/features/training-record/components/InjuryFormFields";
 import { useCreateTrainingRecord } from "@/features/training-record/hooks/useCreateTrainingRecord";
 import { useTrainingSessions } from "@/features/training-plans/hooks/useTrainingSessions";
 import type { PerformanceStatus } from "@/features/swimming-performance/types";
@@ -71,6 +72,9 @@ export function LogFitnessRecordDrawer({
       fatigueLevel: 5,
       sessionCompleted: true,
       injuryOccurred: false,
+      injuryType: null,
+      injuryBodyPart: null,
+      injuryComment: "",
       overallComment: "",
       exercisePerformances: [{ ...DEFAULT_EXERCISE }],
     },
@@ -113,6 +117,9 @@ export function LogFitnessRecordDrawer({
         fatigueLevel: 5,
         sessionCompleted: true,
         injuryOccurred: false,
+        injuryType: null,
+        injuryBodyPart: null,
+        injuryComment: "",
         overallComment: "",
         exercisePerformances: [{ ...DEFAULT_EXERCISE }],
       });
@@ -167,6 +174,13 @@ export function LogFitnessRecordDrawer({
         fatigueLevel: values.fatigueLevel,
         sessionCompleted: values.sessionCompleted,
         injuryOccurred: values.injuryOccurred,
+        injuryType: values.injuryOccurred ? Number(values.injuryType) : null,
+        injuryBodyPart: values.injuryOccurred
+          ? Number(values.injuryBodyPart)
+          : null,
+        injuryComment: values.injuryOccurred
+          ? values.injuryComment || null
+          : null,
         overallComment: values.overallComment || null,
         exercisePerformances: values.exercisePerformances.map((ep) => ({
           planExerciseId: Number(ep.planExerciseId) || 0,
@@ -348,34 +362,52 @@ export function LogFitnessRecordDrawer({
 
               {/* Toggles */}
               <div className="flex flex-wrap gap-3">
-                {(["sessionCompleted", "injuryOccurred"] as const).map(
-                  (field) => {
-                    const val = form.watch(field);
-                    return (
-                      <button
-                        key={field}
-                        type="button"
-                        onClick={() => form.setValue(field, !val)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-                          val
-                            ? field === "injuryOccurred"
-                              ? "bg-rose-500/10 text-rose-600 border-rose-500/30"
-                              : "bg-emerald-500/10 text-emerald-600 border-emerald-500/30"
-                            : "bg-muted/30 text-muted-foreground border-border"
-                        }`}
-                      >
-                        {field === "sessionCompleted"
-                          ? val
-                            ? "✓ Session Completed"
-                            : "Session Not Completed"
-                          : val
-                            ? "⚠ Injury Occurred"
-                            : "No Injury"}
-                      </button>
-                    );
-                  },
-                )}
+                <button
+                  type="button"
+                  onClick={() =>
+                    form.setValue(
+                      "sessionCompleted",
+                      !form.watch("sessionCompleted"),
+                    )
+                  }
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                    form.watch("sessionCompleted")
+                      ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/30"
+                      : "bg-muted/30 text-muted-foreground border-border"
+                  }`}
+                >
+                  {form.watch("sessionCompleted")
+                    ? "✓ Session Completed"
+                    : "Session Not Completed"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = !form.watch("injuryOccurred");
+                    form.setValue("injuryOccurred", next, {
+                      shouldValidate: true,
+                    });
+                    if (!next) {
+                      form.setValue("injuryType", null);
+                      form.setValue("injuryBodyPart", null);
+                      form.setValue("injuryComment", null);
+                    }
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                    form.watch("injuryOccurred")
+                      ? "bg-rose-500/10 text-rose-600 border-rose-500/30"
+                      : "bg-muted/30 text-muted-foreground border-border"
+                  }`}
+                >
+                  {form.watch("injuryOccurred")
+                    ? "⚠ Injury Occurred"
+                    : "No Injury"}
+                </button>
               </div>
+
+              {/* Dynamic Injury Form Section */}
+              <InjuryFormFields />
 
               <TextareaField
                 name="overallComment"

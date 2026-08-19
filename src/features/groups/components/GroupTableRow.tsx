@@ -17,7 +17,10 @@ export function GroupTableRow({ group }: GroupTableRowProps) {
   const [membersOpen, setMembersOpen] = useState(false);
 
   return (
-    <TableRow className="border-border transition-colors hover:bg-muted/40">
+    <TableRow
+      className="border-border transition-colors hover:bg-muted/40 cursor-pointer"
+      onClick={() => setMembersOpen(true)}
+    >
       <TableCell className="py-3">
         <div className="flex items-center gap-3">
           <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
@@ -64,7 +67,10 @@ export function GroupTableRow({ group }: GroupTableRowProps) {
         )}
       </TableCell>
 
-      <TableCell className="py-3 text-start">
+      <TableCell
+        className="py-3 text-start"
+        onClick={(e) => e.stopPropagation()}
+      >
         <GroupActionsMenu
           group={group}
           editOpen={editOpen}
