@@ -59,10 +59,15 @@ export function CreateTemplateSheet({ open, onOpenChange }: CreateTemplateSheetP
       planExercises: exercises.exercises.map((ex, i) => ({
         ...(ex.planExerciseId ? { planExerciseId: ex.planExerciseId } : {}),
         exerciseId: ex.exerciseId,
+        ...(ex.filterType === "swimming" ||
+        (typeof ex.category === "number" && ex.category > 0)
+          ? { category: ex.category ?? null, muscleGroup: null }
+          : { muscleGroup: ex.muscleGroup ?? null, category: null }),
         sets: ex.sets,
         reps: ex.reps,
         duration: ex.duration,
         restSeconds: ex.restSeconds ?? 0,
+        restAfter: ex.restAfter ?? 0,
         intensity: ex.intensity ?? null,
         notes: ex.notes || null,
         orderIndex: i + 1,

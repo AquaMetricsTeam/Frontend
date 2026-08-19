@@ -378,14 +378,22 @@ export function SessionDetailSheet({
                               {pe.duration}m
                             </Badge>
                           )}
-                          {pe.restSeconds && (
+                          {pe.restSeconds ? (
                             <Badge
                               variant="outline"
                               className="text-[10px] px-1.5 py-0 text-muted-foreground"
                             >
                               {pe.restSeconds}s rest
                             </Badge>
-                          )}
+                          ) : null}
+                          {pe.restAfter ? (
+                            <Badge
+                              variant="outline"
+                              className="text-[10px] px-1.5 py-0 text-sky-600 dark:text-sky-400 border-sky-500/30"
+                            >
+                              {pe.restAfter}s rest after
+                            </Badge>
+                          ) : null}
                         </div>
                       </div>
                     ))}

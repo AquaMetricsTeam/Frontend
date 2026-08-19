@@ -57,14 +57,23 @@
     },
     "step2": {
       "exerciseLabel": "التمرين",
+      "exerciseRequired": "التمرين مطلوب",
       "sets": "مجموعات",
       "reps": "تكرارات",
       "meters": "أمتار",
-      "minutes": "دقيقة",
-      "rest": "راحة",
+      "minutes": "المدة (دقيقة)",
+      "rest": "راحة (ثانية)",
+      "restAfter": "راحة بينية",
+      "intensity": "الشدة",
+      "notes": "ملاحظات / تعليمات",
       "addExercise": "إضافة تمرين",
       "next": "التالي: التكليف",
       "back": "رجوع"
+    },
+    "intensity": {
+      "low": "منخفضة",
+      "medium": "متوسطة",
+      "high": "عالية"
     },
     "labels": {
       "reps": "تكرارات",
@@ -72,7 +81,9 @@
       "repsUnit": "تكرار",
       "metersUnit": "م",
       "totalReps": "إجمالي التكرارات",
-      "totalMeters": "إجمالي المسافة"
+      "totalMeters": "إجمالي المسافة",
+      "rest": "راحة",
+      "restAfter": "راحة بينية"
     },
     "step3": {
       "question": "كيف تريد تكليف هذه الخطة؟",
@@ -124,6 +135,52 @@
       "comingSoon": "قريبًا",
       "placeholderTitle": "تسجيل الحضور قادم قريبًا",
       "placeholderDescription": "ستتمكن من تسجيل حضور الرياضيين بمجرد توفر هذه الميزة."
+    }
+  },
+  "injury": {
+    "title": "تفاصيل الإصابة",
+    "occurred": "حدثت إصابة",
+    "noInjury": "لا توجد إصابة",
+    "typeLabel": "نوع الإصابة",
+    "typePlaceholder": "اختر نوع الإصابة...",
+    "typeRequired": "نوع الإصابة مطلوب",
+    "bodyPartLabel": "مكان الإصابة / العضو المتأثر",
+    "bodyPartPlaceholder": "اختر مكان الإصابة...",
+    "bodyPartRequired": "مكان الإصابة مطلوب",
+    "commentLabel": "ملاحظات وتفاصيل الإصابة",
+    "commentPlaceholder": "اكتب تفاصيل الإصابة وكيف حدثت (اختياري)...",
+    "bodyPart": {
+      "shoulder": "الكتف",
+      "elbow": "المرفق (الكوع)",
+      "wrist": "المعصم (الرسغ)",
+      "upperBack": "أعلى الظهر",
+      "lowerBack": "أسفل الظهر",
+      "neck": "الرقبة",
+      "chest": "الصدر",
+      "abdomen": "البطن",
+      "hip": "الورك / الفخذ",
+      "groin": "العانة / أعلى الفخذ الداخلي",
+      "quadriceps": "العضلة الأمامية (الرباعية)",
+      "hamstring": "العضلة الخلفية",
+      "calf": "السمانة (عضلة الساق)",
+      "knee": "الركبة",
+      "ankle": "الكاحل",
+      "foot": "القدم",
+      "other": "أخرى"
+    },
+    "type": {
+      "muscleStrain": "شد عضلي",
+      "muscleTear": "تمزق عضلي",
+      "tendonInjury": "إصابة في الوتر",
+      "ligamentInjury": "إصابة في الأربطة",
+      "jointInjury": "إصابة في المفصل",
+      "sprain": "التواء / التواء أربطة",
+      "overuseInjury": "إصابة نتيجة الاستخدام المفرط",
+      "cramp": "تقلص / تشنج عضلي",
+      "contusion": "كدمة",
+      "dislocation": "خلع",
+      "fracture": "كسر",
+      "other": "أخرى"
     }
   }
 }

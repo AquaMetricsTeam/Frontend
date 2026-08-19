@@ -4,11 +4,15 @@ export interface PlanExercise {
   planExerciseId?: number;
   id?: number; // fallback alias for planExerciseId
   exerciseId: number;
+  title?: string | null;
   exerciseName?: string | null;
+  muscleGroup?: number | null;
+  category?: number | null;
   sets: number;
   reps: number;
   duration: number; // in minutes
   restSeconds?: number;
+  restAfter?: number;
   intensity?: number | string | null;
   notes?: string | null;
   orderIndex: number;

@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { ComboboxSelect } from "@/components/common/ComboboxSelect";
 import { MdAdd, MdContentCopy, MdPool } from "react-icons/md";
 import { DrillCard } from "./DrillCard";
+import { InjuryFormFields } from "@/features/training-record/components/InjuryFormFields";
 import { useCreateTrainingRecord } from "@/features/training-record/hooks/useCreateTrainingRecord";
 import { useTrainingSessions } from "@/features/training-plans/hooks/useTrainingSessions";
 import { useTrainingSession } from "@/features/training-plans/hooks/useTrainingSession";
@@ -86,6 +87,9 @@ interface LogFormValues {
   fatigueLevel: number;
   sessionCompleted: boolean;
   injuryOccurred: boolean;
+  injuryType?: number | null;
+  injuryBodyPart?: number | null;
+  injuryComment?: string | null;
   overallComment?: string | null;
   swimmingPerformances: SwimmingDrillRequest[];
 }
@@ -123,6 +127,9 @@ export function LogSwimmingPerformanceDrawer({
       fatigueLevel: 5,
       sessionCompleted: true,
       injuryOccurred: false,
+      injuryType: null,
+      injuryBodyPart: null,
+      injuryComment: "",
       overallComment: "",
       swimmingPerformances: [{ ...DEFAULT_DRILL }],
     },
@@ -163,6 +170,9 @@ export function LogSwimmingPerformanceDrawer({
         fatigueLevel: 5,
         sessionCompleted: true,
         injuryOccurred: false,
+        injuryType: null,
+        injuryBodyPart: null,
+        injuryComment: "",
         overallComment: "",
         swimmingPerformances: [{ ...DEFAULT_DRILL }],
       });
@@ -212,6 +222,13 @@ export function LogSwimmingPerformanceDrawer({
         fatigueLevel: values.fatigueLevel,
         sessionCompleted: values.sessionCompleted,
         injuryOccurred: values.injuryOccurred,
+        injuryType: values.injuryOccurred ? Number(values.injuryType) : null,
+        injuryBodyPart: values.injuryOccurred
+          ? Number(values.injuryBodyPart)
+          : null,
+        injuryComment: values.injuryOccurred
+          ? values.injuryComment || null
+          : null,
         overallComment: values.overallComment || null,
         exercisePerformances: [],
         swimmingPerformances: values.swimmingPerformances.map((p) => ({
@@ -381,9 +398,17 @@ export function LogSwimmingPerformanceDrawer({
 
                 <button
                   type="button"
-                  onClick={() =>
-                    form.setValue("injuryOccurred", !injuryOccurred)
-                  }
+                  onClick={() => {
+                    const next = !injuryOccurred;
+                    form.setValue("injuryOccurred", next, {
+                      shouldValidate: true,
+                    });
+                    if (!next) {
+                      form.setValue("injuryType", null);
+                      form.setValue("injuryBodyPart", null);
+                      form.setValue("injuryComment", null);
+                    }
+                  }}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
                     injuryOccurred
                       ? "bg-rose-500/10 text-rose-600 border-rose-500/30"
@@ -393,6 +418,9 @@ export function LogSwimmingPerformanceDrawer({
                   {injuryOccurred ? "⚠ Injury Occurred" : "No Injury"}
                 </button>
               </div>
+
+              {/* Dynamic Injury Form Section */}
+              <InjuryFormFields />
             </div>
 
             {/* Drill Cards */}

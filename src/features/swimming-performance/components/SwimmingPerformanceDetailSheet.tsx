@@ -31,6 +31,7 @@ import { MiniRatingBar } from "./SegmentedRatingControl";
 import { useSwimmingPerformancesByTrainingRecord } from "../hooks/useSwimmingPerformancesByTrainingRecord";
 import { useTrainingRecordDetail } from "@/features/training-record/hooks/useTrainingRecordDetail";
 import { EditSwimmingPerformanceModal } from "./EditSwimmingPerformanceModal";
+import { InjuryDetailCard } from "@/features/training-record/components/InjuryDetailCard";
 import { cn } from "@/lib/utils";
 
 interface SwimmingPerformanceDetailSheetProps {
@@ -189,6 +190,21 @@ export function SwimmingPerformanceDetailSheet({
                     </div>
                   )}
                 </div>
+
+                {/* Injury Details Card if injury occurred */}
+                {hasInjury && (
+                  <InjuryDetailCard
+                    injuryType={
+                      recordDetail?.injuryType ?? record.injuryType
+                    }
+                    injuryBodyPart={
+                      recordDetail?.injuryBodyPart ?? record.injuryBodyPart
+                    }
+                    injuryComment={
+                      recordDetail?.injuryComment ?? record.injuryComment
+                    }
+                  />
+                )}
 
                 {/* Swimming Performances List */}
                 {swimmingPerformances.length > 0 ? (

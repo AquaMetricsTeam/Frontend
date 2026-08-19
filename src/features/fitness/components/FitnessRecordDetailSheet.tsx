@@ -23,6 +23,7 @@ import type {
 import { useTrainingRecordDetail } from "@/features/training-record/hooks/useTrainingRecordDetail";
 import { useExercisePerformancesByTrainingRecord } from "@/features/fitness/hooks/useExercisePerformancesByTrainingRecord";
 import { EditExercisePerformanceModal } from "./EditExercisePerformanceModal";
+import { InjuryDetailCard } from "@/features/training-record/components/InjuryDetailCard";
 
 const STATUS_MAP: Record<number, { label: string; className: string }> = {
   1: {
@@ -201,6 +202,17 @@ export function FitnessRecordDetailSheet({
                       </p>
                     )}
                   </div>
+                )}
+
+                {/* Injury Details Card if injury occurred */}
+                {hasInjury && (
+                  <InjuryDetailCard
+                    injuryType={detail?.injuryType ?? record.injuryType}
+                    injuryBodyPart={
+                      detail?.injuryBodyPart ?? record.injuryBodyPart
+                    }
+                    injuryComment={detail?.injuryComment ?? record.injuryComment}
+                  />
                 )}
 
                 {/* Exercise Performances */}
