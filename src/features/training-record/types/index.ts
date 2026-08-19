@@ -74,8 +74,8 @@ export interface TrainingRecordResponse {
   fatigueLevel: number;
   sessionCompleted: boolean;
   injuryOccurred: boolean;
-  injuryType?: InjuryType | null;
-  injuryBodyPart?: InjuryBodyPart | null;
+  injuryType?: InjuryType | number | null;
+  injuryBodyPart?: InjuryBodyPart | number | null;
   injuryComment?: string | null;
 }
 
@@ -90,8 +90,8 @@ export interface TrainingRecordDetailsResponse {
   fatigueLevel: number;
   sessionCompleted: boolean;
   injuryOccurred: boolean;
-  injuryType?: InjuryType | null;
-  injuryBodyPart?: InjuryBodyPart | null;
+  injuryType?: InjuryType | number | null;
+  injuryBodyPart?: InjuryBodyPart | number | null;
   injuryComment?: string | null;
   overallComment?: string | null;
   exercisePerformances: ExercisePerformanceResponse[];
@@ -106,8 +106,8 @@ export interface CreateTrainingRecordPayload {
   fatigueLevel: number;
   sessionCompleted: boolean;
   injuryOccurred: boolean;
-  injuryType?: InjuryType | null;
-  injuryBodyPart?: InjuryBodyPart | null;
+  injuryType?: InjuryType | number | null;
+  injuryBodyPart?: InjuryBodyPart | number | null;
   injuryComment?: string | null;
   overallComment?: string | null;
   exercisePerformances: ExercisePerformanceRequest[];
@@ -119,8 +119,8 @@ export interface UpdateTrainingRecordPayload {
   fatigueLevel: number;
   sessionCompleted: boolean;
   injuryOccurred: boolean;
-  injuryType?: InjuryType | null;
-  injuryBodyPart?: InjuryBodyPart | null;
+  injuryType?: InjuryType | number | null;
+  injuryBodyPart?: InjuryBodyPart | number | null;
   injuryComment?: string | null;
   overallComment?: string | null;
   exercisePerformances: ExercisePerformanceRequest[];
