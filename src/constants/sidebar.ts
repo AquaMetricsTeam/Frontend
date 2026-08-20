@@ -15,6 +15,7 @@ import {
   MdFitnessCenter,
   MdEvent,
   MdAssignment,
+  MdChat,
 } from "react-icons/md";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -138,11 +139,24 @@ export const NAV_GROUPS: NavGroup[] = [
         allowedRoles: ["FitnessCoach", "SwimmingCoach"],
       },
       {
+        key: "aiChat",
+        labelKey: "common:nav.items.aiChat",
+        icon: MdChat,
+        path: "/ai-chat",
+        allowedRoles: ["NutritionSpecialist", "FitnessCoach", "SwimmingCoach"],
+      },
+      {
         key: "aiRecommendations",
         labelKey: "common:nav.items.aiRecommendations",
         icon: MdAutoAwesome,
         path: "/ai-recommendations",
-        badge: 12,
+        allowedRoles: ["NutritionSpecialist", "FitnessCoach", "SwimmingCoach"],
+      },
+      {
+        key: "aiGenerate",
+        labelKey: "common:nav.items.aiGenerate",
+        icon: MdAutoAwesome,
+        path: "/ai-generate",
         allowedRoles: ["NutritionSpecialist", "FitnessCoach", "SwimmingCoach"],
       },
     ],

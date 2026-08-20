@@ -20,6 +20,11 @@ import NutritionPage from "@/pages/nutrition";
 import SwimmingPage from "@/pages/swimming";
 import FitnessPage from "@/pages/fitness";
 import CoachNotesPage from "@/pages/coach-notes";
+import AiChatPage from "@/pages/ai-chat";
+import AiRecommendationsPage from "@/pages/ai-recommendations";
+import AiGeneratePlanPage from "@/pages/ai-generate-plan";
+import AiReviewRecommendationPage from "@/pages/ai-review-recommendation";
+import KnowledgeBasePage from "@/pages/knowledge-base";
 import type { UserRole } from "@/features/auth/types";
 
 const ATHLETE_ROLES: UserRole[] = [
@@ -38,6 +43,12 @@ const TRAINING_ROLES: UserRole[] = [
   "SwimmingCoach",
   "Admin",
   "FitnessCoach",
+];
+
+const AI_COACH_ROLES: UserRole[] = [
+  "SwimmingCoach",
+  "FitnessCoach",
+  "NutritionSpecialist",
 ];
 
 const router = createBrowserRouter([
@@ -207,6 +218,46 @@ const router = createBrowserRouter([
                     ]}
                   >
                     <CoachNotesPage />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/ai-chat",
+                element: (
+                  <ProtectedRoute allowedRoles={AI_COACH_ROLES}>
+                    <AiChatPage />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/ai-recommendations",
+                element: (
+                  <ProtectedRoute allowedRoles={AI_COACH_ROLES}>
+                    <AiRecommendationsPage />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/ai-generate",
+                element: (
+                  <ProtectedRoute allowedRoles={AI_COACH_ROLES}>
+                    <AiGeneratePlanPage />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/ai/review/:recommendationId",
+                element: (
+                  <ProtectedRoute allowedRoles={AI_COACH_ROLES}>
+                    <AiReviewRecommendationPage />
+                  </ProtectedRoute>
+                ),
+              },
+              {
+                path: "/knowledge-base",
+                element: (
+                  <ProtectedRoute allowedRoles={["Admin"]}>
+                    <KnowledgeBasePage />
                   </ProtectedRoute>
                 ),
               },

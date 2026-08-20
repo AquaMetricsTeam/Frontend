@@ -7,6 +7,11 @@ import training from "./training.json";
 import nutrition from "./nutrition.json";
 import swimming from "./swimming.json";
 import coachNotes from "./coachNotes.json";
+import aiChat from "./aiChat.json";
+import aiPlan from "./aiPlan.json";
+import aiInbox from "./aiInbox.json";
+import aiPlanView from "./aiPlanView.json";
+import aiKnowledge from "./aiKnowledge.json";
 
 export const en = {
   common,
@@ -18,5 +23,10 @@ export const en = {
   nutrition,
   swimming,
   coachNotes,
+  aiChat,
+  aiPlan,
+  aiInbox,
+  aiPlanView,
+  aiKnowledge,
 } as const;
 

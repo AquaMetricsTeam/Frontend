@@ -21,6 +21,9 @@ import { AthleteMedicalTab } from "@/features/athletes/components/profile/tabs/A
 import { AthleteCoachesGroupsTab } from "@/features/athletes/components/profile/tabs/AthleteCoachesGroupsTab";
 import { AssignCoachModal } from "@/features/athletes/components/AssignCoachModal";
 import { AthleteNotesSheet } from "@/features/coach-notes/components/AthleteNotesSheet";
+import { useCurrentTrainingPlan } from "@/features/ai-recommendations/hooks/useCurrentTrainingPlan";
+import { useCurrentNutritionPlan } from "@/features/ai-recommendations/hooks/useCurrentNutritionPlan";
+import CurrentPlanCard from "@/features/ai-recommendations/components/plan-view/CurrentPlanCard";
 import type { AdminAthlete } from "@/features/athletes/types/index";
 
 export default function AthleteProfilePage() {
@@ -46,6 +49,17 @@ export default function AthleteProfilePage() {
   } = useAthleteOverview(athleteId || "");
 
   const { data: performanceRes } = useAthletePerformance(athleteId || "");
+
+  const isNutrition = userRoles.includes("NutritionSpecialist");
+  const trainingPlanQuery = useCurrentTrainingPlan(
+    athleteId || "",
+    !isAdmin && !isNutrition,
+  );
+  const nutritionPlanQuery = useCurrentNutritionPlan(
+    athleteId || "",
+    !isAdmin && isNutrition,
+  );
+  const planQuery = isNutrition ? nutritionPlanQuery : trainingPlanQuery;
 
   const athlete = overviewRes?.data;
   const performanceData = performanceRes?.data;
@@ -185,7 +199,10 @@ export default function AthleteProfilePage() {
         )}
 
         {activeTab === "plans" && (
-          <AthleteTrainingPlansTab athleteId={athlete.id} />
+          <div className="space-y-6">
+            {!isAdmin && <CurrentPlanCard query={planQuery} />}
+            <AthleteTrainingPlansTab athleteId={athlete.id} />
+          </div>
         )}
 
         {activeTab === "medical" && <AthleteMedicalTab athlete={athlete} />}

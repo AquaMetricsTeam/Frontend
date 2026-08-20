@@ -1,0 +1,61 @@
+{
+  "page": {
+    "title": "Knowledge Base",
+    "description": "Manage the PDF knowledge documents that power AI recommendations.",
+    "uploadNew": "Upload Document"
+  },
+  "filters": {
+    "all": "All"
+  },
+  "status": {
+    "pending": "Pending",
+    "processing": "Processing…",
+    "indexed": "Indexed",
+    "failed": "Failed"
+  },
+  "list": {
+    "noDocuments": "No documents found",
+    "noDocumentsDescription": "Upload your first knowledge PDF to power AI recommendations.",
+    "uploadedAt": "Uploaded {{date}}",
+    "deleteDocument": "Delete document",
+    "deleteDisabledProcessing": "Deletion is unavailable while the document is processing."
+  },
+  "upload": {
+    "title": "Upload Knowledge Document",
+    "description": "Upload a PDF (max 50 MB) to be indexed and used as knowledge for AI recommendations.",
+    "fileLabel": "File",
+    "filePlaceholder": "Choose a PDF file",
+    "titleLabel": "Title",
+    "titlePlaceholder": "e.g. Swimming Recovery Guidelines",
+    "domainLabel": "Domain",
+    "domainPlaceholder": "Select a domain",
+    "submit": "Upload",
+    "uploading": "Uploading…"
+  },
+  "delete": {
+    "title": "Delete document",
+    "description": "Are you sure you want to delete \"{{title}}\"? This permanently removes its indexed knowledge.",
+    "confirm": "Delete",
+    "deleting": "Deleting…",
+    "cancel": "Cancel"
+  },
+  "toasts": {
+    "uploadSuccess": "Document uploaded. Processing started.",
+    "uploadError": "Failed to upload document.",
+    "deleteSuccess": "Document deleted.",
+    "deleteError": "Failed to delete document.",
+    "accessError": "You don't have permission to upload documents."
+  },
+  "validations": {
+    "titleRequired": "Title is required",
+    "domainRequired": "Domain is required",
+    "fileRequired": "File is required",
+    "fileType": "Only PDF files are allowed",
+    "fileSize": "File must be 50 MB or smaller"
+  },
+  "domain": {
+    "swimming": "Swimming",
+    "fitness": "Fitness",
+    "nutrition": "Nutrition"
+  }
+}

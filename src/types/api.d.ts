@@ -7,6 +7,8 @@ declare global {
     message?: string;
     status?: number;
     success?: boolean;
+    statusCode?: number | null;
+    errors?: string[] | null;
     meta?: {
       page?: number;
       limit?: number;
