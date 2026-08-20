@@ -1,0 +1,40 @@
+{
+  "card": {
+    "title": "Current Plan",
+    "noPlan": "No active plan assigned",
+    "noPlanDescription": "This athlete does not have an active plan yet.",
+    "objectives": "Objectives",
+    "description": "Description",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "period": "Plan Period",
+    "viewDetails": "View details",
+    "planId": "Plan #{{id}}"
+  },
+  "status": {
+    "draft": "Draft",
+    "approved": "Approved",
+    "rejected": "Rejected"
+  },
+  "source": {
+    "manual": "Manual",
+    "aiPersonalized": "AI Personalized"
+  },
+  "domain": {
+    "nutrition": "Nutrition",
+    "swimming": "Swimming",
+    "training": "Training"
+  },
+  "nutrition": {
+    "title": "Nutrition Metrics",
+    "dailyCalories": "Daily Calories",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fat": "Fat",
+    "grams": "{{value}}g",
+    "calories": "{{value}} kcal"
+  },
+  "lineage": {
+    "overrideNote": "Personalized override of group plan"
+  }
+}

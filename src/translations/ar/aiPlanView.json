@@ -1,0 +1,40 @@
+{
+  "card": {
+    "title": "الخطة الحالية",
+    "noPlan": "لم يتم تعيين خطة نشطة",
+    "noPlanDescription": "هذا الرياضي ليس لديه خطة نشطة بعد.",
+    "objectives": "الأهداف",
+    "description": "الوصف",
+    "startDate": "تاريخ البدء",
+    "endDate": "تاريخ الانتهاء",
+    "period": "فترة الخطة",
+    "viewDetails": "عرض التفاصيل",
+    "planId": "خطة رقم #{{id}}"
+  },
+  "status": {
+    "draft": "مسودة",
+    "approved": "مُعتمدة",
+    "rejected": "مرفوضة"
+  },
+  "source": {
+    "manual": "يدوي",
+    "aiPersonalized": "مُخصص بالذكاء الاصطناعي"
+  },
+  "domain": {
+    "nutrition": "تغذية",
+    "swimming": "سباحة",
+    "training": "تدريب"
+  },
+  "nutrition": {
+    "title": "قياسات التغذية",
+    "dailyCalories": "السعرات اليومية",
+    "protein": "البروتين",
+    "carbs": "الكربوهيدرات",
+    "fat": "الدهون",
+    "grams": "{{value}}غ",
+    "calories": "{{value}} سعرة"
+  },
+  "lineage": {
+    "overrideNote": "تعديل مخصص على خطة المجموعة"
+  }
+}

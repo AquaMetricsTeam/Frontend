@@ -1,0 +1,25 @@
+{
+  "page": {
+    "title": "AI Recommendations",
+    "description": "Review and manage AI-generated plan recommendations for your athletes.",
+    "count": "{{count}} Recommendation",
+    "count_plural": "{{count}} Recommendations",
+    "generateNew": "Generate New Plan"
+  },
+  "filters": {
+    "all": "All",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected"
+  },
+  "list": {
+    "noRecommendations": "No recommendations found",
+    "noRecommendationsDescription": "Generate your first AI plan to see recommendations here.",
+    "viewReview": "View & Review",
+    "generatedAt": "Generated {{date}}",
+    "athleteLabel": "Athlete"
+  },
+  "toasts": {
+    "fetchError": "Failed to load recommendations."
+  }
+}

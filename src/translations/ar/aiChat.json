@@ -1,0 +1,51 @@
+{
+  "page": {
+    "title": "محادثة الذكاء الاصطناعي",
+    "description": "تحدث مع المساعد الذكي للحصول على إرشادات التدريب والتغذية."
+  },
+  "sidebar": {
+    "title": "المحادثات",
+    "newChat": "محادثة جديدة",
+    "search": "البحث في المحادثات...",
+    "noSessions": "لا توجد محادثات بعد",
+    "noSessionsDescription": "ابدأ محادثة جديدة للبدء.",
+    "personalized": "مخصصة",
+    "general": "عامة",
+    "generalChat": "محادثة عامة",
+    "messageCount": "{{count}} رسائل",
+    "messageCount_plural": "{{count}} رسائل"
+  },
+  "message": {
+    "userLabel": "أنت",
+    "assistantLabel": "مساعد الذكاء الاصطناعي",
+    "evidenceSources": "المصادر",
+    "sendPlaceholder": "اكتب رسالتك...",
+    "sending": "إرسال..."
+  },
+  "newChat": {
+    "title": "محادثة جديدة",
+    "description": "ابدأ محادثة جديدة مع المساعد الذكي.",
+    "athleteLabel": "الرياضي (اختياري)",
+    "athletePlaceholder": "اختر رياضياً للحصول على نصائح مخصصة",
+    "generalChat": "محادثة عامة (بدون سياق رياضي)",
+    "titleLabel": "العنوان (اختياري)",
+    "titlePlaceholder": "أضف اسماً لمحادثتك...",
+    "cancel": "إلغاء",
+    "create": "بدء المحادثة",
+    "creating": "جاري البدء..."
+  },
+  "empty": {
+    "title": "اختر محادثة",
+    "description": "اختر محادثة من الشريط الجانبي أو ابدأ محادثة جديدة."
+  },
+  "validations": {
+    "messageRequired": "يرجى إدخال رسالة.",
+    "messageMaxLength": "لا يمكن أن تتجاوز الرسالة 4000 حرف.",
+    "titleMaxLength": "لا يمكن أن يتجاوز العنوان 200 حرف."
+  },
+  "toasts": {
+    "createSuccess": "تم إنشاء جلسة المحادثة.",
+    "createError": "فشل في إنشاء جلسة المحادثة.",
+    "sendError": "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى."
+  }
+}

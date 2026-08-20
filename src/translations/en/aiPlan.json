@@ -1,0 +1,55 @@
+{
+  "generate": {
+    "title": "Generate AI Plan",
+    "description": "Create an AI-generated training or nutrition plan for an athlete.",
+    "athleteLabel": "Athlete",
+    "athletePlaceholder": "Select an athlete",
+    "queryLabel": "Plan Request",
+    "queryPlaceholder": "Describe what you want the plan to focus on, e.g. '4-week taper for a 100m freestyle sprinter'",
+    "generateButton": "Generate Plan",
+    "generating": "Generating plan...",
+    "domainLabel": "Domain"
+  },
+  "review": {
+    "title": "Review Recommendation",
+    "description": "Review the AI-generated plan recommendation before approving.",
+    "recommendation": "Recommendation",
+    "rationale": "Rationale",
+    "evidenceSources": "Sources",
+    "approve": "Approve",
+    "reject": "Reject",
+    "approving": "Approving...",
+    "rejecting": "Rejecting...",
+    "commentsLabel": "Comments (optional)",
+    "commentsPlaceholder": "Add any notes about your decision...",
+    "statusPending": "Pending Review",
+    "statusApproved": "Approved",
+    "statusRejected": "Rejected",
+    "resultApproved": "Plan approved — this is now the athlete's active plan.",
+    "resultRejected": "Plan rejected — the previous plan remains active.",
+    "alreadyDecided": "This recommendation has already been reviewed.",
+    "backToInbox": "Back to Inbox"
+  },
+  "warning": {
+    "missingExercises": "The AI could not find perfect exercise matches for some parts of this plan. Review the notes below before approving.",
+    "missingExercisesNotes": "Notes from AI:"
+  },
+  "validations": {
+    "athleteRequired": "Please select an athlete.",
+    "queryRequired": "Please describe what you want the plan to focus on.",
+    "queryMaxLength": "Query cannot exceed 2000 characters.",
+    "commentsMaxLength": "Comments cannot exceed 2000 characters.",
+    "domainRequired": "Unable to determine your domain. Please refresh and try again."
+  },
+  "toasts": {
+    "generateSuccess": "Plan generated successfully.",
+    "generateError": "Failed to generate plan. Please try again.",
+    "approveSuccess": "Plan approved successfully.",
+    "rejectSuccess": "Plan rejected.",
+    "reviewError": "Failed to submit review. Please try again.",
+    "invalidPlanError": "The AI couldn't generate a valid plan — try rephrasing your request.",
+    "alreadyDecided": "This recommendation has already been reviewed.",
+    "conflictError": "This request is already being processed. Please wait and try again.",
+    "accessError": "You don't have access to this resource."
+  }
+}
