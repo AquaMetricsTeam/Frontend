@@ -1,0 +1,61 @@
+{
+  "page": {
+    "title": "قاعدة المعرفة",
+    "description": "إدارة مستندات المعرفة بصيغة PDF التي تدعم توصيات الذكاء الاصطناعي.",
+    "uploadNew": "رفع مستند"
+  },
+  "filters": {
+    "all": "الكل"
+  },
+  "status": {
+    "pending": "قيد الانتظار",
+    "processing": "قيد المعالجة…",
+    "indexed": "تمت الفهرسة",
+    "failed": "فشلت المعالجة"
+  },
+  "list": {
+    "noDocuments": "لم يتم العثور على مستندات",
+    "noDocumentsDescription": "ارفع أول مستند معرفة بصيغة PDF لدعم توصيات الذكاء الاصطناعي.",
+    "uploadedAt": "تم الرفع {{date}}",
+    "deleteDocument": "حذف المستند",
+    "deleteDisabledProcessing": "الحذف غير متاح أثناء معالجة المستند."
+  },
+  "upload": {
+    "title": "رفع مستند معرفة",
+    "description": "ارفع ملف PDF (بحد أقصى 50 ميجابايت) ليتم فهرسته واستخدامه كمعرفة لتوصيات الذكاء الاصطناعي.",
+    "fileLabel": "الملف",
+    "filePlaceholder": "اختر ملف PDF",
+    "titleLabel": "العنوان",
+    "titlePlaceholder": "مثال: إرشادات التعافي للسباحة",
+    "domainLabel": "المجال",
+    "domainPlaceholder": "اختر مجالاً",
+    "submit": "رفع",
+    "uploading": "جارٍ الرفع…"
+  },
+  "delete": {
+    "title": "حذف المستند",
+    "description": "هل أنت متأكد من حذف \"{{title}}\"? سيؤدي هذا إلى إزالة المعرفة المفهرسة بشكل دائم.",
+    "confirm": "حذف",
+    "deleting": "جارٍ الحذف…",
+    "cancel": "إلغاء"
+  },
+  "toasts": {
+    "uploadSuccess": "تم رفع المستند. بدأت المعالجة.",
+    "uploadError": "فشل رفع المستند.",
+    "deleteSuccess": "تم حذف المستند.",
+    "deleteError": "فشل حذف المستند.",
+    "accessError": "ليس لديك صلاحية رفع المستندات."
+  },
+  "validations": {
+    "titleRequired": "العنوان مطلوب",
+    "domainRequired": "المجال مطلوب",
+    "fileRequired": "الملف مطلوب",
+    "fileType": "يُسمح فقط بملفات PDF",
+    "fileSize": "يجب أن يكون حجم الملف 50 ميجابايت أو أقل"
+  },
+  "domain": {
+    "swimming": "سباحة",
+    "fitness": "لياقة بدنية",
+    "nutrition": "تغذية"
+  }
+}

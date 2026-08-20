@@ -1,0 +1,25 @@
+{
+  "page": {
+    "title": "توصيات الذكاء الاصطناعي",
+    "description": "مراجعة وإدارة توصيات الخطط المولّدة بالذكاء الاصطناعي لرياضييك.",
+    "count": "توصية واحدة",
+    "count_plural": "{{count}} توصيات",
+    "generateNew": "إنشاء خطة جديدة"
+  },
+  "filters": {
+    "all": "الكل",
+    "pending": "قيد المراجعة",
+    "approved": "مُعتمدة",
+    "rejected": "مرفوضة"
+  },
+  "list": {
+    "noRecommendations": "لم يتم العثور على توصيات",
+    "noRecommendationsDescription": "أنشئ خطتك الأولى بالذكاء الاصطناعي لرؤية التوصيات هنا.",
+    "viewReview": "مراجعة واعتماد",
+    "generatedAt": "تم الإنشاء {{date}}",
+    "athleteLabel": "الرياضي"
+  },
+  "toasts": {
+    "fetchError": "فشل تحميل التوصيات."
+  }
+}

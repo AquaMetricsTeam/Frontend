@@ -41,6 +41,8 @@
       "attendance": "Attendance",
       "coachNotes": "Coach Notes",
       "aiRecommendations": "AI Recommendations",
+      "aiChat": "AI Chat",
+      "aiGenerate": "Generate AI Plan",
       "knowledgeBase": "Knowledge Base",
       "notifications": "Notifications",
       "reports": "Reports & Analytics",

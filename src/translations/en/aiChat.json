@@ -1,0 +1,51 @@
+{
+  "page": {
+    "title": "AI Chat",
+    "description": "Chat with the AI assistant for training and nutrition guidance."
+  },
+  "sidebar": {
+    "title": "Conversations",
+    "newChat": "New Chat",
+    "search": "Search conversations...",
+    "noSessions": "No conversations yet",
+    "noSessionsDescription": "Start a new chat to begin.",
+    "personalized": "Personalized",
+    "general": "General",
+    "generalChat": "General chat",
+    "messageCount": "{{count}} messages",
+    "messageCount_plural": "{{count}} messages"
+  },
+  "message": {
+    "userLabel": "You",
+    "assistantLabel": "AI Assistant",
+    "evidenceSources": "Sources",
+    "sendPlaceholder": "Type your message...",
+    "sending": "Sending..."
+  },
+  "newChat": {
+    "title": "New Chat",
+    "description": "Start a new conversation with the AI assistant.",
+    "athleteLabel": "Athlete (optional)",
+    "athletePlaceholder": "Select an athlete for personalized advice",
+    "generalChat": "General chat (no athlete context)",
+    "titleLabel": "Title (optional)",
+    "titlePlaceholder": "Give your chat a name...",
+    "cancel": "Cancel",
+    "create": "Start Chat",
+    "creating": "Starting..."
+  },
+  "empty": {
+    "title": "Select a conversation",
+    "description": "Choose a conversation from the sidebar or start a new one."
+  },
+  "validations": {
+    "messageRequired": "Please enter a message.",
+    "messageMaxLength": "Message cannot exceed 4000 characters.",
+    "titleMaxLength": "Title cannot exceed 200 characters."
+  },
+  "toasts": {
+    "createSuccess": "Chat session created.",
+    "createError": "Failed to create chat session.",
+    "sendError": "Failed to send message. Please try again."
+  }
+}
