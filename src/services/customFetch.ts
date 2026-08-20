@@ -127,9 +127,10 @@ export async function customFetch<T>(
       });
       clearTimeout(timer);
       return res;
-    } catch (err: any) {
+    } catch (err: unknown) {
       clearTimeout(timer);
-      if (err?.name === "AbortError") {
+      const errObj = err as { name?: string };
+      if (errObj?.name === "AbortError") {
         throw {
           message: "Request timed out. Please try again.",
           status: 408,
@@ -164,11 +165,16 @@ export async function customFetch<T>(
       interface CustomErrorBody {
         message?: string;
         data?: unknown;
+        errors?: string[] | null;
       }
 
       let errorBody: CustomErrorBody;
       try {
-        errorBody = await response.json();
+        const parsed = await response.json();
+        // Some endpoints (e.g. knowledge-documents) return raw JSON-string bodies
+        // like "No file was uploaded." — normalize them to { message }.
+        errorBody =
+          typeof parsed === "string" ? { message: parsed } : parsed;
       } catch {
         errorBody = {};
       }
@@ -176,6 +182,7 @@ export async function customFetch<T>(
       throw {
         message: errorBody.message || t("common:error.default"),
         errorBody: errorBody.data || null,
+        errors: errorBody.errors || null,
         status: response.status,
       };
     }
@@ -190,10 +197,11 @@ export async function customFetch<T>(
     }
 
     return response.json();
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Note: On error, requestHash remains in activeIdempotencyKeys map
     // so if user/app retries the exact same payload, the same Idempotency-Key is reused.
-    if (error?.name === "TypeError" && error?.message?.includes("fetch")) {
+    const err = error as { name?: string; message?: string };
+    if (err?.name === "TypeError" && err?.message?.includes("fetch")) {
       throw {
         message: "Network error. Please check your connection and retry.",
         status: 0,

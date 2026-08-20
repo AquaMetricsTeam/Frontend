@@ -1,8 +1,14 @@
 import { createPortal } from "react-dom";
+import type { ReactNode } from "react";
 import Spinner from "./Spinner";
 import { cn } from "@/lib/utils";
 
-const FullPageLoading = ({ className }: { className?: string }) => {
+interface FullPageLoadingProps {
+  className?: string;
+  children?: ReactNode;
+}
+
+const FullPageLoading = ({ className, children }: FullPageLoadingProps) => {
   return createPortal(
     <div
       className={cn(
@@ -10,7 +16,7 @@ const FullPageLoading = ({ className }: { className?: string }) => {
         className,
       )}
     >
-      <Spinner />
+      {children ?? <Spinner />}
     </div>,
     document.getElementById("portal") || (document.body as HTMLElement),
   );
