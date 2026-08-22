@@ -14,7 +14,9 @@ export default function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
   const isUser = message.role === "user";
 
   return (
-    <div className={cn("flex gap-2.5", isUser ? "justify-end" : "justify-start")}>
+    <div
+      className={cn("flex gap-2.5", isUser ? "justify-end" : "justify-start")}
+    >
       {!isUser && (
         <div className="mt-1 flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
           <MdSmartToy className="size-4" />
@@ -54,7 +56,9 @@ export default function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
         )}
 
         {isUser && (
-          <p className="mt-1 text-[10px] opacity-60">{t("message.userLabel")}</p>
+          <p className="mt-1 text-[10px] opacity-60">
+            {t("message.userLabel")}
+          </p>
         )}
 
         {!isUser && message.evidence.length > 0 && (

@@ -17,10 +17,21 @@ export interface DomainCount {
   athleteCount: number;
 }
 
+export interface InjuredAthlete {
+  athleteId: string;
+  fullName: string;
+  profilePictureUrl?: string | null;
+  injuryType: number;
+  injuryBodyPart: number;
+  injuryComment?: string | null;
+  injuryDate: string;
+}
+
 export interface AdminDashboardData {
   totalAthletes: number;
   totalSessions: number;
   totalInjuries: number;
+  injuredAthletes?: InjuredAthlete[];
   performanceTrend: TrendPoint[];
   fatigueTrend: TrendPoint[];
   injuriesOverTime: TrendPoint[];
@@ -32,6 +43,7 @@ export interface CoachDashboardData {
   assignedAthletes: number;
   totalSessions: number;
   injuries: number;
+  injuredAthletes?: InjuredAthlete[];
   performanceTrend: TrendPoint[];
   fatigueTrend: TrendPoint[];
   injuriesOverTime: TrendPoint[];

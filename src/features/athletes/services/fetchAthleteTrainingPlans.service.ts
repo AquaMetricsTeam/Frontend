@@ -1,10 +1,13 @@
 import { customFetch } from "@/services/customFetch";
-import type { AthleteOverviewTrainingPlanResponse } from "../types/index";
+import type {
+  AthleteOverviewTrainingPlansResponse,
+  AthleteOverviewTrainingPlanResponse,
+} from "../types/index";
 
 export async function fetchAthleteTrainingPlans(
   athleteId: string,
-): Promise<ApiResponse<AthleteOverviewTrainingPlanResponse[]>> {
-  return customFetch<ApiResponse<AthleteOverviewTrainingPlanResponse[]>>(
+): Promise<ApiResponse<AthleteOverviewTrainingPlansResponse | AthleteOverviewTrainingPlanResponse[]>> {
+  return customFetch<ApiResponse<AthleteOverviewTrainingPlansResponse | AthleteOverviewTrainingPlanResponse[]>>(
     `/athletes/${athleteId}/overview/training-plans`,
   );
 }

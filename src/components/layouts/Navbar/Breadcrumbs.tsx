@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { MdChevronRight, MdChevronLeft, MdHome } from "react-icons/md";
 import { LANG_DIR } from "@/constants/i18nConfig";
 import { cn } from "@/lib/utils";
+import { useAthleteOverview } from "@/features/athletes/hooks/useAthleteOverview";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ROUTE_NAME_MAP: Record<string, string> = {
   "": "common:nav.items.dashboard",
@@ -27,6 +29,13 @@ export function Breadcrumbs({ className }: { className?: string }) {
   const isRtl = LANG_DIR[i18n.language as Locale] === "rtl";
 
   const pathSegments = location.pathname.split("/").filter(Boolean);
+  const isAthleteRoute = pathSegments[0] === "athletes" && Boolean(pathSegments[1]);
+  const athleteId = isAthleteRoute ? pathSegments[1] : "";
+
+  const { data: athleteRes, isLoading: isAthleteLoading } = useAthleteOverview(
+    athleteId,
+    Boolean(athleteId)
+  );
 
   const ChevronIcon = isRtl ? MdChevronLeft : MdChevronRight;
 
@@ -46,8 +55,18 @@ export function Breadcrumbs({ className }: { className?: string }) {
       {pathSegments.map((segment, index) => {
         const url = `/${pathSegments.slice(0, index + 1).join("/")}`;
         const isLast = index === pathSegments.length - 1;
-        const translationKey = ROUTE_NAME_MAP[segment];
-        const label = translationKey ? t(translationKey as TranslationKey) : segment;
+
+        let label: React.ReactNode = segment;
+        if (index === 1 && isAthleteRoute) {
+          if (isAthleteLoading) {
+            label = <Skeleton className="h-3.5 w-20 rounded" />;
+          } else {
+            label = athleteRes?.data?.fullName || segment;
+          }
+        } else {
+          const translationKey = ROUTE_NAME_MAP[segment];
+          label = translationKey ? t(translationKey as TranslationKey) : segment;
+        }
 
         return (
           <div key={url} className="flex items-center gap-1.5">
@@ -70,3 +89,4 @@ export function Breadcrumbs({ className }: { className?: string }) {
     </nav>
   );
 }
+

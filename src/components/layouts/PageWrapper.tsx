@@ -15,7 +15,7 @@ function PageWrapper({
   return (
     <main
       className={cn(
-        "animate-fade-up h-full flex  flex-col px-7.5 py-5",
+        "fade-in-0 animate-in duration-300 h-full flex  flex-col px-7.5 py-5",
         className,
       )}
     >
