@@ -6,7 +6,7 @@ export async function fetchTrainingSession(
   isPresent: boolean = false,
 ): Promise<ApiResponse<TrainingSession>> {
   const query = new URLSearchParams();
-  if (isPresent) query.set("isPresent", "1");
+  if (isPresent) query.set("isPresent", "true");
   const qs = query.toString();
   return customFetch<ApiResponse<TrainingSession>>(
     `/training-sessions/${id}${qs ? `?${qs}` : ""}`,
