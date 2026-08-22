@@ -99,7 +99,7 @@ export async function customFetch<T>(
 
   // Payload-aware global idempotency key lookup & generation
   let requestHash: string | null = null;
-  if (!idempotencyKey && (options.autoIdempotent || isMutationMethod)) {
+  if (!skipRefresh && !idempotencyKey && (options.autoIdempotent || isMutationMethod)) {
     requestHash = getPayloadHash(method, endpoint, options.body);
 
     // Clean up expired keys (> 5 min)
@@ -206,7 +206,8 @@ export async function customFetch<T>(
       return response as unknown as T;
     }
 
-    return response.json();
+    const text = await response.text();
+    return text ? JSON.parse(text) : ({} as T);
   } catch (error: unknown) {
     // Note: On error, requestHash remains in activeIdempotencyKeys map
     // so if user/app retries the exact same payload, the same Idempotency-Key is reused.
