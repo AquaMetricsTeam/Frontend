@@ -25,6 +25,7 @@ import AiRecommendationsPage from "@/pages/ai-recommendations";
 import AiGeneratePlanPage from "@/pages/ai-generate-plan";
 import AiReviewRecommendationPage from "@/pages/ai-review-recommendation";
 import KnowledgeBasePage from "@/pages/knowledge-base";
+import NotificationsPage from "@/pages/notifications";
 import ProfilePage from "@/pages/profile";
 import type { UserRole } from "@/features/auth/types";
 
@@ -35,16 +36,9 @@ const ATHLETE_ROLES: UserRole[] = [
   "NutritionSpecialist",
 ];
 
-const NUTRITION_ROLES: UserRole[] = [
-  "Admin",
-  "NutritionSpecialist",
-];
+const NUTRITION_ROLES: UserRole[] = ["Admin", "NutritionSpecialist"];
 
-const TRAINING_ROLES: UserRole[] = [
-  "SwimmingCoach",
-  "Admin",
-  "FitnessCoach",
-];
+const TRAINING_ROLES: UserRole[] = ["SwimmingCoach", "Admin", "FitnessCoach"];
 
 const AI_COACH_ROLES: UserRole[] = [
   "SwimmingCoach",
@@ -129,11 +123,7 @@ const router = createBrowserRouter([
                 path: "/exercises",
                 element: (
                   <ProtectedRoute
-                    allowedRoles={[
-                      "SwimmingCoach",
-                      "FitnessCoach",
-                      "Admin",
-                    ]}
+                    allowedRoles={["SwimmingCoach", "FitnessCoach", "Admin"]}
                   >
                     <ExercisesLandingPage />
                   </ProtectedRoute>
@@ -143,11 +133,7 @@ const router = createBrowserRouter([
                 path: "/exercises/:type/:value",
                 element: (
                   <ProtectedRoute
-                    allowedRoles={[
-                      "SwimmingCoach",
-                      "FitnessCoach",
-                      "Admin",
-                    ]}
+                    allowedRoles={["SwimmingCoach", "FitnessCoach", "Admin"]}
                   >
                     <ExercisesPage />
                   </ProtectedRoute>
@@ -190,7 +176,8 @@ const router = createBrowserRouter([
                 element: (
                   <ProtectedRoute allowedRoles={NUTRITION_ROLES}>
                     <NutritionPage />
-                  </ProtectedRoute>)
+                  </ProtectedRoute>
+                ),
               },
               {
                 path: "/swimming",
@@ -212,11 +199,7 @@ const router = createBrowserRouter([
                 path: "/coach-notes",
                 element: (
                   <ProtectedRoute
-                    allowedRoles={[
-                      "SwimmingCoach",
-                      "FitnessCoach",
-                      "Admin",
-                    ]}
+                    allowedRoles={["SwimmingCoach", "FitnessCoach", "Admin"]}
                   >
                     <CoachNotesPage />
                   </ProtectedRoute>
@@ -261,6 +244,10 @@ const router = createBrowserRouter([
                     <KnowledgeBasePage />
                   </ProtectedRoute>
                 ),
+              },
+              {
+                path: "/notifications",
+                element: <NotificationsPage />,
               },
               {
                 path: "/profile",

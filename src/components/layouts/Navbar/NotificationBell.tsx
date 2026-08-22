@@ -1,54 +1,91 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MdNotifications, MdCheckCircleOutline, MdAutoAwesome, MdEventNote } from "react-icons/md";
+import {
+  MdNotifications,
+  MdCheckCircleOutline,
+  MdAutoAwesome,
+  MdEventNote,
+  MdRestaurant,
+  MdWarning,
+  MdGroup,
+} from "react-icons/md";
 import { cn } from "@/lib/utils";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useNotifications } from "@/features/notifications/hooks/useNotifications";
+import { useUnreadNotificationCount } from "@/features/notifications/hooks/useUnreadNotificationCount";
+import { useMarkNotificationAsRead } from "@/features/notifications/hooks/useMarkNotificationAsRead";
+import { useMarkAllNotificationsAsRead } from "@/features/notifications/hooks/useMarkAllNotificationsAsRead";
+import {
+  NotificationType,
+  type NotificationResponse,
+} from "@/features/notifications/types";
+import Spinner from "@/components/feedbacks/Spinner";
 
-interface NotificationItem {
-  id: string;
-  title: string;
-  time: string;
-  icon: React.ElementType;
-  read: boolean;
+function getNotificationIcon(type: NotificationType) {
+  switch (type) {
+    case NotificationType.TrainingAssigned:
+    case NotificationType.TrainingSessionAssigned:
+      return MdEventNote;
+    case NotificationType.NutritionAssigned:
+      return MdRestaurant;
+    case NotificationType.AIRecommendationReady:
+      return MdAutoAwesome;
+    case NotificationType.InjuryOccured:
+      return MdWarning;
+    case NotificationType.CoachAssigned:
+    case NotificationType.GroupAssigned:
+      return MdGroup;
+    case NotificationType.AttendanceRecorded:
+    case NotificationType.AssessmentRecorded:
+      return MdCheckCircleOutline;
+    default:
+      return MdNotifications;
+  }
 }
 
-const INITIAL_NOTIFICATIONS: NotificationItem[] = [
-  {
-    id: "1",
-    title: "AI Recommendation: 3 athletes ready for level upgrade",
-    time: "10m ago",
-    icon: MdAutoAwesome,
-    read: false,
-  },
-  {
-    id: "2",
-    title: "Coach Ahmed updated attendance for Swimming Group A",
-    time: "1h ago",
-    icon: MdEventNote,
-    read: false,
-  },
-  {
-    id: "3",
-    title: "Monthly performance report generated",
-    time: "5h ago",
-    icon: MdCheckCircleOutline,
-    read: true,
-  },
-];
+function formatNotificationTime(dateStr: string): string {
+  try {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return "Just now";
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString();
+  } catch {
+    return dateStr;
+  }
+}
 
 export function NotificationBell({ className }: { className?: string }) {
-  const { t } = useTranslation();
-  const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
+  const { t } = useTranslation(["notifications", "common"]);
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const { data: unreadData } = useUnreadNotificationCount();
+  const unreadCount = unreadData?.data ?? 0;
 
-  function markAllAsRead() {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  }
+  const { data: notificationsData, isLoading } = useNotifications({
+    page: 1,
+    pageSize: 5,
+  });
+  const notificationsList = notificationsData?.data?.items ?? [];
+
+  const { mutate: markAsRead } = useMarkNotificationAsRead();
+  const { mutate: markAllAsRead, isPending: isMarkingAll } =
+    useMarkAllNotificationsAsRead();
+
+  const handleItemClick = (item: NotificationResponse) => {
+    if (!item.isRead) {
+      markAsRead(item.id);
+    }
+  };
 
   return (
     <Popover>
@@ -85,40 +122,64 @@ export function NotificationBell({ className }: { className?: string }) {
           </div>
           {unreadCount > 0 && (
             <button
-              onClick={markAllAsRead}
-              className="text-[11px] font-medium text-primary hover:underline"
+              onClick={() => markAllAsRead()}
+              disabled={isMarkingAll}
+              className="text-[11px] font-medium text-primary hover:underline disabled:opacity-50 cursor-pointer"
             >
-              Mark all read
+              {t("notifications:markAllAsRead", "Mark all read")}
             </button>
           )}
         </div>
 
         {/* List */}
         <div className="max-h-72 overflow-y-auto divide-y divide-border/50">
-          {notifications.map((item) => {
-            const Icon = item.icon;
-            return (
-              <div
-                key={item.id}
-                className={cn(
-                  "flex items-start gap-3 p-3 text-xs transition-colors hover:bg-accent/50 cursor-pointer",
-                  !item.read && "bg-primary/5"
-                )}
-              >
-                <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
-                  <Icon className="size-4" />
+          {isLoading ? (
+            <div className="flex h-24 items-center justify-center">
+              <Spinner />
+            </div>
+          ) : notificationsList.length === 0 ? (
+            <div className="p-4 text-center text-xs text-muted-foreground">
+              {t("notifications:noNotifications", "No notifications")}
+            </div>
+          ) : (
+            notificationsList.map((item) => {
+              const Icon = getNotificationIcon(item.type);
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => handleItemClick(item)}
+                  className={cn(
+                    "flex items-start gap-3 p-3 text-xs transition-colors hover:bg-accent/50 cursor-pointer",
+                    !item.isRead && "bg-primary/5"
+                  )}
+                >
+                  <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+                    <Icon className="size-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className={cn(
+                        "text-xs leading-snug",
+                        !item.isRead
+                          ? "font-semibold text-foreground"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      {item.title}
+                    </p>
+                    {item.message && (
+                      <p className="mt-0.5 line-clamp-2 text-[11px] text-muted-foreground/80">
+                        {item.message}
+                      </p>
+                    )}
+                    <span className="mt-1 block text-[10px] text-muted-foreground/70">
+                      {formatNotificationTime(item.createdAt)}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className={cn("text-xs leading-snug", !item.read ? "font-semibold text-foreground" : "text-muted-foreground")}>
-                    {item.title}
-                  </p>
-                  <span className="mt-1 block text-[10px] text-muted-foreground/70">
-                    {item.time}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </PopoverContent>
     </Popover>
