@@ -1,12 +1,31 @@
 {
   "page": {
-    "title": "التدريب السباحي",
-    "description": "إدارة خطط التدريب والتكليفات والجلسات اليومية"
+    "title": "خطط التدريب",
+    "description": "إدارة خطط التدريب والتمارين والتكليفات والجلسات اليومية"
   },
   "views": {
-    "templates": "القوالب",
-    "assignments": "الخطط المكلفة",
-    "sessions": "الجلسات"
+    "templates": "قوالب التدريب",
+    "assignments": "تكليف الخطط",
+    "sessions": "الجلسات التدريبية"
+  },
+  "labels": {
+    "meters": "المسافة",
+    "metersUnit": "م",
+    "reps": "التكرارات",
+    "repsUnit": "تكرار",
+    "totalMeters": "إجمالي المسافة",
+    "totalReps": "إجمالي التكرارات",
+    "sets": "المجموعات",
+    "rest": "الراحة",
+    "restAfter": "الراحة البينية",
+    "duration": "المدة",
+    "minutes": "د",
+    "seconds": "ث"
+  },
+  "intensity": {
+    "low": "منخفضة",
+    "medium": "متوسطة",
+    "high": "عالية"
   },
   "templates": {
     "table": {
@@ -38,6 +57,14 @@
     },
     "emptyArchived": {
       "title": "لا توجد خطط مؤرشفة"
+    },
+    "detail": {
+      "exercisesSequence": "ترتيب وتسلسل التمارين ({{count}})",
+      "noExercises": "لا توجد تمارين مضافة لهذه الخطة بعد.",
+      "notAssignedYet": "لم يتم تكليف هذه الخطة لأي رياضي أو مجموعة بعد.",
+      "assignNow": "تكليف الآن",
+      "durationUnit": "د",
+      "secondsUnit": "ث"
     }
   },
   "wizard": {
@@ -58,15 +85,24 @@
     "step2": {
       "exerciseLabel": "التمرين",
       "exerciseRequired": "التمرين مطلوب",
-      "sets": "مجموعات",
-      "reps": "تكرارات",
-      "meters": "أمتار",
-      "minutes": "المدة (دقيقة)",
-      "rest": "راحة (ثانية)",
-      "restAfter": "راحة بينية",
+      "sets": "المجموعات",
+      "reps": "التكرارات",
+      "meters": "الأمتار",
+      "minutes": "المدة (بالدقائق)",
+      "rest": "الراحة (بالثواني)",
+      "restAfter": "الراحة البينية",
       "intensity": "الشدة",
-      "notes": "ملاحظات / تعليمات",
+      "notes": "الملاحظات والتعليمات",
+      "notesPlaceholder": "تعليمات أو ملاحظات على التمرين (اختياري)...",
       "addExercise": "إضافة تمرين",
+      "selectMuscleGroup": "اختر العضلة...",
+      "selectSwimmingCategory": "اختر فئة السباحة...",
+      "selectExercise": "اختر التمرين...",
+      "searchExercises": "بحث في التمارين...",
+      "searchMuscles": "بحث في العضلات...",
+      "searchCategories": "بحث في فئات السباحة...",
+      "noExercisesFound": "لم يتم العثور على تمارين لهذه الفئة.",
+      "minutesEstimated": "دقيقة تقريبية",
       "next": "التالي: التكليف",
       "back": "رجوع"
     },
@@ -87,14 +123,19 @@
     },
     "step3": {
       "question": "كيف تريد تكليف هذه الخطة؟",
+      "saveAsTemplate": "حفظ كقالب",
+      "saveAsTemplateDesc": "حفظ الخطة كقالب دون تكليف لاعبين حالياً",
+      "saveAndAssign": "حفظ وتكليف فوري",
+      "saveAndAssignDesc": "تكليف الخطة فوراً للرياضيين أو المجموعات",
       "draft": "حفظ كمسودة",
-      "athletes": "رياضيون",
-      "groups": "مجموعات",
+      "athletes": "الرياضيون",
+      "groups": "المجموعات",
       "next": "التالي: مراجعة",
       "back": "رجوع"
     },
     "step4": {
       "save": "حفظ القالب",
+      "saveTrainingPlan": "حفظ خطة التدريب",
       "saving": "جارٍ الحفظ...",
       "back": "رجوع"
     }
@@ -106,6 +147,28 @@
     "selectTargets": "حدد المستهدفين للتكليف",
     "assigning": "جارٍ التكليف..."
   },
+  "assignments": {
+    "trainingPlansTitle": "خطط التدريب",
+    "trainingPlansSubtitle": "اختر خطة لإدارة الرياضيين والمجموعات المكلفة بها",
+    "searchPlans": "بحث في الخطط...",
+    "plan": "الخطة",
+    "exercises": "التمارين",
+    "currentAssignments": "التكليفات الحالية ({{count}})",
+    "assignPlan": "تكليف الخطة",
+    "loadingAssignments": "جارٍ تحميل التكليفات...",
+    "failedToLoadAssignments": "فشل في تحميل التكليفات.",
+    "retry": "إعادة المحاولة",
+    "noAssignments": "لا توجد تكليفات بعد",
+    "noAssignmentsDesc": "لم يتم تكليف هذه الخطة لأي رياضي أو مجموعة تدريبية. اضغط على \"تكليف الخطة\" لتعيينها الآن.",
+    "active": "نشط",
+    "assignedOn": "تاريخ التكليف {{date}}",
+    "unassign": "إلغاء التكليف",
+    "confirmUnassign": "هل أنت متأكد من رغبتك في إلغاء هذا التكليف؟",
+    "athletesTab": "الرياضيون",
+    "groupsTab": "المجموعات",
+    "noAthletesAvailable": "لا يوجد رياضيون متاحون",
+    "noGroupsAvailable": "لا توجد مجموعات متاحة"
+  },
   "sessions": {
     "table": {
       "session": "الجلسة",
@@ -114,15 +177,17 @@
       "location": "الموقع"
     },
     "new": "جلسة جديدة",
+    "selectSessionSubtitle": "اختر جلسة لتسجيل حضور الرياضيين",
+    "searchSessionsPlaceholder": "بحث في الجلسات...",
     "form": {
       "title": "جلسة تدريبية جديدة",
       "titleLabel": "عنوان الجلسة",
-      "titlePlaceholder": "مثال: جلسة قوة صباحية",
+      "titlePlaceholder": "مثال: جلسة لياقة وقوة صباحية",
       "planLabel": "خطة التدريب",
       "planPlaceholder": "اختر خطة...",
       "dateLabel": "التاريخ",
       "locationLabel": "الموقع",
-      "locationPlaceholder": "مثال: الحوض الرئيسي",
+      "locationPlaceholder": "مثال: صالة الجيم / مسبح 1",
       "startTime": "وقت البدء",
       "endTime": "وقت الانتهاء",
       "notes": "ملاحظات (اختياري)",
@@ -181,6 +246,58 @@
       "dislocation": "خلع",
       "fracture": "كسر",
       "other": "أخرى"
+    }
+  },
+  "sessionDetail": {
+    "sessionNumber": "جلسة رقم #{{id}} • {{date}}",
+    "tabs": {
+      "overview": "تفاصيل وخطة التدريب",
+      "attendance": "سجل الحضور والغياب",
+      "swimming": "تمارين السباحة",
+      "fitness": "تمارين اللياقة البدنية"
+    },
+    "overview": {
+      "date": "التاريخ",
+      "time": "الوقت",
+      "location": "الموقع",
+      "assignedPlan": "الخطة المكلفة",
+      "planExercises": "تمارين الخطة ({{count}})",
+      "noExercises": "لا توجد تمارين محددة في قالب هذه الخطة.",
+      "sets": "{{count}} مجموعات",
+      "duration": "{{count}} د",
+      "rest": "{{count}} ث راحة",
+      "restAfter": "{{count}} ث راحة بينية"
+    },
+    "attendance": {
+      "notTaken": "لم يُسجل الحضور بعد",
+      "notTakenDesc": "لم يتم حفظ أي سجلات حضور لهذه الجلسة حتى الآن.",
+      "total": "الإجمالي",
+      "present": "حاضر",
+      "late": "متأخر",
+      "absent": "غائب",
+      "searchPlaceholder": "بحث في الرياضيين لتسجيل الحضور...",
+      "saveButton": "حفظ سجل الحضور",
+      "saving": "جارٍ الحفظ..."
+    },
+    "swimming": {
+      "loggedPerformances": "أداءات السباحة المسجلة ({{count}})",
+      "logDrill": "+ تسجيل أداء سباحة",
+      "logDrillSet": "+ تسجيل مجموعة تمرين",
+      "noDrills": "لم يتم تسجيل أي أداء سباحة لهذه الجلسة بعد.",
+      "loading": "جارٍ تحميل أداءات السباحة…",
+      "best": "الأفضل:",
+      "avg": "المتوسط:"
+    },
+    "fitness": {
+      "loggedRecords": "سجلات اللياقة المسجلة ({{count}})",
+      "logRecord": "+ تسجيل أداء لياقة",
+      "noRecords": "لم يتم تسجيل أي أداء لياقة بدنية لهذه الجلسة بعد.",
+      "noRecordsDesc": "اضغط على \"+ تسجيل أداء لياقة\" لإدخال بيانات التدريب.",
+      "loading": "جارٍ تحميل سجلات اللياقة…",
+      "completed": "مكتمل",
+      "incomplete": "غير مكتمل",
+      "rating": "التقييم:",
+      "fatigue": "الإجهاد:"
     }
   }
 }

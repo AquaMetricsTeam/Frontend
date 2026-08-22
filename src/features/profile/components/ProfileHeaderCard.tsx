@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
   MdCameraAlt,
   MdMailOutline,
@@ -23,6 +24,7 @@ function getInitials(name: string): string {
 }
 
 export function ProfileHeaderCard({ user }: ProfileHeaderCardProps) {
+  const { t } = useTranslation(["profile", "common"]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadMutation = useUploadProfilePicture();
 
@@ -33,7 +35,8 @@ export function ProfileHeaderCard({ user }: ProfileHeaderCardProps) {
     }
   };
 
-  const primaryRole = user.roles?.[0] ?? "Member";
+  const rawRole = user.roles?.[0] ?? "Member";
+  const roleLabel = t(`common:roles.${rawRole.toLowerCase()}`, { defaultValue: rawRole });
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs">
@@ -60,14 +63,14 @@ export function ProfileHeaderCard({ user }: ProfileHeaderCardProps) {
             onClick={() => fileInputRef.current?.click()}
             disabled={uploadMutation.isPending}
             className="absolute inset-0 flex flex-col items-center justify-center rounded-3xl bg-black/60 text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 cursor-pointer disabled:opacity-100"
-            title="Upload new picture"
+            title={t("profile:header.changePhoto")}
           >
             {uploadMutation.isPending ? (
               <MdRefresh className="size-6 animate-spin" />
             ) : (
               <>
                 <MdCameraAlt className="size-6" />
-                <span className="text-[10px] font-semibold mt-1">Change</span>
+                <span className="text-[10px] font-semibold mt-1">{t("profile:header.changePhoto")}</span>
               </>
             )}
           </button>
@@ -92,7 +95,7 @@ export function ProfileHeaderCard({ user }: ProfileHeaderCardProps) {
               className="gap-1 border-primary/30 bg-primary/10 text-primary text-xs font-semibold px-2.5 py-0.5 rounded-full"
             >
               <MdShield className="size-3.5" />
-              <span>{primaryRole}</span>
+              <span>{roleLabel}</span>
             </Badge>
           </div>
 
@@ -103,12 +106,12 @@ export function ProfileHeaderCard({ user }: ProfileHeaderCardProps) {
             </span>
             <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
               <MdVerified className="size-3.5" />
-              <span>Active Account</span>
+              <span>{t("profile:header.activeAccount")}</span>
             </span>
           </div>
 
           <p className="text-xs text-muted-foreground/80 max-w-xl pt-1">
-            Manage your personal contact info, medical preferences, and account security.
+            {t("profile:personalInfo.description")}
           </p>
         </div>
       </div>

@@ -311,7 +311,7 @@ export function PlanWizardSlideOver({
       <Drawer
         open={open}
         onOpenChange={handleClose}
-        direction="right"
+        direction="end"
         modal={true}
       >
         <DrawerContent className="w-full sm:max-w-xl">

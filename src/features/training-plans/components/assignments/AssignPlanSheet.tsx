@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { MdPerson, MdGroup, MdCheck, MdDeleteOutline } from "react-icons/md";
 import {
   Sheet,
@@ -32,6 +33,7 @@ export function AssignPlanSheet({
   open,
   onOpenChange,
 }: AssignPlanSheetProps) {
+  const { t } = useTranslation(["training", "common"]);
   const [target, setTarget] = useState<AssignTarget>("athletes");
   const [selectedAthletes, setSelectedAthletes] = useState<string[]>([]);
   const [selectedGroups, setSelectedGroups] = useState<number[]>([]);
@@ -84,12 +86,20 @@ export function AssignPlanSheet({
   const getConfirmLabel = () => {
     const parts: string[] = [];
     if (selectedGroups.length > 0) {
-      parts.push(`${selectedGroups.length} group${selectedGroups.length !== 1 ? "s" : ""}`);
+      parts.push(
+        selectedGroups.length === 1
+          ? t("training:assign.confirmGroups", { count: selectedGroups.length })
+          : t("training:assign.confirmGroups_plural", { count: selectedGroups.length })
+      );
     }
     if (selectedAthletes.length > 0) {
-      parts.push(`${selectedAthletes.length} athlete${selectedAthletes.length !== 1 ? "s" : ""}`);
+      parts.push(
+        selectedAthletes.length === 1
+          ? t("training:assign.confirm", { count: selectedAthletes.length })
+          : t("training:assign.confirm_plural", { count: selectedAthletes.length })
+      );
     }
-    return `Assign to ${parts.join(" & ")}`;
+    return parts.join(" & ");
   };
 
   function handleAssign() {
@@ -110,7 +120,7 @@ export function AssignPlanSheet({
       <SheetContent className="w-full sm:max-w-md flex flex-col gap-0 p-0">
         <SheetHeader className="px-6 pt-6 pb-4 border-b border-border">
           <SheetTitle className="text-base font-semibold">
-            Assign Training Plan
+            {t("training:assign.title")}
           </SheetTitle>
           {plan && (
             <SheetDescription className="text-sm text-muted-foreground">
@@ -134,7 +144,7 @@ export function AssignPlanSheet({
             >
               <span className="flex items-center gap-1.5 truncate">
                 <MdPerson className="size-4 shrink-0" />
-                Athletes
+                {t("training:assignments.athletesTab")}
               </span>
               {selectedAthletes.length > 0 && (
                 <Badge
@@ -158,7 +168,7 @@ export function AssignPlanSheet({
             >
               <span className="flex items-center gap-1.5 truncate">
                 <MdGroup className="size-4 shrink-0" />
-                Groups
+                {t("training:assignments.groupsTab")}
               </span>
               {selectedGroups.length > 0 && (
                 <Badge
@@ -172,7 +182,7 @@ export function AssignPlanSheet({
           </div>
 
           {isLoadingData ? (
-            <Loading label="Loading available data…" className="py-12" />
+            <Loading label={t("common:loading")} className="py-12" />
           ) : (
             <>
               {/* Athletes Tab List */}
@@ -180,7 +190,7 @@ export function AssignPlanSheet({
                 <div className="flex flex-col gap-2">
                   {athletes.length === 0 ? (
                     <p className="py-6 text-center text-xs text-muted-foreground">
-                      No available athletes found.
+                      {t("training:assignments.noAthletesAvailable")}
                     </p>
                   ) : (
                     athletes.map((athlete) => {
@@ -223,15 +233,15 @@ export function AssignPlanSheet({
                               type="button"
                               variant="outline"
                               size="sm"
-                              className="h-7 text-xs px-2.5 gap-1.5 bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-destructive/15 hover:text-destructive hover:border-destructive/30 transition-all duration-150 group/unassign"
-                              title="Click to unassign athlete"
+                              className="h-7 text-xs px-2.5 gap-1.5 bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-destructive/15 hover:text-destructive hover:border-destructive/30 transition-all duration-150 group/unassign cursor-pointer"
+                              title={t("training:assignments.unassign")}
                               disabled={deleteMutation.isPending}
                               onClick={() => deleteMutation.mutate(existing.id)}
                             >
                               <MdCheck className="size-3.5 group-hover/unassign:hidden" />
                               <MdDeleteOutline className="size-3.5 hidden group-hover/unassign:inline-block" />
-                              <span className="group-hover/unassign:hidden">Assigned</span>
-                              <span className="hidden group-hover/unassign:inline-block">Unassign</span>
+                              <span className="group-hover/unassign:hidden">{t("training:assignments.active")}</span>
+                              <span className="hidden group-hover/unassign:inline-block">{t("training:assignments.unassign")}</span>
                             </Button>
                           ) : (
                             <Button
@@ -243,10 +253,10 @@ export function AssignPlanSheet({
                             >
                               {isSelected ? (
                                 <>
-                                  <MdCheck className="size-3.5 me-1" /> Selected
+                                  <MdCheck className="size-3.5 me-1" /> {t("common:actions.selected", { defaultValue: "Selected" })}
                                 </>
                               ) : (
-                                "Select"
+                                t("common:actions.select", { defaultValue: "Select" })
                               )}
                             </Button>
                           )}
@@ -260,74 +270,80 @@ export function AssignPlanSheet({
               {/* Groups Tab List */}
               {target === "groups" && (
                 <div className="flex flex-col gap-2">
-                  {groups.map((group) => {
-                    const existing = existingAssignments.find(
-                      (a) =>
-                        a.group?.id === group.id ||
-                        (a.assignedTo ?? "").toLowerCase() ===
-                          (group.name ?? "").toLowerCase(),
-                    );
-                    const isSelected = selectedGroups.includes(group.id);
+                  {groups.length === 0 ? (
+                    <p className="py-6 text-center text-xs text-muted-foreground">
+                      {t("training:assignments.noGroupsAvailable")}
+                    </p>
+                  ) : (
+                    groups.map((group) => {
+                      const existing = existingAssignments.find(
+                        (a) =>
+                          a.group?.id === group.id ||
+                          (a.assignedTo ?? "").toLowerCase() ===
+                            (group.name ?? "").toLowerCase(),
+                      );
+                      const isSelected = selectedGroups.includes(group.id);
 
-                    return (
-                      <div
-                        key={group.id}
-                        className={cn(
-                          "flex items-center gap-3 rounded-xl p-2.5 border transition-all duration-150",
-                          existing
-                            ? "border-emerald-500/40 bg-emerald-500/10"
-                            : isSelected
-                              ? "border-primary bg-primary/10"
-                              : "border-border hover:bg-accent/50",
-                        )}
-                      >
-                        <div className="flex size-8 items-center justify-center rounded-lg bg-amber-500/15 shrink-0">
-                          <MdGroup className="size-4 text-amber-600 dark:text-amber-400" />
+                      return (
+                        <div
+                          key={group.id}
+                          className={cn(
+                            "flex items-center gap-3 rounded-xl p-2.5 border transition-all duration-150",
+                            existing
+                              ? "border-emerald-500/40 bg-emerald-500/10"
+                              : isSelected
+                                ? "border-primary bg-primary/10"
+                                : "border-border hover:bg-accent/50",
+                          )}
+                        >
+                          <div className="flex size-8 items-center justify-center rounded-lg bg-amber-500/15 shrink-0">
+                            <MdGroup className="size-4 text-amber-600 dark:text-amber-400" />
+                          </div>
+                          <span className="flex-1 text-xs font-medium text-foreground truncate">
+                            {group.name}
+                          </span>
+                          {group.athleteCount !== undefined && (
+                            <Badge variant="secondary" className="text-[10px]">
+                              {group.athleteCount} {t("training:assignments.athletesTab")}
+                            </Badge>
+                          )}
+
+                          {existing ? (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="h-7 text-xs px-2.5 gap-1.5 bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-destructive/15 hover:text-destructive hover:border-destructive/30 transition-all duration-150 group/unassign cursor-pointer"
+                              title={t("training:assignments.unassign")}
+                              disabled={deleteMutation.isPending}
+                              onClick={() => deleteMutation.mutate(existing.id)}
+                            >
+                              <MdCheck className="size-3.5 group-hover/unassign:hidden" />
+                              <MdDeleteOutline className="size-3.5 hidden group-hover/unassign:inline-block" />
+                              <span className="group-hover/unassign:hidden">{t("training:assignments.active")}</span>
+                              <span className="hidden group-hover/unassign:inline-block">{t("training:assignments.unassign")}</span>
+                            </Button>
+                          ) : (
+                            <Button
+                              type="button"
+                              variant={isSelected ? "default" : "outline"}
+                              size="sm"
+                              className="h-7 text-xs px-2.5 cursor-pointer"
+                              onClick={() => toggleGroup(group.id)}
+                            >
+                              {isSelected ? (
+                                <>
+                                  <MdCheck className="size-3.5 me-1" /> {t("common:actions.selected", { defaultValue: "Selected" })}
+                                </>
+                              ) : (
+                                t("common:actions.select", { defaultValue: "Select" })
+                              )}
+                            </Button>
+                          )}
                         </div>
-                        <span className="flex-1 text-xs font-medium text-foreground truncate">
-                          {group.name}
-                        </span>
-                        {group.athleteCount !== undefined && (
-                          <Badge variant="secondary" className="text-[10px]">
-                            {group.athleteCount} athletes
-                          </Badge>
-                        )}
-
-                        {existing ? (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="h-7 text-xs px-2.5 gap-1.5 bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-destructive/15 hover:text-destructive hover:border-destructive/30 transition-all duration-150 group/unassign"
-                            title="Click to unassign group"
-                            disabled={deleteMutation.isPending}
-                            onClick={() => deleteMutation.mutate(existing.id)}
-                          >
-                            <MdCheck className="size-3.5 group-hover/unassign:hidden" />
-                            <MdDeleteOutline className="size-3.5 hidden group-hover/unassign:inline-block" />
-                            <span className="group-hover/unassign:hidden">Assigned</span>
-                            <span className="hidden group-hover/unassign:inline-block">Unassign</span>
-                          </Button>
-                        ) : (
-                          <Button
-                            type="button"
-                            variant={isSelected ? "default" : "outline"}
-                            size="sm"
-                            className="h-7 text-xs px-2.5 cursor-pointer"
-                            onClick={() => toggleGroup(group.id)}
-                          >
-                            {isSelected ? (
-                              <>
-                                <MdCheck className="size-3.5 me-1" /> Selected
-                              </>
-                            ) : (
-                              "Select"
-                            )}
-                          </Button>
-                        )}
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                 </div>
               )}
             </>
@@ -341,10 +357,10 @@ export function AssignPlanSheet({
             className="w-full cursor-pointer"
           >
             {assignMutation.isPending
-              ? "Assigning..."
+              ? t("training:assign.assigning")
               : canAssign
                 ? getConfirmLabel()
-                : "Select targets to assign"}
+                : t("training:assign.selectTargets")}
           </Button>
         </div>
       </SheetContent>

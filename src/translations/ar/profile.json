@@ -1,0 +1,43 @@
+{
+  "header": {
+    "changePhoto": "تغيير",
+    "uploadNew": "رفع صورة شخصية جديدة",
+    "activeAccount": "حساب نشط",
+    "subtitle": "إدارة بيانات الاتصال الشخصية وإعدادات الأمان الخاصة بحسابك."
+  },
+  "info": {
+    "title": "البيانات الشخصية",
+    "description": "تحديث رقم الهاتف وجهة الاتصال في حالات الطوارئ والبيانات الأساسية.",
+    "phoneNumber": "رقم الهاتف",
+    "phoneNumberPlaceholder": "+201012345678",
+    "emergencyContact": "رقم الطوارئ",
+    "emergencyContactPlaceholder": "+201098765432",
+    "dateOfBirth": "تاريخ الميلاد",
+    "gender": "الجنس",
+    "genderPlaceholder": "اختر الجنس",
+    "genderMale": "ذكر",
+    "genderFemale": "أنثى",
+    "save": "حفظ البيانات",
+    "saving": "جارٍ حفظ التغييرات...",
+    "successToast": "تم تحديث الملف الشخصي بنجاح!",
+    "errorToast": "فشل تحديث البيانات الشخصية."
+  },
+  "security": {
+    "title": "الأمان وكلمة المرور",
+    "description": "احرص على استخدام كلمة مرور قوية وغير مكررة لحماية حسابك.",
+    "currentPassword": "كلمة المرور الحالية",
+    "currentPasswordPlaceholder": "••••••••",
+    "newPassword": "كلمة المرور الجديدة",
+    "newPasswordPlaceholder": "٨ أحرف على الأقل",
+    "confirmPassword": "تأكيد كلمة المرور الجديدة",
+    "confirmPasswordPlaceholder": "••••••••",
+    "submit": "تحديث كلمة المرور",
+    "updating": "جارٍ تحديث كلمة المرور...",
+    "successToast": "تم تغيير كلمة المرور بنجاح!",
+    "errorToast": "فشل تغيير كلمة المرور."
+  },
+  "avatar": {
+    "uploadSuccess": "تم تحديث الصورة الشخصية بنجاح!",
+    "uploadError": "فشل رفع الصورة الشخصية."
+  }
+}

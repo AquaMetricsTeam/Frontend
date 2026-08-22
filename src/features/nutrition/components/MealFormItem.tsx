@@ -9,15 +9,15 @@ import type {
   NutritionPlanFormValues,
 } from "../types/index";
 
-// Maps numeric MealType enum values to display labels
-const MEAL_TYPE_LABELS: Record<MealType, string> = {
-  [MealType.Breakfast]: "Breakfast",
-  [MealType.Lunch]: "Lunch",
-  [MealType.Dinner]: "Dinner",
-  [MealType.Snack]: "Snack",
-  [MealType.PreWorkout]: "Pre-Workout",
-  [MealType.PostWorkout]: "Post-Workout",
+const MEAL_TYPE_KEYS: Record<MealType, string> = {
+  [MealType.Breakfast]: "mealTypes.breakfast",
+  [MealType.Lunch]: "mealTypes.lunch",
+  [MealType.Dinner]: "mealTypes.dinner",
+  [MealType.Snack]: "mealTypes.snack",
+  [MealType.PreWorkout]: "mealTypes.preWorkout",
+  [MealType.PostWorkout]: "mealTypes.postWorkout",
 };
+
 
 interface MealFormItemProps {
   /** Position in the meals array (the original, unsorted index used by RHF) */
@@ -81,7 +81,8 @@ export function MealFormItem({ index, onRemove }: MealFormItemProps) {
     return isNaN(parsed) ? undefined : Math.max(0, parsed);
   };
 
-  const mealLabel = MEAL_TYPE_LABELS[mealTypeField.value as MealType] ?? "Meal";
+  const mealKey = MEAL_TYPE_KEYS[mealTypeField.value as MealType];
+  const mealLabel = mealKey ? t(mealKey) : "Meal";
 
   return (
     <div className="rounded-xl border border-border bg-card overflow-hidden">

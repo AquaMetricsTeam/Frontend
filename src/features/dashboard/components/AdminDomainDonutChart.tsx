@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MdDonutLarge, MdInfoOutline } from "react-icons/md";
 import type { DomainCount } from "../types/index";
 
@@ -16,6 +17,7 @@ interface AdminDomainDonutChartProps {
 }
 
 export function AdminDomainDonutChart({ data }: AdminDomainDonutChartProps) {
+  const { t } = useTranslation(["dashboard", "common"]);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   if (!data || data.length === 0) {
@@ -24,7 +26,7 @@ export function AdminDomainDonutChart({ data }: AdminDomainDonutChartProps) {
         <div className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
           <MdInfoOutline className="size-5" />
         </div>
-        <p className="mt-3 text-sm font-medium text-foreground">No domain data</p>
+        <p className="mt-3 text-sm font-medium text-foreground">{t("dashboard:charts.noData")}</p>
       </div>
     );
   }
@@ -72,7 +74,7 @@ export function AdminDomainDonutChart({ data }: AdminDomainDonutChartProps) {
   const hovered = hoveredIdx !== null ? arcs[hoveredIdx] : null;
   const centerLabel = hovered
     ? { value: hovered.athleteCount, name: hovered.domainName }
-    : { value: total, name: "Total" };
+    : { value: total, name: t("common:all") };
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5 shadow-xs transition-all hover:shadow-md">
@@ -81,8 +83,8 @@ export function AdminDomainDonutChart({ data }: AdminDomainDonutChartProps) {
           <MdDonutLarge className="size-5" />
         </div>
         <div>
-          <h3 className="text-sm font-bold text-foreground">Athletes by Domain</h3>
-          <p className="text-xs text-muted-foreground">Distribution across disciplines</p>
+          <h3 className="text-sm font-bold text-foreground">{t("dashboard:charts.domainDistribution")}</h3>
+          <p className="text-xs text-muted-foreground">{t("dashboard:charts.domainSubtitle")}</p>
         </div>
       </div>
 

@@ -52,8 +52,8 @@ export function ManageMembersDrawer({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="flex flex-col p-0 gap-0 inset-y-0 inset-e-0 inset-s-auto rounded-s-xl rounded-e-none max-w-lg w-full">
+    <Drawer open={open} onOpenChange={onOpenChange} direction="end">
+      <DrawerContent className="flex flex-col p-0 gap-0 max-w-lg w-full">
         {/* Header */}
         <DrawerHeader className="px-6 py-5 border-b border-border text-start pb-5">
           <div className="flex items-center gap-3">

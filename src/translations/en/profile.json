@@ -1,0 +1,43 @@
+{
+  "header": {
+    "changePhoto": "Change",
+    "uploadNew": "Upload new picture",
+    "activeAccount": "Active Account",
+    "subtitle": "Manage your personal contact info, medical preferences, and account security."
+  },
+  "info": {
+    "title": "Personal Information",
+    "description": "Update your phone, emergency contact, and personal details.",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "+201012345678",
+    "emergencyContact": "Emergency Contact",
+    "emergencyContactPlaceholder": "+201098765432",
+    "dateOfBirth": "Date of Birth",
+    "gender": "Gender",
+    "genderPlaceholder": "Select Gender",
+    "genderMale": "Male",
+    "genderFemale": "Female",
+    "save": "Save Profile",
+    "saving": "Saving Changes...",
+    "successToast": "Profile updated successfully!",
+    "errorToast": "Failed to update profile."
+  },
+  "security": {
+    "title": "Security & Password",
+    "description": "Ensure your account is using a long, random password to stay secure.",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "••••••••",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Min. 8 characters",
+    "confirmPassword": "Confirm New Password",
+    "confirmPasswordPlaceholder": "••••••••",
+    "submit": "Update Password",
+    "updating": "Updating Password...",
+    "successToast": "Password updated successfully!",
+    "errorToast": "Failed to update password."
+  },
+  "avatar": {
+    "uploadSuccess": "Profile picture updated successfully!",
+    "uploadError": "Failed to upload profile picture."
+  }
+}

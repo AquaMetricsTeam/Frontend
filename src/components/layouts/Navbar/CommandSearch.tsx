@@ -23,7 +23,7 @@ import { useAuth } from "@/components/Providers/AuthProvider";
 
 export function CommandSearch({ className }: { className?: string }) {
   const [open, setOpen] = useState(false);
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
   const navigate = useNavigate();
   const { hasRole } = useAuth();
 
@@ -60,7 +60,7 @@ export function CommandSearch({ className }: { className?: string }) {
       >
         <div className="flex items-center gap-2 truncate">
           <MdSearch className="size-4 shrink-0 text-muted-foreground" />
-          <span className="truncate">{t("common:table.search")}</span>
+          <span className="truncate">{t("commandSearch.placeholder")}</span>
         </div>
         <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-0.5 rounded border border-border bg-background px-1.5 font-mono text-[10px] font-medium opacity-80">
           <span className="text-[9px]">Ctrl</span>K
@@ -71,52 +71,52 @@ export function CommandSearch({ className }: { className?: string }) {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="overflow-hidden p-0 max-w-lg">
           <DialogHeader className="sr-only">
-            <DialogTitle>{t("common:table.search")}</DialogTitle>
+            <DialogTitle>{t("commandSearch.placeholder")}</DialogTitle>
           </DialogHeader>
 
           <Command className="rounded-lg border-none">
             <CommandInput
-              placeholder={t("common:table.search")}
+              placeholder={t("commandSearch.placeholder")}
               className="h-11"
             />
             <CommandList className="max-h-[300px]">
-              <CommandEmpty>{t("common:table.noResults")}</CommandEmpty>
+              <CommandEmpty>{t("commandSearch.noResults")}</CommandEmpty>
 
-              <CommandGroup heading="Pages">
+              <CommandGroup heading={t("commandSearch.pages")}>
                 <CommandItem onSelect={() => handleSelect("/")}>
-                  <span>Dashboard</span>
+                  <span>{t("commandSearch.dashboard")}</span>
                 </CommandItem>
                 <CommandItem onSelect={() => handleSelect("/athletes")}>
-                  <span>Athletes</span>
+                  <span>{t("commandSearch.athletes")}</span>
                 </CommandItem>
                 {hasRole("Admin") && (
                   <CommandItem onSelect={() => handleSelect("/users")}>
-                    <span>Users & Staff</span>
+                    <span>{t("commandSearch.users")}</span>
                   </CommandItem>
                 )}
                 {hasRole("SwimmingCoach") && (
                   <CommandItem onSelect={() => handleSelect("/swimming")}>
-                    <span>Swimming Program</span>
+                    <span>{t("commandSearch.swimming")}</span>
                   </CommandItem>
                 )}
                 {hasRole("FitnessCoach") && (
                   <CommandItem onSelect={() => handleSelect("/fitness")}>
-                    <span>Fitness Program</span>
+                    <span>{t("commandSearch.fitness")}</span>
                   </CommandItem>
                 )}
               </CommandGroup>
 
               <CommandSeparator />
 
-              <CommandGroup heading="Quick Actions">
+              <CommandGroup heading={t("commandSearch.actions")}>
                 <CommandItem onSelect={() => handleSelect("/attendance")}>
-                  <span>Check Attendance</span>
+                  <span>{t("commandSearch.attendance")}</span>
                 </CommandItem>
                 <CommandItem onSelect={() => handleSelect("/reports")}>
-                  <span>Generate Report</span>
+                  <span>{t("commandSearch.reports")}</span>
                 </CommandItem>
-                <CommandItem onSelect={() => handleSelect("/settings")}>
-                  <span>Settings</span>
+                <CommandItem onSelect={() => handleSelect("/profile")}>
+                  <span>{t("commandSearch.settings")}</span>
                 </CommandItem>
               </CommandGroup>
             </CommandList>

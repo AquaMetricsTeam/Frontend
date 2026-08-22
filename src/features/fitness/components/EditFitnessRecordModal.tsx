@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import {
   Dialog,
@@ -58,6 +59,7 @@ export function EditFitnessRecordModal({
   open,
   onOpenChange,
 }: EditFitnessRecordModalProps) {
+  const { t } = useTranslation(["fitness", "swimming", "common"]);
   const queryClient = useQueryClient();
   const updateMutation = useUpdateTrainingRecord(record?.id ?? 0);
 
@@ -105,11 +107,11 @@ export function EditFitnessRecordModal({
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: TRAINING_RECORD_KEYS.all });
-          toast.success("Training record updated successfully");
+          toast.success(t("fitness:editModal.successToast"));
           onOpenChange(false);
         },
         onError: (err: { message?: string }) => {
-          toast.error(err?.message ?? "Failed to update training record");
+          toast.error(err?.message ?? t("fitness:editModal.errorToast"));
         },
       },
     );
@@ -127,7 +129,7 @@ export function EditFitnessRecordModal({
           <div className="flex items-center gap-2">
             <MdEdit className="size-5 text-amber-500" />
             <DialogTitle className="text-base font-bold">
-              Edit Record — #{record.id}
+              {t("fitness:editModal.title", { id: record.id })}
             </DialogTitle>
           </div>
         </DialogHeader>
@@ -138,7 +140,7 @@ export function EditFitnessRecordModal({
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-xs">
                 <Label className="font-semibold text-foreground text-xs">
-                  Performance Rating
+                  {t("fitness:drawer.ratingLabel")}
                 </Label>
                 <Badge
                   variant="secondary"
@@ -163,7 +165,7 @@ export function EditFitnessRecordModal({
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-xs">
                 <Label className="font-semibold text-foreground text-xs">
-                  Fatigue Level
+                  {t("fitness:drawer.fatigueLabel")}
                 </Label>
                 <Badge
                   variant="secondary"
@@ -195,7 +197,9 @@ export function EditFitnessRecordModal({
                     : "bg-muted/30 text-muted-foreground border-border"
                 }`}
               >
-                {sessionCompleted ? "✓ Session Completed" : "Session Incomplete"}
+                {sessionCompleted
+                  ? `✓ ${t("fitness:table.completed")}`
+                  : t("fitness:table.incomplete")}
               </button>
 
               <button
@@ -215,7 +219,9 @@ export function EditFitnessRecordModal({
                     : "bg-muted/30 text-muted-foreground border-border"
                 }`}
               >
-                {injuryOccurred ? "⚠ Injury Occurred" : "No Injury"}
+                {injuryOccurred
+                  ? `⚠ ${t("fitness:table.injuryReported")}`
+                  : t("fitness:table.noInjury")}
               </button>
             </div>
 
@@ -225,11 +231,11 @@ export function EditFitnessRecordModal({
             {/* Overall Comment */}
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                Overall Comment
+                {t("fitness:drawer.coachNotes")}
               </Label>
               <Textarea
                 {...register("overallComment")}
-                placeholder="Optional coach comment..."
+                placeholder={t("fitness:drawer.coachNotesPlaceholder")}
                 className="resize-none text-sm min-h-[80px]"
               />
             </div>
@@ -242,7 +248,7 @@ export function EditFitnessRecordModal({
                 onClick={() => onOpenChange(false)}
                 className="h-8 text-xs cursor-pointer"
               >
-                Cancel
+                {t("common:cancel")}
               </Button>
               <Button
                 type="submit"
@@ -250,7 +256,7 @@ export function EditFitnessRecordModal({
                 disabled={updateMutation.isPending}
                 className="h-8 text-xs cursor-pointer"
               >
-                {updateMutation.isPending ? "Saving..." : "Save Changes"}
+                {updateMutation.isPending ? t("common:saving") : t("common:saveChanges")}
               </Button>
             </DialogFooter>
           </form>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import PageWrapper from "@/components/layouts/PageWrapper";
 import WithPagination from "@/components/HOCs/WithPagination";
 import Box from "@/components/layouts/Box";
@@ -14,6 +15,7 @@ import { EditFitnessRecordModal } from "@/features/fitness/components/EditFitnes
 import type { TrainingRecordResponse } from "@/features/training-record/types";
 
 export default function FitnessPage() {
+  const { t } = useTranslation("fitness");
   const {
     page,
     localSearch,
@@ -75,17 +77,19 @@ export default function FitnessPage() {
               className="text-2xl font-bold tracking-tight text-foreground"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Fitness Records
+              {t("page.title")}
             </h1>
             <Badge
               variant="secondary"
               className="rounded-full px-2.5 py-0.5 text-xs font-semibold text-primary bg-primary/10 border-primary/20"
             >
-              {totalCount} {totalCount === 1 ? "record" : "records"}
+              {totalCount === 1
+                ? t("page.recordCount", { count: totalCount })
+                : t("page.recordCount_plural", { count: totalCount })}
             </Badge>
           </div>
           <p className="mt-1 text-sm text-muted-foreground ms-12">
-            Track athlete fitness session performances and exercise data
+            {t("page.description")}
           </p>
         </div>
       </div>

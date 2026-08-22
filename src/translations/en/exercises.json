@@ -7,6 +7,106 @@
     "exerciseCount": "{{count}} exercise",
     "exerciseCount_plural": "{{count}} exercises"
   },
+  "sections": {
+    "muscleGroupsTitle": "Muscle Groups",
+    "muscleGroupsSubtitle": "Select a muscle group to browse fitness exercises",
+    "swimmingCategoriesTitle": "Swimming Categories",
+    "swimmingCategoriesSubtitle": "Select a category to browse swimming exercises"
+  },
+  "filters": {
+    "all": "All Categories",
+    "strokes": "Strokes & Medley",
+    "skills": "Skills & Technique",
+    "energy": "Energy & Conditioning",
+    "upperBody": "Upper Body",
+    "lowerBody": "Lower Body",
+    "coreFull": "Core & Full Body",
+    "searchPlaceholder": "Search categories..."
+  },
+  "swimmingSublabels": {
+    "freestyle": "Front Crawl & Sprint",
+    "backstroke": "Supine Stroke & Kick",
+    "breaststroke": "Whip Kick & Glide",
+    "butterfly": "Dolphin & Undulation",
+    "starts": "Block Takeoff & Reaction",
+    "turns": "Flip & Open Turns",
+    "underwater": "Streamline & Dolphin",
+    "kicking": "Flutter & Dolphin Power",
+    "pulling": "Catch, Pull & Finish",
+    "drills": "Form Isolation & Drills",
+    "technique": "Form & Body Alignment",
+    "breathing": "Hypoxic & Breathing Pattern",
+    "endurance": "Aerobic Capacity & Stamina",
+    "sprint": "Max Speed & Fast Twitch",
+    "racePace": "Goal Pace Conditioning",
+    "aerobic": "Base Conditioning & Aerobic",
+    "anaerobic": "Lactate & High Intensity",
+    "individualMedley": "Fly / Back / Breast / Free",
+    "openWater": "Sighting, Pack & Distance",
+    "recovery": "Active Recovery & Flush"
+  },
+  "muscleSublabels": {
+    "chest": "Pectorals & Push Power",
+    "back": "Lats, Rhomboids & Pull",
+    "shoulders": "Deltoids & Overhead Stability",
+    "biceps": "Arm Flexors & Pulling Strength",
+    "triceps": "Arm Extensors & Lockout",
+    "forearms": "Grip Strength & Wrist Control",
+    "quadriceps": "Knee Extensors & Leg Drive",
+    "hamstrings": "Knee Flexors & Posterior Chain",
+    "glutes": "Hip Extension & Power",
+    "calves": "Ankle Plantarflexion & Push",
+    "core": "Abdominals & Core Stability",
+    "traps": "Upper Back & Shrug Stability",
+    "lowerBack": "Erector Spinae & Posterior",
+    "fullBody": "Compound Kinetic Chain"
+  },
+  "categoryTags": {
+    "stroke": "Stroke",
+    "skill": "Skill",
+    "energy": "Energy",
+    "upper": "Upper",
+    "lower": "Lower",
+    "core": "Core"
+  },
+  "muscleGroups": {
+    "chest": "Chest",
+    "back": "Back",
+    "shoulders": "Shoulders",
+    "biceps": "Biceps",
+    "triceps": "Triceps",
+    "forearms": "Forearms",
+    "quadriceps": "Quads",
+    "hamstrings": "Hamstrings",
+    "glutes": "Glutes",
+    "calves": "Calves",
+    "core": "Core",
+    "traps": "Traps",
+    "lowerBack": "Lower Back",
+    "fullBody": "Full Body"
+  },
+  "swimmingCategories": {
+    "freestyle": "Freestyle",
+    "backstroke": "Backstroke",
+    "breaststroke": "Breaststroke",
+    "butterfly": "Butterfly",
+    "starts": "Starts",
+    "turns": "Turns",
+    "underwater": "Underwater",
+    "kicking": "Kicking",
+    "pulling": "Pulling",
+    "drills": "Drills",
+    "technique": "Technique",
+    "breathing": "Breathing",
+    "endurance": "Endurance",
+    "sprint": "Sprint",
+    "racePace": "Race Pace",
+    "aerobic": "Aerobic",
+    "anaerobic": "Anaerobic",
+    "individualMedley": "Indiv. Medley",
+    "openWater": "Open Water",
+    "recovery": "Recovery"
+  },
   "search": {
     "placeholder": "Search exercises..."
   },
@@ -44,6 +144,9 @@
   "editModal": {
     "title": "Edit Exercise",
     "description": "Update this exercise's details.",
+    "typeLabel": "Exercise Type",
+    "fitness": "Fitness",
+    "swimming": "Swimming",
     "saving": "Saving…",
     "submit": "Save Changes"
   },
@@ -55,4 +158,3 @@
     "deleting": "Deleting…"
   }
 }
-

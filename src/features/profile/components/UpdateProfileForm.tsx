@@ -1,5 +1,6 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import {
   MdPhone,
   MdContactPhone,
@@ -20,13 +21,14 @@ interface UpdateProfileFormProps {
   user: AuthUser;
 }
 
-const GENDER_OPTIONS = [
-  { value: "1", label: "Male" },
-  { value: "2", label: "Female" },
-];
-
 export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
+  const { t } = useTranslation(["profile", "common"]);
   const mutation = useUpdateProfile();
+
+  const genderOptions = [
+    { value: "1", label: t("common:gender.male") },
+    { value: "2", label: t("common:gender.female") },
+  ];
 
   const methods = useForm<UpdateProfileFormValues>({
     resolver: zodResolver(updateProfileSchema),
@@ -54,10 +56,10 @@ export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
     <div className="rounded-3xl border border-border/80 bg-card p-6 sm:p-7 shadow-xs">
       <div className="border-b border-border/60 pb-4 mb-6">
         <h2 className="text-base font-bold text-foreground">
-          Personal Information
+          {t("profile:personalInfo.title")}
         </h2>
         <p className="text-xs text-muted-foreground mt-0.5">
-          Update your phone, emergency contact, and medical details.
+          {t("profile:personalInfo.description")}
         </p>
       </div>
 
@@ -67,7 +69,7 @@ export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
             {/* Phone Number */}
             <InputField<UpdateProfileFormValues>
               name="phoneNumber"
-              label="Phone Number"
+              label={t("profile:personalInfo.phoneNumber")}
               placeholder="+201012345678"
               required
               startIcon={<MdPhone className="size-4 text-muted-foreground" />}
@@ -76,7 +78,7 @@ export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
             {/* Emergency Contact */}
             <InputField<UpdateProfileFormValues>
               name="emergencyContact"
-              label="Emergency Contact"
+              label={t("profile:personalInfo.emergencyContact")}
               placeholder="+201098765432"
               startIcon={
                 <MdContactPhone className="size-4 text-muted-foreground" />
@@ -88,7 +90,7 @@ export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
             {/* Date of Birth */}
             <InputField<UpdateProfileFormValues>
               name="dateOfBirth"
-              label="Date of Birth"
+              label={t("profile:personalInfo.dateOfBirth")}
               type="date"
               startIcon={
                 <MdCalendarToday className="size-4 text-muted-foreground" />
@@ -98,20 +100,12 @@ export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
             {/* Gender */}
             <SelectField<UpdateProfileFormValues>
               name="gender"
-              label="Gender"
-              options={GENDER_OPTIONS}
+              label={t("profile:personalInfo.gender")}
+              options={genderOptions}
               valueType="number"
-              placeholder="Select Gender"
+              placeholder={t("profile:personalInfo.selectGender")}
             />
           </div>
-
-          {/* Medical Notes */}
-          {/* <TextareaField<UpdateProfileFormValues>
-            name="medicalNotes"
-            label="Medical Notes / Health Conditions"
-            placeholder="Any allergies, previous injuries, or medical considerations..."
-            rows={3}
-          /> */}
 
           <div className="pt-2 flex justify-end">
             <Button
@@ -121,7 +115,7 @@ export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
             >
               <MdSave className="size-4" />
               <span>
-                {mutation.isPending ? "Saving Changes..." : "Save Profile"}
+                {mutation.isPending ? t("common:saving") : t("profile:personalInfo.save")}
               </span>
             </Button>
           </div>

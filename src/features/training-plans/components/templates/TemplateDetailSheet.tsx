@@ -42,7 +42,7 @@ export function TemplateDetailSheet({
   onEdit,
   onAssign,
 }: TemplateDetailSheetProps) {
-  const { t } = useTranslation("training");
+  const { t } = useTranslation(["training", "common"]);
   const planId = plan?.id ?? 0;
 
   const { data: detailRes, isLoading: planLoading } = useTrainingPlan(
@@ -119,8 +119,8 @@ export function TemplateDetailSheet({
                     }
                   >
                     {activePlan.isArchived
-                      ? t("templates.filter.archived")
-                      : t("templates.filter.active")}
+                      ? t("training:templates.filter.archived")
+                      : t("training:templates.filter.active")}
                   </Badge>
                   <span className="text-xs text-muted-foreground">
                     ID #{activePlan.id}
@@ -140,7 +140,7 @@ export function TemplateDetailSheet({
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
           {planLoading ? (
-            <Loading label="Loading plan details…" className="py-16" />
+            <Loading label={t("common:loading")} className="py-16" />
           ) : (
             <>
               {/* Quick Metrics Bar */}
@@ -148,17 +148,17 @@ export function TemplateDetailSheet({
                 <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-accent/40 border border-border/70 text-center">
                   <span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
                     <MdTimer className="size-3.5 text-primary" />
-                    Duration
+                    {t("training:templates.table.duration")}
                   </span>
                   <span className="text-sm font-bold text-foreground mt-0.5">
-                    {totalDuration}m
+                    {totalDuration} {t("training:templates.detail.durationUnit", { defaultValue: "د" })}
                   </span>
                 </div>
 
                 <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-accent/40 border border-border/70 text-center">
                   <span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
                     <MdFitnessCenter className="size-3.5 text-secondary-foreground" />
-                    Exercises
+                    {t("training:templates.table.exercises")}
                   </span>
                   <span className="text-sm font-bold text-foreground mt-0.5">
                     {exercises.length}
@@ -168,7 +168,7 @@ export function TemplateDetailSheet({
                 <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-accent/40 border border-border/70 text-center">
                   <span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
                     <MdRepeat className="size-3.5 text-amber-500" />
-                    Sets
+                    {t("training:wizard.step2.sets")}
                   </span>
                   <span className="text-sm font-bold text-foreground mt-0.5">
                     {totalSets}
@@ -181,7 +181,7 @@ export function TemplateDetailSheet({
                   </span>
                   <span className="text-sm font-bold text-foreground mt-0.5">
                     {totalReps}
-                    {isSwimmingPlan ? "m" : ""}
+                    {isSwimmingPlan ? ` ${t("training:labels.metersUnit")}` : ` ${t("training:labels.repsUnit")}`}
                   </span>
                 </div>
               </div>
@@ -190,13 +190,13 @@ export function TemplateDetailSheet({
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Exercises Sequence ({exercises.length})
+                    {t("training:templates.detail.exercisesSequence", { count: exercises.length })}
                   </h3>
                 </div>
 
                 {exercises.length === 0 ? (
                   <div className="py-8 text-center border border-dashed border-border rounded-xl text-xs text-muted-foreground">
-                    No exercises added to this plan yet.
+                    {t("training:templates.detail.noExercises")}
                   </div>
                 ) : (
                   <div className="space-y-2.5">
@@ -240,7 +240,7 @@ export function TemplateDetailSheet({
                                 className="text-xs font-medium shrink-0 bg-muted/60"
                               >
                                 <MdTimer className="size-3 me-1 text-primary" />
-                                {ex.duration} min
+                                {ex.duration} {t("training:templates.detail.durationUnit", { defaultValue: "د" })}
                               </Badge>
                             )}
                           </div>
@@ -249,7 +249,7 @@ export function TemplateDetailSheet({
                           <div className="mt-2.5 flex flex-wrap items-center gap-2">
                             <span className="inline-flex items-center gap-1 rounded-md bg-secondary/20 px-2 py-1 text-xs font-medium text-foreground">
                               <span className="text-muted-foreground font-normal">
-                                Sets:
+                                {t("training:wizard.step2.sets")}:
                               </span>{" "}
                               {ex.sets}
                             </span>
@@ -258,34 +258,34 @@ export function TemplateDetailSheet({
                                 <RepsLabel isSwimming={isSwimEx} />:
                               </span>{" "}
                               {ex.reps}
-                              {isSwimEx ? "m" : ""}
+                              {isSwimEx ? ` ${t("training:labels.metersUnit")}` : ` ${t("training:labels.repsUnit")}`}
                             </span>
                             {ex.restSeconds !== undefined && ex.restSeconds !== null && ex.restSeconds > 0 && (
                               <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
                                 <span className="font-normal opacity-80">
-                                  {t("labels.rest", { defaultValue: "Rest" })}:
+                                  {t("training:labels.rest", { defaultValue: "الراحة" })}:
                                 </span>{" "}
-                                {ex.restSeconds}s
+                                {ex.restSeconds} {t("training:templates.detail.secondsUnit", { defaultValue: "ث" })}
                               </span>
                             )}
                             {ex.restAfter !== undefined && ex.restAfter !== null && ex.restAfter > 0 && (
                               <span className="inline-flex items-center gap-1 rounded-md bg-sky-500/10 px-2 py-1 text-xs font-medium text-sky-600 dark:text-sky-400">
                                 <span className="font-normal opacity-80">
-                                  {t("labels.restAfter", { defaultValue: "Rest After" })}:
+                                  {t("training:labels.restAfter", { defaultValue: "الراحة البينية" })}:
                                 </span>{" "}
-                                {ex.restAfter}s
+                                {ex.restAfter} {t("training:templates.detail.secondsUnit", { defaultValue: "ث" })}
                               </span>
                             )}
                             {ex.intensity ? (
                               <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-600 dark:text-amber-400">
                                 <span className="font-normal opacity-80">
-                                  {t("wizard.step2.intensity", { defaultValue: "Intensity" })}:
+                                  {t("training:wizard.step2.intensity", { defaultValue: "الشدة" })}:
                                 </span>{" "}
-                                {ex.intensity === 1 || ex.intensity === "Low"
-                                  ? t("intensity.low", { defaultValue: "Low" })
-                                  : ex.intensity === 3 || ex.intensity === "High"
-                                    ? t("intensity.high", { defaultValue: "High" })
-                                    : t("intensity.medium", { defaultValue: "Medium" })}
+                                {ex.intensity === 1 || String(ex.intensity).toLowerCase() === "low"
+                                  ? t("training:intensity.low", { defaultValue: "منخفضة" })
+                                  : ex.intensity === 3 || String(ex.intensity).toLowerCase() === "high"
+                                    ? t("training:intensity.high", { defaultValue: "عالية" })
+                                    : t("training:intensity.medium", { defaultValue: "متوسطة" })}
                               </span>
                             ) : null}
                           </div>
@@ -308,17 +308,17 @@ export function TemplateDetailSheet({
               <div className="space-y-3 pt-2 border-t border-border">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Current Assignments ({assignments.length})
+                    {t("training:assignments.currentAssignments", { count: assignments.length })}
                   </h3>
                 </div>
 
                 {assignmentsLoading ? (
                   <p className="text-xs text-muted-foreground py-2">
-                    Loading assignments...
+                    {t("training:assignments.loadingAssignments")}
                   </p>
                 ) : assignments.length === 0 ? (
                   <div className="flex items-center justify-between p-3 rounded-xl border border-dashed border-border bg-muted/10 text-xs text-muted-foreground">
-                    <span>Not assigned to any athletes or groups yet.</span>
+                    <span>{t("training:templates.detail.notAssignedYet")}</span>
                     {onAssign && !activePlan.isArchived && (
                       <Button
                         type="button"
@@ -331,7 +331,7 @@ export function TemplateDetailSheet({
                         }}
                       >
                         <MdAssignment className="size-3.5" />
-                        Assign Now
+                        {t("training:templates.detail.assignNow")}
                       </Button>
                     )}
                   </div>
@@ -368,7 +368,9 @@ export function TemplateDetailSheet({
                               assignment.assignedTo}
                           </p>
                           <p className="text-[10px] text-muted-foreground">
-                            {assignment.athlete ? "Athlete" : "Group"}
+                            {assignment.athlete
+                              ? t("training:assignments.athletesTab")
+                              : t("training:assignments.groupsTab")}
                           </p>
                         </div>
                       </div>
@@ -389,7 +391,7 @@ export function TemplateDetailSheet({
             onClick={() => onOpenChange(false)}
             className="cursor-pointer"
           >
-            Close
+            {t("common:actions.close", { defaultValue: "إغلاق" })}
           </Button>
 
           <div className="flex items-center gap-2">
@@ -405,7 +407,7 @@ export function TemplateDetailSheet({
                 }}
               >
                 <MdAssignment className="size-4" />
-                Assign
+                {t("training:templates.actions.assign")}
               </Button>
             )}
 
@@ -420,7 +422,7 @@ export function TemplateDetailSheet({
                 }}
               >
                 <MdEdit className="size-4" />
-                Edit Plan
+                {t("training:templates.actions.edit")}
               </Button>
             )}
           </div>

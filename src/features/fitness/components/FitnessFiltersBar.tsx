@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { SearchInput } from "@/components/common/SearchInput";
 import { ComboboxSelect, type ComboboxOption } from "@/components/common/ComboboxSelect";
 import { Button } from "@/components/ui/button";
@@ -11,11 +12,6 @@ import {
   MdKeyboardArrowUp,
 } from "react-icons/md";
 import { useAthletesLookup } from "@/features/lookups/hooks/useAthletesLookup";
-
-const COMPLETION_OPTIONS: ComboboxOption[] = [
-  { value: "true", label: "Completed" },
-  { value: "false", label: "Incomplete" },
-];
 
 interface FitnessFiltersBarProps {
   localSearch: string;
@@ -40,8 +36,14 @@ export function FitnessFiltersBar({
   onSortChange,
   onLogClick,
 }: FitnessFiltersBarProps) {
+  const { t } = useTranslation(["fitness", "common"]);
   const { data: athletesRes } = useAthletesLookup();
   const athletes = athletesRes?.data ?? [];
+
+  const completionOptions: ComboboxOption[] = [
+    { value: "true", label: t("fitness:filters.completed") },
+    { value: "false", label: t("fitness:filters.notCompleted") },
+  ];
 
   const athleteOptions = athletes.map((ath) => ({
     value: "athleteId" in ath ? ath.athleteId : (ath as { id: string }).id,
@@ -60,7 +62,7 @@ export function FitnessFiltersBar({
           <SearchInput
             value={localSearch}
             onChange={onSearchChange}
-            placeholder="Search by athlete or session…"
+            placeholder={t("fitness:filters.searchPlaceholder")}
             className="w-full sm:w-72"
           />
           {activeFilters > 0 && (
@@ -80,7 +82,7 @@ export function FitnessFiltersBar({
           className="h-9 rounded-lg gap-1.5 shrink-0 cursor-pointer"
         >
           <MdAdd className="size-4" />
-          Log Record
+          {t("fitness:page.logButton")}
         </Button>
       </div>
 
@@ -88,10 +90,10 @@ export function FitnessFiltersBar({
       <div className="flex flex-wrap items-end gap-3">
         {/* Athlete Combobox */}
         <ComboboxSelect
-          label="Athlete"
-          placeholder="All Athletes"
-          searchPlaceholder="Search athletes..."
-          clearLabel="All Athletes"
+          label={t("fitness:filters.athleteLabel")}
+          placeholder={t("fitness:filters.allAthletes")}
+          searchPlaceholder={t("common:table.search")}
+          clearLabel={t("fitness:filters.allAthletes")}
           options={athleteOptions}
           value={athleteId ?? ""}
           onValueChange={(val) => onAthleteChange(val || undefined)}
@@ -101,11 +103,11 @@ export function FitnessFiltersBar({
 
         {/* Session Completed Combobox */}
         <ComboboxSelect
-          label="Completion"
-          placeholder="Any Status"
-          searchPlaceholder="Search status..."
-          clearLabel="Any Status"
-          options={COMPLETION_OPTIONS}
+          label={t("fitness:filters.sessionCompletedLabel")}
+          placeholder={t("fitness:filters.allStatuses")}
+          searchPlaceholder={t("common:table.search")}
+          clearLabel={t("fitness:filters.allStatuses")}
+          options={completionOptions}
           value={
             sessionCompleted === undefined ? "" : String(sessionCompleted)
           }
@@ -123,7 +125,7 @@ export function FitnessFiltersBar({
         {/* Sort */}
         <div className="flex flex-col gap-1">
           <Label className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/80 px-0.5">
-            Sort
+            {t("common:table.actions")}
           </Label>
           <Button
             type="button"
@@ -134,9 +136,9 @@ export function FitnessFiltersBar({
           >
             <MdSortByAlpha className="size-4" />
             {descending ? (
-              <>Newest <MdKeyboardArrowDown className="size-3.5" /></>
+              <>{t("fitness:filters.sortDescending")} <MdKeyboardArrowDown className="size-3.5" /></>
             ) : (
-              <>Oldest <MdKeyboardArrowUp className="size-3.5" /></>
+              <>{t("fitness:filters.sortAscending")} <MdKeyboardArrowUp className="size-3.5" /></>
             )}
           </Button>
         </div>
