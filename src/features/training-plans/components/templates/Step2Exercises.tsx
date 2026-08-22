@@ -83,12 +83,23 @@ export function Step2Exercises({
         <div className="flex items-center justify-between">
           <p className="text-xs font-medium text-muted-foreground">
             {fields.length === 1
-              ? t("wizard.step2.exercisesAdded", { count: fields.length })
-              : t("wizard.step2.exercisesAdded_plural", { count: fields.length })}{" "}
-            {t("wizard.step2.dragToReorder")}
+              ? t("wizard.step2.exercisesAdded", {
+                  count: fields.length,
+                  defaultValue: "1 exercise added",
+                })
+              : t("wizard.step2.exercisesAdded_plural", {
+                  count: fields.length,
+                  defaultValue: `${fields.length} exercises added`,
+                })}{" "}
+            {t("wizard.step2.dragToReorder", {
+              defaultValue: "• Drag to reorder",
+            })}
           </p>
           <Badge variant="secondary" className="gap-1.5 text-xs">
-            <MdTimer className="size-3.5" />~{totalMinutes} {t("wizard.step2.minutesEstimated")}
+            <MdTimer className="size-3.5" />~{totalMinutes}{" "}
+            {t("wizard.step2.minutesEstimated", {
+              defaultValue: "min estimated",
+            })}
           </Badge>
         </div>
 
