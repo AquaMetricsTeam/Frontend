@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MdGroup, MdCheck } from "react-icons/md";
@@ -23,6 +24,7 @@ export function Step3Assignment({
   onNext,
   onBack,
 }: Step3AssignmentProps) {
+  const { t } = useTranslation("training");
   const form = useForm<AssignmentStepFormValues>({
     resolver: zodResolver(assignmentStepSchema),
     defaultValues: {
@@ -69,15 +71,15 @@ export function Step3Assignment({
               type="button"
               onClick={() => form.setValue("assignNow", false)}
               className={cn(
-                "flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-start transition-all duration-200",
+                "flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-start transition-all duration-200 cursor-pointer",
                 !assignNow
                   ? "border-primary bg-primary/8 text-primary"
                   : "border-border text-muted-foreground hover:text-foreground",
               )}
             >
-              <span className="text-sm font-semibold">Save as Template</span>
+              <span className="text-sm font-semibold">{t("wizard.step3.saveAsTemplate")}</span>
               <span className="text-xs opacity-75">
-                Save without assigning to any athletes yet
+                {t("wizard.step3.saveAsTemplateDesc")}
               </span>
             </button>
 
@@ -85,15 +87,15 @@ export function Step3Assignment({
               type="button"
               onClick={() => form.setValue("assignNow", true)}
               className={cn(
-                "flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-start transition-all duration-200",
+                "flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-start transition-all duration-200 cursor-pointer",
                 assignNow
                   ? "border-primary bg-primary/8 text-primary"
                   : "border-border text-muted-foreground hover:text-foreground",
               )}
             >
-              <span className="text-sm font-semibold">Save & Assign</span>
+              <span className="text-sm font-semibold">{t("wizard.step3.saveAndAssign")}</span>
               <span className="text-xs opacity-75">
-                Assign to athletes or groups immediately
+                {t("wizard.step3.saveAndAssignDesc")}
               </span>
             </button>
           </div>
@@ -104,7 +106,7 @@ export function Step3Assignment({
               {/* Groups */}
               <div className="space-y-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Athlete Groups
+                  {t("assign.groups")}
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {groups.map((group) => {
@@ -115,7 +117,7 @@ export function Step3Assignment({
                         type="button"
                         onClick={() => toggleGroup(group.id)}
                         className={cn(
-                          "flex items-center gap-2.5 rounded-lg p-2.5 border text-xs font-medium transition-all text-start",
+                          "flex items-center gap-2.5 rounded-lg p-2.5 border text-xs font-medium transition-all text-start cursor-pointer",
                           isSelected
                             ? "border-primary bg-primary/8 text-primary"
                             : "border-border text-muted-foreground hover:bg-accent",
@@ -138,12 +140,12 @@ export function Step3Assignment({
               {/* Athletes */}
               <div className="space-y-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Individual Athletes
+                  {t("assign.athletes")}
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
                   {athletes.length === 0 ? (
                     <p className="col-span-2 py-4 text-center text-xs text-muted-foreground">
-                      No available athletes found.
+                      {t("assignments.noAthletesAvailable")}
                     </p>
                   ) : (
                     athletes.map((athlete) => {
@@ -154,7 +156,7 @@ export function Step3Assignment({
                           type="button"
                           onClick={() => toggleAthlete(athlete.athleteId)}
                           className={cn(
-                            "flex items-center gap-2.5 rounded-lg p-2.5 border text-xs font-medium transition-all text-start",
+                            "flex items-center gap-2.5 rounded-lg p-2.5 border text-xs font-medium transition-all text-start cursor-pointer",
                             isSelected
                               ? "border-primary bg-primary/8 text-primary"
                               : "border-border text-muted-foreground hover:bg-accent",
@@ -179,11 +181,11 @@ export function Step3Assignment({
         </div>
 
         <div className="flex justify-between pt-4 border-t border-border">
-          <Button type="button" variant="outline" onClick={onBack}>
-            Back
+          <Button type="button" variant="outline" onClick={onBack} className="cursor-pointer">
+            {t("wizard.step2.back")}
           </Button>
-          <Button type="submit" className="min-w-32">
-            Next: Confirm
+          <Button type="submit" className="min-w-32 cursor-pointer">
+            {t("wizard.step3.next")}
           </Button>
         </div>
       </form>

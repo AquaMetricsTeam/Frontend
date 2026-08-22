@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import { LANG_DIR } from "@/constants/i18nConfig";
 import { SidebarHeader } from "./SidebarHeader";
 import { SidebarNav } from "./SidebarNav";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
@@ -14,9 +12,6 @@ interface SidebarProps {
 const COLLAPSED_KEY = "aqua-sidebar-collapsed";
 
 function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
-  const { i18n } = useTranslation();
-  const isRtl = LANG_DIR[i18n.language as Locale] === "rtl";
-  const drawerDirection = isRtl ? "right" : "left";
   const [collapsed, setCollapsed] = useState(() => {
     try {
       return localStorage.getItem(COLLAPSED_KEY) === "true";
@@ -58,7 +53,7 @@ function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
         onOpenChange={(open) => {
           if (!open) onMobileClose();
         }}
-        direction={drawerDirection}
+        direction="start"
       >
         <DrawerContent className="flex h-full w-[260px] flex-col rounded-none border-e border-sidebar-border bg-sidebar p-0 outline-none">
           <SidebarHeader collapsed={false} onToggle={onMobileClose} />

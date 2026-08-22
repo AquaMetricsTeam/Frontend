@@ -128,7 +128,7 @@
   "statuses": {
     "completed": "مكتمل",
     "partiallyCompleted": "مكتمل جزئياً",
-    "skipped": "تم يتجاوزه",
+    "skipped": "تخطي (Skipped)",
     "modified": "معدل"
   },
   "grades": {

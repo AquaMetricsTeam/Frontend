@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useForm, useFieldArray, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -19,7 +20,6 @@ import { ExercisePerformanceCard } from "./ExercisePerformanceCard";
 import { InjuryFormFields } from "@/features/training-record/components/InjuryFormFields";
 import { useCreateTrainingRecord } from "@/features/training-record/hooks/useCreateTrainingRecord";
 import { useTrainingSessions } from "@/features/training-plans/hooks/useTrainingSessions";
-import type { PerformanceStatus } from "@/features/swimming-performance/types";
 import { useTrainingSession } from "@/features/training-plans/hooks/useTrainingSession";
 import { useTrainingPlan } from "@/features/training-plans/hooks/useTrainingPlan";
 import {
@@ -52,6 +52,7 @@ export function LogFitnessRecordDrawer({
   defaultSessionId,
   defaultAthleteId,
 }: LogFitnessRecordDrawerProps) {
+  const { t } = useTranslation(["fitness", "training", "common"]);
   const createMutation = useCreateTrainingRecord();
 
   // 1. All sessions list
@@ -100,14 +101,14 @@ export function LogFitnessRecordDrawer({
     label: a.fullName,
   }));
 
-  // 3. Training plan → plan exercises (the ones athletes should perform)
+  // 3. Training plan → exercises
   const { data: planRes, isLoading: planLoading } = useTrainingPlan(
     trainingPlanId,
-    !!trainingPlanId,
+    trainingPlanId > 0,
   );
   const planExercises = planRes?.data?.planExercises ?? [];
 
-  // Reset form on open
+  // Reset form when drawer opens
   useEffect(() => {
     if (open) {
       form.reset({
@@ -124,74 +125,55 @@ export function LogFitnessRecordDrawer({
         exercisePerformances: [{ ...DEFAULT_EXERCISE }],
       });
     }
-  }, [open, form, defaultSessionId, defaultAthleteId]);
+  }, [open, defaultSessionId, defaultAthleteId, form]);
 
-  // When plan exercises load for selected session, auto-fill exercise cards with plan values
+  // When session changes, prefill exercisePerformances from planExercises (if available)
   useEffect(() => {
-    if (open && selectedSessionId && planExercises.length > 0) {
-      const mappedExercises: ExercisePerformanceFormValues[] =
+    if (planExercises.length > 0) {
+      form.setValue(
+        "exercisePerformances",
         planExercises.map((pe) => ({
-          planExerciseId: pe.planExerciseId ?? pe.id ?? pe.exerciseId,
+          planExerciseId: pe.planExerciseId ?? pe.id ?? 0,
           completedSets: pe.sets ?? 3,
           completedReps: pe.reps ?? 10,
           completedDuration: pe.duration ?? null,
           weightUsed: null,
-          rpe: 7,
+          rpe: 5,
           status: 1,
-          coachComment: pe.notes || "",
-        }));
-      form.setValue("exercisePerformances", mappedExercises);
+          coachComment: "",
+        })),
+      );
     }
-  }, [open, selectedSessionId, planExercises, form]);
-
-  // When session changes: clear athlete if not default
-  useEffect(() => {
-    if (selectedSessionId && selectedSessionId !== (defaultSessionId ?? 0)) {
-      form.setValue("athleteId", "");
-    }
-  }, [selectedSessionId, form, defaultSessionId]);
+  }, [planExercises, form]);
 
   function handleAddExercise() {
-    append({ ...DEFAULT_EXERCISE });
+    append({
+      ...DEFAULT_EXERCISE,
+      planExerciseId: planExercises[0]?.planExerciseId ?? planExercises[0]?.id ?? 0,
+    });
   }
 
   function onSubmit(values: CreateFitnessRecordFormValues) {
-    if (!values.athleteId || !values.trainingSessionId) {
-      if (!values.athleteId)
-        form.setError("athleteId", { message: "Athlete is required" });
-      if (!values.trainingSessionId)
-        form.setError("trainingSessionId", {
-          message: "Training session is required",
-        });
-      return;
-    }
-
     createMutation.mutate(
       {
-        athleteId: values.athleteId,
         trainingSessionId: Number(values.trainingSessionId),
-        performanceRating: values.performanceRating,
-        fatigueLevel: values.fatigueLevel,
+        athleteId: values.athleteId,
+        performanceRating: Number(values.performanceRating),
+        fatigueLevel: Number(values.fatigueLevel),
         sessionCompleted: values.sessionCompleted,
         injuryOccurred: values.injuryOccurred,
-        injuryType: values.injuryOccurred ? Number(values.injuryType) : null,
-        injuryBodyPart: values.injuryOccurred
-          ? Number(values.injuryBodyPart)
-          : null,
-        injuryComment: values.injuryOccurred
-          ? values.injuryComment || null
-          : null,
-        overallComment: values.overallComment || null,
+        injuryType: values.injuryOccurred && values.injuryType ? Number(values.injuryType) : null,
+        injuryBodyPart: values.injuryOccurred && values.injuryBodyPart ? Number(values.injuryBodyPart) : null,
+        injuryComment: values.injuryOccurred ? values.injuryComment?.trim() || null : null,
+        overallComment: values.overallComment?.trim() || null,
         exercisePerformances: values.exercisePerformances.map((ep) => ({
-          planExerciseId: Number(ep.planExerciseId) || 0,
-          completedSets: Number(ep.completedSets || 0),
+          planExerciseId: Number(ep.planExerciseId),
+          completedSets: Number(ep.completedSets),
           completedReps: Number(ep.completedReps || 0),
-          completedDuration: ep.completedDuration
-            ? Number(ep.completedDuration)
-            : null,
+          completedDuration: ep.completedDuration ? Number(ep.completedDuration) : null,
           weightUsed: ep.weightUsed ? Number(ep.weightUsed) : null,
           rpe: ep.rpe ? Number(ep.rpe) : null,
-          status: Number(ep.status) as PerformanceStatus,
+          status: Number(ep.status) as 1 | 2 | 3 | 4,
           coachComment: ep.coachComment?.trim() || null,
         })),
         swimmingPerformances: [],
@@ -218,10 +200,10 @@ export function LogFitnessRecordDrawer({
             </div>
             <div>
               <DialogTitle className="text-lg font-bold text-foreground">
-                Log Fitness Record
+                {t("fitness:drawer.title")}
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground mt-0.5">
-                Record an athlete's fitness session performance
+                {t("fitness:drawer.description")}
               </DialogDescription>
             </div>
           </div>
@@ -235,15 +217,15 @@ export function LogFitnessRecordDrawer({
             {/* Session header fields */}
             <div className="space-y-4 p-4 rounded-xl border border-border bg-muted/20">
               <p className="text-xs font-bold text-foreground uppercase tracking-wider">
-                Session Info
+                {t("fitness:detailSheet.sessionDetails")}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* 1. Session */}
                 <ComboboxSelect
-                  label="Training Session *"
-                  placeholder="Select session..."
-                  searchPlaceholder="Search session..."
+                  label={t("fitness:drawer.selectSession") + " *"}
+                  placeholder={t("fitness:drawer.selectSessionPlaceholder")}
+                  searchPlaceholder={t("common:table.search")}
                   options={sessionOptions}
                   value={selectedSessionId ? String(selectedSessionId) : ""}
                   onValueChange={(val) => {
@@ -257,18 +239,18 @@ export function LogFitnessRecordDrawer({
 
                 {/* 2. Athlete — gated on session */}
                 <ComboboxSelect
-                  label="Athlete *"
+                  label={t("fitness:drawer.selectAthlete") + " *"}
                   placeholder={
                     !selectedSessionId
-                      ? "Select session first..."
+                      ? t("fitness:drawer.selectSessionPlaceholder")
                       : sessionAthletesLoading
-                        ? "Loading athletes..."
+                        ? t("common:loading")
                         : sessionAthletes.length === 0
-                          ? "No athletes in this session"
-                          : "Select athlete..."
+                          ? t("common:noData.default")
+                          : t("fitness:drawer.selectAthletePlaceholder")
                   }
-                  searchPlaceholder="Search athlete..."
-                  emptyMessage="No athletes in this session."
+                  searchPlaceholder={t("common:table.search")}
+                  emptyMessage={t("common:noData.default")}
                   options={athleteOptions}
                   value={athleteId}
                   onValueChange={(val) =>
@@ -289,22 +271,18 @@ export function LogFitnessRecordDrawer({
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   {planLoading ? (
                     <span className="animate-pulse">
-                      Loading plan exercises…
+                      {t("common:loading")}
                     </span>
                   ) : planExercises.length > 0 ? (
-                    <>
-                      <Badge
-                        variant="secondary"
-                        className="bg-primary/10 text-primary border-primary/20 text-xs font-semibold"
-                      >
-                        {planExercises.length} plan exercise
-                        {planExercises.length !== 1 ? "s" : ""} available
-                      </Badge>
-                      <span>from this session's training plan</span>
-                    </>
+                    <Badge
+                      variant="secondary"
+                      className="bg-primary/10 text-primary border-primary/20 text-xs font-semibold"
+                    >
+                      {planExercises.length} {t("fitness:detailSheet.totalExercises", { count: planExercises.length })}
+                    </Badge>
                   ) : (
                     <span className="text-amber-600">
-                      ⚠ No exercises found in this session's training plan
+                      ⚠ {t("fitness:detailSheet.noExercises")}
                     </span>
                   )}
                 </div>
@@ -315,7 +293,7 @@ export function LogFitnessRecordDrawer({
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <Label className="font-semibold text-foreground">
-                      Performance Rating
+                      {t("fitness:drawer.ratingLabel")}
                     </Label>
                     <Badge
                       variant="secondary"
@@ -338,7 +316,7 @@ export function LogFitnessRecordDrawer({
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <Label className="font-semibold text-foreground">
-                      Fatigue Level
+                      {t("fitness:drawer.fatigueLabel")}
                     </Label>
                     <Badge
                       variant="secondary"
@@ -377,8 +355,8 @@ export function LogFitnessRecordDrawer({
                   }`}
                 >
                   {form.watch("sessionCompleted")
-                    ? "✓ Session Completed"
-                    : "Session Not Completed"}
+                    ? `✓ ${t("fitness:table.completed")}`
+                    : t("fitness:table.incomplete")}
                 </button>
 
                 <button
@@ -401,8 +379,8 @@ export function LogFitnessRecordDrawer({
                   }`}
                 >
                   {form.watch("injuryOccurred")
-                    ? "⚠ Injury Occurred"
-                    : "No Injury"}
+                    ? `⚠ ${t("fitness:table.injuryReported")}`
+                    : t("fitness:table.noInjury")}
                 </button>
               </div>
 
@@ -411,8 +389,8 @@ export function LogFitnessRecordDrawer({
 
               <TextareaField
                 name="overallComment"
-                label="Overall Comment"
-                placeholder="General session notes…"
+                label={t("fitness:drawer.coachNotes")}
+                placeholder={t("fitness:drawer.coachNotesPlaceholder")}
                 rows={2}
                 textareaClassName="text-xs resize-none"
               />
@@ -440,7 +418,7 @@ export function LogFitnessRecordDrawer({
               className="h-9 text-xs rounded-lg gap-1.5 cursor-pointer"
             >
               <MdAdd className="size-4" />
-              Add Exercise
+              {t("fitness:drawer.addExercise")}
             </Button>
 
             <DialogFooter className="border-t border-border pt-4 flex flex-row items-center justify-end gap-2">
@@ -451,7 +429,7 @@ export function LogFitnessRecordDrawer({
                 onClick={() => onOpenChange(false)}
                 className="h-9 text-xs rounded-lg cursor-pointer"
               >
-                Cancel
+                {t("common:cancel")}
               </Button>
               <Button
                 type="submit"
@@ -459,7 +437,7 @@ export function LogFitnessRecordDrawer({
                 disabled={createMutation.isPending || fields.length === 0}
                 className="h-9 text-xs rounded-lg gap-1.5 cursor-pointer"
               >
-                {createMutation.isPending ? "Saving…" : "Save Record"}
+                {createMutation.isPending ? t("common:saving") : t("fitness:drawer.submit")}
               </Button>
             </DialogFooter>
           </form>

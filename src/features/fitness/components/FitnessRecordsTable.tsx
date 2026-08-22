@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   Table,
   TableHeader,
@@ -63,31 +64,33 @@ export function FitnessRecordsTable({
   onViewDetails,
   onEdit,
 }: FitnessRecordsTableProps) {
+  const { t } = useTranslation(["fitness", "common"]);
+
   return (
     <div className="rounded-xl border border-border bg-card overflow-hidden">
       <Table>
         <TableHeader className="bg-muted/50">
           <TableRow>
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
-              Athlete
+              {t("fitness:table.athlete")}
             </TableHead>
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
-              Session
+              {t("fitness:table.sessionTitle")}
             </TableHead>
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
-              Date
+              {t("fitness:table.sessionDate")}
             </TableHead>
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
-              Performance
+              {t("fitness:table.rating")}
             </TableHead>
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
-              Fatigue
+              {t("fitness:table.fatigue")}
             </TableHead>
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase">
-              Status
+              {t("fitness:table.status")}
             </TableHead>
             <TableHead className="text-xs font-semibold text-muted-foreground uppercase text-end">
-              Actions
+              {t("fitness:table.actions")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -99,8 +102,8 @@ export function FitnessRecordsTable({
             skeletonProps={{ rows: 5, columns: 7 }}
             errorMessageProps={{ onRetry }}
             noDataMessageProps={{
-              messageKey: "common:noData.default",
-              descriptionKey: "common:noData.description",
+              messageKey: "fitness:table.noRecords",
+              descriptionKey: "fitness:table.noRecordsDesc",
             }}
           >
             {records.map((r) => (
@@ -146,12 +149,12 @@ export function FitnessRecordsTable({
                       {r.sessionCompleted ? (
                         <>
                           <MdCheckCircle className="size-3" />
-                          Completed
+                          {t("fitness:table.completed")}
                         </>
                       ) : (
                         <>
                           <MdCancel className="size-3" />
-                          Incomplete
+                          {t("fitness:table.incomplete")}
                         </>
                       )}
                     </Badge>
@@ -161,7 +164,7 @@ export function FitnessRecordsTable({
                         className="text-[10px] font-semibold bg-rose-500/10 text-rose-600 border-rose-500/20 px-2 py-0.5 flex items-center gap-1 w-fit"
                       >
                         <MdWarning className="size-3" />
-                        Injury
+                        {t("fitness:table.injuryReported")}
                       </Badge>
                     )}
                   </div>
@@ -188,14 +191,14 @@ export function FitnessRecordsTable({
                         className="gap-2 cursor-pointer text-xs"
                       >
                         <MdVisibility className="size-4 text-primary" />
-                        View Details
+                        {t("fitness:table.viewDetails")}
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => onEdit(r)}
                         className="gap-2 cursor-pointer text-xs"
                       >
                         <MdEdit className="size-4 text-amber-500" />
-                        Edit Record
+                        {t("fitness:table.edit")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

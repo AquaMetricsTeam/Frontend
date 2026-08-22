@@ -17,10 +17,9 @@ import { TextareaField } from "@/components/fields/TextareaField";
 import { SelectField } from "@/components/fields/SelectField";
 import { useMe } from "@/features/auth/hooks/useMe";
 import { useCreateExercise } from "../hooks/useCreateExercise";
-import { createExerciseSchema } from "../constants/validations";
-import type { CreateExerciseFormValues } from "../constants/validations";
-import { MUSCLE_GROUP_OPTIONS } from "../constants/muscleGroups";
-import { SWIMMING_CATEGORY_OPTIONS } from "../constants/swimmingCategories";
+import { createExerciseSchema, type CreateExerciseFormValues } from "../constants/validations";
+import { getMuscleGroupOptions } from "../constants/muscleGroups";
+import { getSwimmingCategoryOptions } from "../constants/swimmingCategories";
 import type { MuscleGroup, SwimmingExerciseCategory } from "../types/index";
 
 interface CreateExerciseModalProps {
@@ -180,7 +179,7 @@ export function CreateExerciseModal({
               <SelectField<CreateExerciseFormValues>
                 name="muscleGroup"
                 label={t("exercises:createModal.muscleGroupLabel")}
-                options={MUSCLE_GROUP_OPTIONS}
+                options={getMuscleGroupOptions(t)}
                 placeholder={t("exercises:createModal.muscleGroupPlaceholder")}
                 valueType="number"
               />
@@ -190,7 +189,7 @@ export function CreateExerciseModal({
               <SelectField<CreateExerciseFormValues>
                 name="category"
                 label={t("exercises:createModal.categoryLabel")}
-                options={SWIMMING_CATEGORY_OPTIONS}
+                options={getSwimmingCategoryOptions(t)}
                 placeholder={t("exercises:createModal.categoryPlaceholder")}
                 valueType="number"
               />

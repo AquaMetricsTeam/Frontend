@@ -31,10 +31,28 @@ function Drawer({
   ...props
 }: DrawerPrimitive.Root.Props & {
   showSwipeHandle?: boolean;
-  direction?: "left" | "right" | "top" | "bottom" | "up" | "down";
+  direction?:
+    | "left"
+    | "right"
+    | "top"
+    | "bottom"
+    | "up"
+    | "down"
+    | "start"
+    | "end";
 }) {
-  const activeDirection = (direction ??
-    swipeDirection ??
+  const isRtl =
+    typeof document !== "undefined" &&
+    document.documentElement.dir === "rtl";
+
+  let rawDirection = direction ?? swipeDirection ?? "down";
+  if (rawDirection === "end") {
+    rawDirection = isRtl ? "left" : "right";
+  } else if (rawDirection === "start") {
+    rawDirection = isRtl ? "right" : "left";
+  }
+
+  const activeDirection = (rawDirection ??
     "down") as NonNullable<DrawerPrimitive.Root.Props["swipeDirection"]>;
   const hasSnapPoints = snapPoints != null && snapPoints.length > 0;
   const contextValue = React.useMemo(

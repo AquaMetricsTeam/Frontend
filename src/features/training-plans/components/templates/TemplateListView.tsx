@@ -62,7 +62,7 @@ export function TemplateListView() {
             <SearchInput
               value={search}
               onChange={setSearch}
-              placeholder="Search plans..."
+              placeholder={t("assignments.searchPlans")}
             />
             {/* <SegmentedControl
               options={ARCHIVE_OPTIONS}
@@ -73,10 +73,10 @@ export function TemplateListView() {
           <Button
             size="sm"
             onClick={() => setCreateOpen(true)}
-            className="gap-1.5 self-start sm:self-auto"
+            className="gap-1.5 self-start sm:self-auto cursor-pointer"
           >
             <MdAdd className="size-4" />
-            New Training Plan
+            {t("templates.actions.new")}
           </Button>
         </div>
 

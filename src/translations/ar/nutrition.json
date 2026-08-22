@@ -202,8 +202,20 @@
     "message": "🔒 عرض المدير — خطط التغذية والتعيينات للقراءة فقط."
   },
   "assignmentDetail": {
-    "planSnapshot": "لقطة الخطة",
-    "meals": "الوجبات",
-    "viewFullPlan": "عرض الخطة كاملة"
+    "planSnapshot": "ملخص الخطة — الإجمالي اليومي",
+    "meals": "{{count}} وجبات",
+    "viewFullPlan": "عرض الخطة كاملة",
+    "close": "إغلاق",
+    "individual": "فردي",
+    "assignedByCoach": "تم التعيين بواسطة المدرب · {{date}}"
+  },
+  "mealTypes": {
+    "breakfast": "وجبة الإفطار",
+    "lunch": "وجبة الغداء",
+    "dinner": "وجبة العشاء",
+    "snack": "سناك (وجبة خفيفة)",
+    "preWorkout": "قبل التمرين (Pre-Workout)",
+    "postWorkout": "بعد التمرين (Post-Workout)"
   }
 }
+

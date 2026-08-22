@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { MdPerson, MdSettings, MdKeyboard, MdLogout } from "react-icons/md";
+import { useTranslation } from "react-i18next";
+import { MdPerson, MdLogout } from "react-icons/md";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,13 +30,17 @@ function getInitials(name: string) {
 }
 
 export function UserDropdown({ className }: UserDropdownProps) {
+  const { t } = useTranslation("common");
   const navigate = useNavigate();
   const { user } = useAuth();
   const { mutate: logout } = useLogout();
 
   const displayName = user?.fullName ?? "—";
   const displayEmail = user?.email ?? "";
-  const displayRole = user?.roles?.[0] ?? "";
+  const rawRole = user?.roles?.[0] ?? "";
+  const displayRole = rawRole
+    ? t(`roles.${rawRole.toLowerCase()}`, { defaultValue: rawRole })
+    : "";
   const initials = displayName !== "—" ? getInitials(displayName) : "?";
 
   return (
@@ -45,7 +50,7 @@ export function UserDropdown({ className }: UserDropdownProps) {
         className={cn(
           "flex items-center gap-2 rounded-lg p-1 transition-colors duration-150 cursor-pointer",
           "hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
-          className
+          className,
         )}
       >
         <div className="relative">
@@ -75,8 +80,12 @@ export function UserDropdown({ className }: UserDropdownProps) {
         <DropdownMenuGroup>
           <DropdownMenuLabel className="font-normal p-2">
             <div className="flex flex-col gap-0.5">
-              <p className="text-xs font-semibold text-foreground truncate">{displayName}</p>
-              <p className="text-[11px] text-muted-foreground truncate">{displayEmail}</p>
+              <p className="text-xs font-semibold text-foreground truncate">
+                {displayName}
+              </p>
+              <p className="text-[11px] text-muted-foreground truncate">
+                {displayEmail}
+              </p>
               <span className="mt-1 inline-flex w-fit items-center rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-primary">
                 {displayRole}
               </span>
@@ -92,20 +101,7 @@ export function UserDropdown({ className }: UserDropdownProps) {
             className="flex items-center gap-2 cursor-pointer text-xs"
           >
             <MdPerson className="size-4 text-muted-foreground" />
-            <span>Profile & Account</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            onClick={() => navigate("/profile")}
-            className="flex items-center gap-2 cursor-pointer text-xs"
-          >
-            <MdSettings className="size-4 text-muted-foreground" />
-            <span>Settings</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-xs">
-            <MdKeyboard className="size-4 text-muted-foreground" />
-            <span>Keyboard Shortcuts</span>
+            <span>{t("userMenu.profile")}</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
 
@@ -116,11 +112,8 @@ export function UserDropdown({ className }: UserDropdownProps) {
           className="flex items-center gap-2 cursor-pointer text-xs text-destructive focus:text-destructive focus:bg-destructive/10"
         >
           <MdLogout className="size-4" />
-          <span>Sign Out</span>
+          <span>{t("userMenu.signOut")}</span>
         </DropdownMenuItem>
-
-
-
       </DropdownMenuContent>
     </DropdownMenu>
   );

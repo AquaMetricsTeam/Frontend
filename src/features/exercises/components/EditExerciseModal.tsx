@@ -19,8 +19,8 @@ import { useMe } from "@/features/auth/hooks/useMe";
 import { useUpdateExercise } from "../hooks/useUpdateExercise";
 import { updateExerciseSchema } from "../constants/validations";
 import type { UpdateExerciseFormValues } from "../constants/validations";
-import { MUSCLE_GROUP_OPTIONS } from "../constants/muscleGroups";
-import { SWIMMING_CATEGORY_OPTIONS } from "../constants/swimmingCategories";
+import { getMuscleGroupOptions } from "../constants/muscleGroups";
+import { getSwimmingCategoryOptions } from "../constants/swimmingCategories";
 import type {
   Exercise,
   MuscleGroup,
@@ -180,7 +180,7 @@ export function EditExerciseModal({
               <SelectField<UpdateExerciseFormValues>
                 name="muscleGroup"
                 label={t("exercises:createModal.muscleGroupLabel")}
-                options={MUSCLE_GROUP_OPTIONS}
+                options={getMuscleGroupOptions(t)}
                 placeholder={t("exercises:createModal.muscleGroupPlaceholder")}
                 valueType="number"
               />
@@ -190,7 +190,7 @@ export function EditExerciseModal({
               <SelectField<UpdateExerciseFormValues>
                 name="category"
                 label={t("exercises:createModal.categoryLabel")}
-                options={SWIMMING_CATEGORY_OPTIONS}
+                options={getSwimmingCategoryOptions(t)}
                 placeholder={t("exercises:createModal.categoryPlaceholder")}
                 valueType="number"
               />

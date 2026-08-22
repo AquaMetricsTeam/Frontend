@@ -45,12 +45,16 @@ function SheetContent({
   ...props
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean;
-  side?: "left" | "right" | "top" | "bottom";
+  side?: "left" | "right" | "top" | "bottom" | "start" | "end";
 }) {
+  const normalizedSide =
+    side === "end" ? "right" : side === "start" ? "left" : side;
+
   const sideClasses = {
     right:
-      "inset-y-0 end-0 h-full w-3/4 border-s sm:max-w-sm data-open:animate-in data-open:slide-in-from-right data-closed:animate-out data-closed:slide-out-to-right",
-    left: "inset-y-0 start-0 h-full w-3/4 border-e sm:max-w-sm data-open:animate-in data-open:slide-in-from-left data-closed:animate-out data-closed:slide-out-to-left",
+      "inset-y-0 end-0 h-full w-3/4 border-s sm:max-w-sm data-open:animate-in data-open:slide-in-from-right data-closed:animate-out data-closed:slide-out-to-right rtl:data-open:slide-in-from-left rtl:data-closed:slide-out-to-left",
+    left:
+      "inset-y-0 start-0 h-full w-3/4 border-e sm:max-w-sm data-open:animate-in data-open:slide-in-from-left data-closed:animate-out data-closed:slide-out-to-left rtl:data-open:slide-in-from-right rtl:data-closed:slide-out-to-right",
     top: "inset-x-0 top-0 w-full border-b data-open:animate-in data-open:slide-in-from-top data-closed:animate-out data-closed:slide-out-to-top",
     bottom:
       "inset-x-0 bottom-0 w-full border-t data-open:animate-in data-open:slide-in-from-bottom data-closed:animate-out data-closed:slide-out-to-bottom",
@@ -63,7 +67,7 @@ function SheetContent({
         data-slot="sheet-content"
         className={cn(
           "fixed z-50 flex flex-col bg-background shadow-lg duration-200 outline-none",
-          sideClasses[side],
+          sideClasses[normalizedSide],
           className,
         )}
         {...props}

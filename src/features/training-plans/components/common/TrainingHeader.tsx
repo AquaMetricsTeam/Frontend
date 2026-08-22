@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { MdPool, MdAssignment, MdEventNote } from "react-icons/md";
+import { MdLayers, MdAssignment, MdEventNote } from "react-icons/md";
 import { SegmentedControl } from "@/components/common/SegmentedControl";
 
 export type TrainingViewTab = "templates" | "assignments" | "sessions";
@@ -24,7 +24,7 @@ export function TrainingHeader({ activeTab }: TrainingHeaderProps) {
     label: string;
     icon: React.ElementType;
   }[] = [
-    { value: "templates", label: t("views.templates"), icon: MdPool },
+    { value: "templates", label: t("views.templates"), icon: MdLayers },
     { value: "assignments", label: t("views.assignments"), icon: MdAssignment },
     { value: "sessions", label: t("views.sessions"), icon: MdEventNote },
   ];

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Sheet,
   SheetContent,
@@ -15,23 +16,24 @@ import type { PlanInfoFormValues } from "../../constants/validations";
 import type { ExercisesStepFormValues } from "../../constants/validations";
 import type { AssignmentStepFormValues } from "../../constants/validations";
 
-const STEPS = [
-  { label: "Info" },
-  { label: "Exercises" },
-  { label: "Assignment" },
-  { label: "Confirm" },
-];
-
 interface CreateTemplateSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 export function CreateTemplateSheet({ open, onOpenChange }: CreateTemplateSheetProps) {
+  const { t } = useTranslation("training");
   const [step, setStep] = useState(0);
   const [planInfo, setPlanInfo] = useState<PlanInfoFormValues | null>(null);
   const [exercises, setExercises] = useState<ExercisesStepFormValues | null>(null);
   const [assignment, setAssignment] = useState<AssignmentStepFormValues | null>(null);
+
+  const STEPS = useMemo(() => [
+    { label: t("wizard.steps.info") },
+    { label: t("wizard.steps.exercises") },
+    { label: t("wizard.steps.assignment") },
+    { label: t("wizard.steps.confirm") },
+  ], [t]);
 
   const createMutation = useCreateTrainingPlan(() => {
     onOpenChange(false);
@@ -87,7 +89,7 @@ export function CreateTemplateSheet({ open, onOpenChange }: CreateTemplateSheetP
     <Sheet open={open} onOpenChange={handleClose}>
       <SheetContent className="w-full sm:max-w-xl flex flex-col gap-0 p-0">
         <SheetHeader className="px-6 pt-6 pb-4 border-b border-border">
-          <SheetTitle className="text-base font-semibold">New Training Plan</SheetTitle>
+          <SheetTitle className="text-base font-semibold">{t("wizard.title")}</SheetTitle>
         </SheetHeader>
 
         <div className="px-6 pt-5">

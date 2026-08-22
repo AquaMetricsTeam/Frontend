@@ -1,0 +1,67 @@
+{
+  "greeting": {
+    "welcome": "Welcome back",
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening",
+    "adminSubtitle": "Here's the full picture across all athletes and coaches.",
+    "coachSubtitle": "Here's the performance and fatigue overview for your assigned athletes.",
+    "activeSquads": "Active Squads",
+    "readyToLog": "Ready to Log",
+    "liveData": "Live data",
+    "systemLive": "System active",
+    "localTime": "Local Time",
+    "today": "Today"
+  },
+  "kpis": {
+    "totalAthletes": "Total Athletes",
+    "totalSessions": "Total Sessions",
+    "totalInjuries": "Total Injuries",
+    "injuryRate": "{{rate}}% of sessions",
+    "avgPerformance": "Avg Performance",
+    "avgFatigue": "Avg Fatigue",
+    "outOfTen": "/ 10"
+  },
+  "charts": {
+    "performanceTrend": "Performance Trend",
+    "performanceTrendSubtitle": "Average performance rating over time",
+    "fatigueTrend": "Fatigue Trend",
+    "fatigueTrendSubtitle": "Average fatigue level over time",
+    "injuriesOverTime": "Injuries Over Time",
+    "injuriesOverTimeSubtitle": "Injury count per period",
+    "domainDistribution": "Domain Distribution",
+    "domainSubtitle": "Athletes across training domains",
+    "scatterTitle": "Performance vs Fatigue Correlation",
+    "scatterSubtitle": "Session-by-session relationship between fatigue level and performance rating",
+    "injuriesUnit": "injuries",
+    "noData": "No trend data available",
+    "noScatterData": "No session correlation data found."
+  },
+  "injuries": {
+    "cardTitle": "Active Injured Athletes",
+    "cardSubtitle": "Athletes currently flagged with an active injury report",
+    "countBadge": "{{count}} Injured",
+    "empty": "No active injured athletes recorded. Great job!",
+    "viewAll": "View All ({{count}})",
+    "showMore": "Show More",
+    "dialogTitle": "All Injured Athletes",
+    "dialogSubtitle": "Complete list of athletes currently requiring medical follow-up or load modification",
+    "searchPlaceholder": "Search athlete by name...",
+    "noSearchMatch": "No athletes match your search.",
+    "table": {
+      "athlete": "Athlete",
+      "injuryType": "Injury Type",
+      "bodyPart": "Body Part",
+      "sessionDate": "Session Date",
+      "coachComment": "Coach Comment",
+      "actions": "Actions"
+    },
+    "viewProfile": "View Profile",
+    "viewRecord": "View Record"
+  },
+  "error": {
+    "title": "Failed to load dashboard data",
+    "subtitle": "An unexpected error occurred while fetching metrics. Please try again.",
+    "retry": "Try Again"
+  }
+}

@@ -1,5 +1,6 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import { MdLock, MdVpnKey, MdLockReset } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import { InputField } from "@/components/fields/InputField";
@@ -10,6 +11,8 @@ import {
 import { useChangePassword } from "../hooks/useChangePassword";
 
 export function ChangePasswordForm() {
+  const { t } = useTranslation(["profile", "common"]);
+
   const methods = useForm<ChangePasswordFormValues>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
@@ -31,10 +34,10 @@ export function ChangePasswordForm() {
     <div className="rounded-3xl border border-border/80 bg-card p-6 sm:p-7 shadow-xs">
       <div className="border-b border-border/60 pb-4 mb-6">
         <h2 className="text-base font-bold text-foreground">
-          Security & Password
+          {t("profile:changePassword.title")}
         </h2>
         <p className="text-xs text-muted-foreground mt-0.5">
-          Ensure your account uses a strong password (minimum 6 characters).
+          {t("profile:changePassword.description")}
         </p>
       </div>
 
@@ -43,7 +46,7 @@ export function ChangePasswordForm() {
           {/* Current Password */}
           <InputField<ChangePasswordFormValues>
             name="currentPassword"
-            label="Current Password"
+            label={t("profile:changePassword.currentPassword")}
             type="password"
             placeholder="••••••••"
             required
@@ -53,7 +56,7 @@ export function ChangePasswordForm() {
           {/* New Password */}
           <InputField<ChangePasswordFormValues>
             name="newPassword"
-            label="New Password"
+            label={t("profile:changePassword.newPassword")}
             type="password"
             placeholder="••••••••"
             required
@@ -63,7 +66,7 @@ export function ChangePasswordForm() {
           {/* Confirm New Password */}
           <InputField<ChangePasswordFormValues>
             name="confirmPassword"
-            label="Confirm New Password"
+            label={t("profile:changePassword.confirmPassword")}
             type="password"
             placeholder="••••••••"
             required
@@ -78,7 +81,7 @@ export function ChangePasswordForm() {
               className="gap-2 rounded-xl px-6 border-border/80 hover:border-primary/50"
             >
               <MdLockReset className="size-4 text-primary" />
-              <span>{mutation.isPending ? "Updating..." : "Update Password"}</span>
+              <span>{mutation.isPending ? t("common:saving") : t("profile:changePassword.save")}</span>
             </Button>
           </div>
         </form>

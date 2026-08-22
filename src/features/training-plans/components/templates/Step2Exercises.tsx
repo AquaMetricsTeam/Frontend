@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { FormProvider, useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MdAdd, MdTimer } from "react-icons/md";
@@ -40,6 +41,7 @@ export function Step2Exercises({
   onNext,
   onBack,
 }: Step2ExercisesProps) {
+  const { t } = useTranslation("training");
   const form = useForm<ExercisesStepFormValues>({
     resolver: zodResolver(exercisesStepSchema),
     defaultValues: { exercises: [DEFAULT_EXERCISE], ...defaultValues },
@@ -80,11 +82,13 @@ export function Step2Exercises({
         {/* Duration summary */}
         <div className="flex items-center justify-between">
           <p className="text-xs font-medium text-muted-foreground">
-            {fields.length} exercise{fields.length !== 1 ? "s" : ""} added (drag
-            handle to reorder)
+            {fields.length === 1
+              ? t("wizard.step2.exercisesAdded", { count: fields.length })
+              : t("wizard.step2.exercisesAdded_plural", { count: fields.length })}{" "}
+            {t("wizard.step2.dragToReorder")}
           </p>
           <Badge variant="secondary" className="gap-1.5 text-xs">
-            <MdTimer className="size-3.5" />~{totalMinutes} min estimated
+            <MdTimer className="size-3.5" />~{totalMinutes} {t("wizard.step2.minutesEstimated")}
           </Badge>
         </div>
 
@@ -136,10 +140,10 @@ export function Step2Exercises({
           variant="outline"
           size="sm"
           onClick={() => append(DEFAULT_EXERCISE)}
-          className="self-start gap-1.5"
+          className="self-start gap-1.5 cursor-pointer"
         >
           <MdAdd className="size-4" />
-          Add Exercise
+          {t("wizard.step2.addExercise")}
         </Button>
 
         {form.formState.errors.exercises?.root?.message && (
@@ -149,11 +153,11 @@ export function Step2Exercises({
         )}
 
         <div className="flex justify-between pt-4 border-t border-border mt-auto">
-          <Button type="button" variant="outline" onClick={onBack}>
-            Back
+          <Button type="button" variant="outline" onClick={onBack} className="cursor-pointer">
+            {t("wizard.step2.back")}
           </Button>
-          <Button type="submit" className="min-w-32">
-            Next: Assignment
+          <Button type="submit" className="min-w-32 cursor-pointer">
+            {t("wizard.step2.next")}
           </Button>
         </div>
       </form>

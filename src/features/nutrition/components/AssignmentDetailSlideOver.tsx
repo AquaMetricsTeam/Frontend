@@ -121,7 +121,7 @@ export function AssignmentDetailSlideOver({
   const sortedMeals = [...(plan?.meals || [])].sort((a, b) => a.mealType - b.mealType);
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction="right" modal={true}>
+    <Drawer open={open} onOpenChange={onOpenChange} direction="end" modal={true}>
       <DrawerContent className="w-full sm:max-w-2xl h-full">
         {/* Header */}
         <DrawerHeader className="relative flex flex-col items-start border-b border-border pb-4 pt-4 px-5">
@@ -153,14 +153,17 @@ export function AssignmentDetailSlideOver({
                 </Badge>
               ) : (
                 <Badge variant="outline" className="border-border text-muted-foreground bg-muted text-[10px] font-semibold px-2 py-0 h-5">
-                  Individual
+                  {t("assignmentDetail.individual", { defaultValue: "Individual" })}
                 </Badge>
               )}
             </div>
 
             {assignment.assignedAt && (
               <p className="text-[10px] text-muted-foreground/70">
-                Assigned by Coach · {new Date(assignment.assignedAt).toLocaleDateString()}
+                {t("assignmentDetail.assignedByCoach", {
+                  date: new Date(assignment.assignedAt).toLocaleDateString(),
+                  defaultValue: `Assigned by Coach · ${new Date(assignment.assignedAt).toLocaleDateString()}`,
+                })}
               </p>
             )}
           </div>
@@ -182,17 +185,24 @@ export function AssignmentDetailSlideOver({
             <div className="bg-muted/40 border border-border rounded-xl p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <h4 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  PLAN SNAPSHOT — DAILY TOTALS
+                  {t("assignmentDetail.planSnapshot", {
+                    defaultValue: "PLAN SNAPSHOT — DAILY TOTALS",
+                  })}
                 </h4>
                 <span className="text-[10px] font-medium text-muted-foreground">
-                  {plan?.meals?.length ?? 0} meals
+                  {t("assignmentDetail.meals", {
+                    count: plan?.meals?.length ?? 0,
+                    defaultValue: `${plan?.meals?.length ?? 0} meals`,
+                  })}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {/* Calories — Primary Energy Metric */}
                 <div className="rounded-lg bg-card border border-primary/20 p-3 flex flex-col justify-between">
-                  <div className="text-[10px] uppercase font-semibold text-primary/90 tracking-wide mb-1">CALORIES</div>
+                  <div className="text-[10px] uppercase font-semibold text-primary/90 tracking-wide mb-1">
+                    {t("macro.calories", { defaultValue: "CALORIES" })}
+                  </div>
                   <div className="text-base font-bold text-foreground/90 tabular-nums">
                     {dailyTotals.calories.toLocaleString()} <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">kcal</span>
                   </div>
@@ -200,7 +210,9 @@ export function AssignmentDetailSlideOver({
 
                 {/* Protein */}
                 <div className="rounded-lg bg-card border border-border p-3 flex flex-col justify-between">
-                  <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">PROTEIN</div>
+                  <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">
+                    {t("macro.protein", { defaultValue: "PROTEIN" })}
+                  </div>
                   <div className="text-sm font-semibold text-foreground/80 tabular-nums">
                     {dailyTotals.protein} <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">g</span>
                   </div>
@@ -208,7 +220,9 @@ export function AssignmentDetailSlideOver({
 
                 {/* Carbs */}
                 <div className="rounded-lg bg-card border border-border p-3 flex flex-col justify-between">
-                  <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">CARBS</div>
+                  <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">
+                    {t("macro.carbs", { defaultValue: "CARBS" })}
+                  </div>
                   <div className="text-sm font-semibold text-foreground/80 tabular-nums">
                     {dailyTotals.carbs} <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">g</span>
                   </div>
@@ -216,7 +230,9 @@ export function AssignmentDetailSlideOver({
 
                 {/* Fat */}
                 <div className="rounded-lg bg-card border border-border p-3 flex flex-col justify-between">
-                  <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">FAT</div>
+                  <div className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wide mb-1">
+                    {t("macro.fat", { defaultValue: "FAT" })}
+                  </div>
                   <div className="text-sm font-semibold text-foreground/80 tabular-nums">
                     {dailyTotals.fat} <span className="text-[11px] font-normal text-muted-foreground/70 ms-0.5">g</span>
                   </div>
@@ -274,7 +290,7 @@ export function AssignmentDetailSlideOver({
             onClick={() => onOpenChange(false)}
             className="text-xs h-8 cursor-pointer"
           >
-            Close
+            {t("assignmentDetail.close", { defaultValue: "Close" })}
           </Button>
           <Button
             size="sm"
@@ -284,7 +300,7 @@ export function AssignmentDetailSlideOver({
             }}
             className="text-xs h-8 cursor-pointer"
           >
-            View full plan
+            {t("assignmentDetail.viewFullPlan", { defaultValue: "View full plan" })}
           </Button>
         </DrawerFooter>
       </DrawerContent>
