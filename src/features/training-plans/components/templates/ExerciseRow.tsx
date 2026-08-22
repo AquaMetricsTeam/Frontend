@@ -265,7 +265,9 @@ export function ExerciseRow({
               type="button"
               {...dragHandleProps}
               className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground p-0.5 rounded transition-colors"
-              title="Drag to reorder"
+              title={t("wizard.step2.dragToReorderTooltip", {
+                defaultValue: "Drag to reorder",
+              })}
             >
               <MdDragIndicator className="size-4" />
             </button>
@@ -274,7 +276,11 @@ export function ExerciseRow({
             {index + 1}
           </span>
           <span className="text-xs font-semibold text-foreground truncate max-w-44">
-            {selectedExercise?.title || `Exercise #${index + 1}`}
+            {selectedExercise?.title ||
+              t("wizard.step2.exerciseNumber", {
+                number: index + 1,
+                defaultValue: `Exercise #${index + 1}`,
+              })}
           </span>
         </div>
 
@@ -286,7 +292,7 @@ export function ExerciseRow({
             disabled={index === 0}
             onClick={onMoveUp}
             className="size-7 text-muted-foreground hover:text-foreground disabled:opacity-20"
-            title="Move up"
+            title={t("wizard.step2.moveUp", { defaultValue: "Move up" })}
           >
             <MdKeyboardArrowUp className="size-4" />
           </Button>
@@ -297,7 +303,7 @@ export function ExerciseRow({
             disabled={index === total - 1}
             onClick={onMoveDown}
             className="size-7 text-muted-foreground hover:text-foreground disabled:opacity-20"
-            title="Move down"
+            title={t("wizard.step2.moveDown", { defaultValue: "Move down" })}
           >
             <MdKeyboardArrowDown className="size-4" />
           </Button>
@@ -307,8 +313,12 @@ export function ExerciseRow({
             size="icon"
             onClick={onRemove}
             className="size-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10 ms-1 cursor-pointer"
-            aria-label="Remove exercise"
-            title="Remove exercise"
+            aria-label={t("wizard.step2.removeExercise", {
+              defaultValue: "Remove exercise",
+            })}
+            title={t("wizard.step2.removeExercise", {
+              defaultValue: "Remove exercise",
+            })}
           >
             <MdDeleteOutline className="size-4" />
           </Button>
@@ -324,8 +334,12 @@ export function ExerciseRow({
               <div className="flex items-center justify-between w-full">
                 <span>
                   {filterType === "fitness"
-                    ? t("exercises:filter.muscleGroup", { defaultValue: "العضلة المستهدفة" })
-                    : t("exercises:filter.category", { defaultValue: "فئة السباحة" })}
+                    ? t("wizard.step2.muscleGroupLabel", {
+                        defaultValue: "Target Muscle Group",
+                      })
+                    : t("wizard.step2.swimmingCategoryLabel", {
+                        defaultValue: "Swimming Category",
+                      })}
                 </span>
                 {canSwitchType && (
                   <div className="flex items-center gap-1 text-[10px]">
@@ -339,7 +353,9 @@ export function ExerciseRow({
                           : "text-muted-foreground hover:text-foreground",
                       )}
                     >
-                      {t("common:nav.items.fitness", { defaultValue: "لياقة" })}
+                      {t("wizard.step2.fitnessType", {
+                        defaultValue: "Fitness",
+                      })}
                     </button>
                     <span className="text-muted-foreground">/</span>
                     <button
@@ -352,7 +368,9 @@ export function ExerciseRow({
                           : "text-muted-foreground hover:text-foreground",
                       )}
                     >
-                      {t("common:nav.items.swimming", { defaultValue: "سباحة" })}
+                      {t("wizard.step2.swimmingType", {
+                        defaultValue: "Swimming",
+                      })}
                     </button>
                   </div>
                 )}
@@ -379,9 +397,13 @@ export function ExerciseRow({
                       <span>{selectedFilterMeta.label}</span>
                     </>
                   ) : filterType === "fitness" ? (
-                    t("training:wizard.step2.selectMuscleGroup")
+                    t("wizard.step2.selectMuscleGroup", {
+                      defaultValue: "Select muscle group...",
+                    })
                   ) : (
-                    t("training:wizard.step2.selectSwimmingCategory")
+                    t("wizard.step2.selectSwimmingCategory", {
+                      defaultValue: "Select swimming category...",
+                    })
                   )}
                 </span>
                 <MdUnfoldMore className="ms-2 size-4 shrink-0 text-muted-foreground" />
@@ -391,14 +413,20 @@ export function ExerciseRow({
                   <CommandInput
                     placeholder={
                       filterType === "fitness"
-                        ? t("training:wizard.step2.searchMuscles")
-                        : t("training:wizard.step2.searchCategories")
+                        ? t("wizard.step2.searchMuscles", {
+                            defaultValue: "Search muscles...",
+                          })
+                        : t("wizard.step2.searchCategories", {
+                            defaultValue: "Search categories...",
+                          })
                     }
                     className="h-9 text-xs"
                   />
                   <CommandList>
                     <CommandEmpty className="py-2.5 text-xs text-center text-muted-foreground">
-                      {t("common:noData.default", { defaultValue: "لا توجد نتائج" })}
+                      {t("wizard.step2.noExercisesFound", {
+                        defaultValue: "No results found",
+                      })}
                     </CommandEmpty>
                     <CommandGroup>
                       {filterOptions.map((opt) => (
@@ -440,7 +468,9 @@ export function ExerciseRow({
               return (
                 <LabelField
                   htmlFor={`exercises.${index}.exerciseId`}
-                  label={t("training:wizard.step2.exerciseLabel", { defaultValue: "التمرين" })}
+                  label={t("wizard.step2.exerciseLabel", {
+                    defaultValue: "Exercise",
+                  })}
                   className="h-full"
                 >
                   <Popover
@@ -466,30 +496,42 @@ export function ExerciseRow({
                     >
                       <span className="truncate text-start">
                         {isDisabled
-                          ? t("training:wizard.step2.chooseFilterFirst", {
+                          ? t("wizard.step2.chooseFilterFirst", {
                               type:
                                 filterType === "fitness"
-                                  ? t("exercises:filter.muscleGroup", { defaultValue: "العضلة" })
-                                  : t("exercises:filter.category", { defaultValue: "الفئة" }),
-                              defaultValue: "اختر التصنيف أولاً...",
+                                  ? t("wizard.step2.muscleGroup", {
+                                      defaultValue: "muscle group",
+                                    })
+                                  : t("wizard.step2.category", {
+                                      defaultValue: "swimming category",
+                                    }),
+                              defaultValue: "Select category first...",
                             })
                           : isSelected
                             ? selectedExercise.title
-                            : t("training:wizard.step2.selectExercise")}
+                            : t("wizard.step2.selectExercise", {
+                                defaultValue: "Select exercise...",
+                              })}
                       </span>
                       <MdUnfoldMore className="ms-2 size-4 shrink-0 text-muted-foreground" />
                     </PopoverTrigger>
                     <PopoverContent className="w-72 p-0" align="start">
                       <Command>
                         <CommandInput
-                          placeholder={t("training:wizard.step2.searchExercises")}
+                          placeholder={t("wizard.step2.searchExercises", {
+                            defaultValue: "Search exercises...",
+                          })}
                           className="h-9 text-xs"
                         />
                         <CommandList>
                           <CommandEmpty className="py-2.5 text-xs text-center text-muted-foreground">
                             {lookupLoading
-                              ? t("common:loading", { defaultValue: "جارٍ التحميل..." })
-                              : t("training:wizard.step2.noExercisesFound")}
+                              ? t("common:loading", {
+                                  defaultValue: "Loading...",
+                                })
+                              : t("wizard.step2.noExercisesFound", {
+                                  defaultValue: "No exercises found.",
+                                })}
                           </CommandEmpty>
                           <CommandGroup>
                             {exercises.map((ex) => (

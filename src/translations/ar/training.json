@@ -69,6 +69,7 @@
   },
   "wizard": {
     "title": "خطة تدريب جديدة",
+    "editTitle": "تعديل خطة التدريب",
     "steps": {
       "info": "المعلومات",
       "exercises": "التمارين",
@@ -103,6 +104,21 @@
       "searchCategories": "بحث في فئات السباحة...",
       "noExercisesFound": "لم يتم العثور على تمارين لهذه الفئة.",
       "minutesEstimated": "دقيقة تقريبية",
+      "exercisesAdded": "تمت إضافة تمرين واحد",
+      "exercisesAdded_plural": "تمت إضافة {{count}} تمارين",
+      "dragToReorder": "• اسحب لإعادة الترتيب",
+      "dragToReorderTooltip": "اسحب لإعادة الترتيب",
+      "exerciseNumber": "تمرين #{{number}}",
+      "moveUp": "تحريك لأعلى",
+      "moveDown": "تحريك لأسفل",
+      "removeExercise": "حذف التمرين",
+      "muscleGroupLabel": "المجموعة العضلية المستهدفة",
+      "swimmingCategoryLabel": "فئة السباحة والتخصص",
+      "fitnessType": "لياقة",
+      "swimmingType": "سباحة",
+      "muscleGroup": "العضلة",
+      "category": "فئة السباحة",
+      "chooseFilterFirst": "اختر {{type}} أولاً...",
       "next": "التالي: التكليف",
       "back": "رجوع"
     },
@@ -136,6 +152,8 @@
     "step4": {
       "save": "حفظ القالب",
       "saveTrainingPlan": "حفظ خطة التدريب",
+      "saveChanges": "حفظ التعديلات",
+      "savingChanges": "جارٍ الحفظ...",
       "saving": "جارٍ الحفظ...",
       "back": "رجوع"
     }

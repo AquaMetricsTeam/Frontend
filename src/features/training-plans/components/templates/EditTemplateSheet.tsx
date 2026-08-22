@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Sheet,
   SheetContent,
@@ -19,8 +20,6 @@ import type {
   ExercisesStepFormValues,
 } from "../../constants/validations";
 
-const STEPS = [{ label: "Info" }, { label: "Exercises" }, { label: "Confirm" }];
-
 interface EditTemplateSheetProps {
   plan: TrainingPlan | null;
   open: boolean;
@@ -32,7 +31,16 @@ export function EditTemplateSheet({
   open,
   onOpenChange,
 }: EditTemplateSheetProps) {
+  const { t } = useTranslation("training");
   const planId = plan?.id ?? 0;
+  const STEPS = useMemo(
+    () => [
+      { label: t("wizard.steps.info") },
+      { label: t("wizard.steps.exercises") },
+      { label: t("wizard.steps.confirm") },
+    ],
+    [t],
+  );
   const {
     data: planDetailRes,
     isLoading,
@@ -155,7 +163,7 @@ export function EditTemplateSheet({
       <SheetContent className="w-full sm:max-w-xl flex flex-col gap-0 p-0">
         <SheetHeader className="px-6 pt-6 pb-4 border-b border-border">
           <SheetTitle className="text-base font-semibold">
-            Edit Training Plan
+            {t("wizard.editTitle", { defaultValue: "Edit Training Plan" })}
           </SheetTitle>
         </SheetHeader>
 
@@ -207,7 +215,10 @@ export function EditTemplateSheet({
                       </p>
                     )}
                     <p className="text-xs text-muted-foreground">
-                      {exercises.exercises.length} Exercises
+                      {exercises.exercises.length}{" "}
+                      {t("templates.table.exercises", {
+                        defaultValue: "Exercises",
+                      })}
                     </p>
                   </div>
 
@@ -217,7 +228,7 @@ export function EditTemplateSheet({
                       variant="outline"
                       onClick={() => setStep(1)}
                     >
-                      Back
+                      {t("wizard.step2.back", { defaultValue: "Back" })}
                     </Button>
                     <Button
                       type="button"
@@ -225,8 +236,12 @@ export function EditTemplateSheet({
                       onClick={handleSave}
                     >
                       {updateMutation.isPending
-                        ? "Saving Changes..."
-                        : "Save Changes"}
+                        ? t("wizard.step4.savingChanges", {
+                            defaultValue: "Saving Changes...",
+                          })
+                        : t("wizard.step4.saveChanges", {
+                            defaultValue: "Save Changes",
+                          })}
                     </Button>
                   </div>
                 </div>
