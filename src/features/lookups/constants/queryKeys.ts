@@ -8,4 +8,5 @@ export const LOOKUP_QUERY_KEYS = {
   groups: () => [...LOOKUP_QUERY_KEYS.all, "groups"] as const,
   exercises: (params?: FetchExercisesLookupParams) =>
     [...LOOKUP_QUERY_KEYS.all, "exercises", params] as const,
+  trainingPlans: () => [...LOOKUP_QUERY_KEYS.all, "training-plans"] as const,
 };

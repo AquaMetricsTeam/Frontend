@@ -25,6 +25,7 @@ import AiRecommendationsPage from "@/pages/ai-recommendations";
 import AiGeneratePlanPage from "@/pages/ai-generate-plan";
 import AiReviewRecommendationPage from "@/pages/ai-review-recommendation";
 import KnowledgeBasePage from "@/pages/knowledge-base";
+import ProfilePage from "@/pages/profile";
 import type { UserRole } from "@/features/auth/types";
 
 const ATHLETE_ROLES: UserRole[] = [
@@ -260,6 +261,14 @@ const router = createBrowserRouter([
                     <KnowledgeBasePage />
                   </ProtectedRoute>
                 ),
+              },
+              {
+                path: "/profile",
+                element: <ProfilePage />,
+              },
+              {
+                path: "/settings",
+                element: <Navigate to="/profile" replace />,
               },
               { path: "/", element: <Navigate to="/" replace /> },
             ],

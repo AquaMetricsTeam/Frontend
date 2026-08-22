@@ -29,7 +29,9 @@ function getInitials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export function InjuredAthletesCard({ athletes = [] }: InjuredAthletesCardProps) {
+export function InjuredAthletesCard({
+  athletes = [],
+}: InjuredAthletesCardProps) {
   const { t } = useTranslation("swimming");
 
   if (!athletes || athletes.length === 0) {
@@ -174,7 +176,6 @@ export function InjuredAthletesCard({ athletes = [] }: InjuredAthletesCardProps)
               {/* Action Button */}
               <div className="mt-4 pt-3 border-t border-border/50">
                 <Button
-                  asChild
                   variant="ghost"
                   size="sm"
                   className="w-full h-8 rounded-xl text-xs font-semibold text-muted-foreground hover:text-primary hover:bg-primary/5 cursor-pointer justify-between px-2"

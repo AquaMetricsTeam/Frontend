@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { InputField } from "@/components/fields/InputField";
 import { TextareaField } from "@/components/fields/TextareaField";
 import { SelectField } from "@/components/fields/SelectField";
-import { useTrainingPlans } from "../../hooks/useTrainingPlans";
+import { useTrainingPlansLookup } from "@/features/lookups/hooks/useTrainingPlansLookup";
 import { useCreateTrainingSession } from "../../hooks/useCreateTrainingSession";
 import {
   sessionSchema,
@@ -40,11 +40,8 @@ export function CreateSessionSheet({
     },
   });
 
-  const { data: plansRes } = useTrainingPlans({
-    pageSize: 100,
-    isArchived: false,
-  });
-  const plans = plansRes?.data?.items ?? [];
+  const { data: plansRes } = useTrainingPlansLookup(open);
+  const plans = plansRes?.data ?? [];
   const planOptions = plans.map((p) => ({
     value: String(p.id),
     label: p.title,

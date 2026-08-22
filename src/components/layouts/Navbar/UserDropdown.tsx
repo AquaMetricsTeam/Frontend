@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/components/Providers/AuthProvider";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 interface UserDropdownProps {
   className?: string;
 }
@@ -46,8 +48,17 @@ export function UserDropdown({ className }: UserDropdownProps) {
           className
         )}
       >
-        <div className="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/20 ring-2 ring-primary/30">
-          <span className="text-[11px] font-bold text-primary">{initials}</span>
+        <div className="relative">
+          <Avatar className="size-8 rounded-full ring-2 ring-primary/30">
+            <AvatarImage
+              src={user?.profilePictureUrl || undefined}
+              alt={displayName}
+              className="object-cover"
+            />
+            <AvatarFallback className="text-[11px] font-bold bg-primary/20 text-primary">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
           <span className="absolute bottom-0 inset-e-0 size-2 rounded-full bg-emerald-500 ring-2 ring-background" />
         </div>
         <div className="hidden md:flex flex-col text-start min-w-0 me-1">
@@ -77,15 +88,15 @@ export function UserDropdown({ className }: UserDropdownProps) {
 
         <DropdownMenuGroup>
           <DropdownMenuItem
-            onClick={() => navigate("/settings")}
+            onClick={() => navigate("/profile")}
             className="flex items-center gap-2 cursor-pointer text-xs"
           >
             <MdPerson className="size-4 text-muted-foreground" />
-            <span>Profile</span>
+            <span>Profile & Account</span>
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            onClick={() => navigate("/settings")}
+            onClick={() => navigate("/profile")}
             className="flex items-center gap-2 cursor-pointer text-xs"
           >
             <MdSettings className="size-4 text-muted-foreground" />

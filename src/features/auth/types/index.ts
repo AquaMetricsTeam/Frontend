@@ -10,6 +10,12 @@ export interface AuthUser {
   fullName: string;
   email: string;
   roles: UserRole[];
+  phoneNumber?: string | null;
+  medicalNotes?: string | null;
+  emergencyContact?: string | null;
+  dateOfBirth?: string | null;
+  gender?: number | null;
+  profilePictureUrl?: string | null;
 }
 
 export interface AuthTokens {

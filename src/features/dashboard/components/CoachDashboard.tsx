@@ -66,12 +66,12 @@ export function CoachDashboard({ data: d }: CoachDashboardProps) {
         <InjuredAthletesCard athletes={d.injuredAthletes || []} />
       )}
 
-      {/* Trend Charts */}
+      {/* Trend Charts Row 1 */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <DashboardTrendChart
           data={d.performanceTrend}
           title="Performance Trend"
-          subtitle="Average performance across your athletes"
+          subtitle="Average performance across athletes"
           icon={MdTrendingUp}
           iconColor="text-primary"
           iconBg="bg-primary/10"
@@ -94,7 +94,7 @@ export function CoachDashboard({ data: d }: CoachDashboardProps) {
         />
       </div>
 
-      {/* Injuries + Scatter */}
+      {/* Trend Charts Row 2: Injuries + Scatter Matrix */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <DashboardTrendChart
           data={d.injuriesOverTime}
