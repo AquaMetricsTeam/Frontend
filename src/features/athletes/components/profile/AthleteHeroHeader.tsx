@@ -5,9 +5,6 @@ import {
   MdMale,
   MdFemale,
   MdPerson,
-  MdCheckCircle,
-  MdCancel,
-  MdHourglassEmpty,
   MdPersonAdd,
   MdStickyNote2,
   MdFitnessCenter,
@@ -54,10 +51,6 @@ export function AthleteHeroHeader({
   const isFemale =
     athlete.gender === 2 ||
     String(athlete.gender).toLowerCase() === "female";
-
-  const statusStr = String(athlete.registrationStatus).toLowerCase();
-  const isActive = statusStr === "1" || statusStr === "active";
-  const isPending = statusStr === "2" || statusStr === "pending";
 
   const totalSessions =
     performanceData?.totalSessions ??
@@ -113,7 +106,7 @@ export function AthleteHeroHeader({
       <div className="relative z-10 mt-6 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         {/* Left: Avatar + Identity Info */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-          {/* Avatar with Status Ring */}
+          {/* Avatar */}
           <div className="relative">
             {athlete.profilePictureUrl ? (
               <img
@@ -126,32 +119,6 @@ export function AthleteHeroHeader({
                 {getInitials(athlete.fullName)}
               </div>
             )}
-
-            {/* Status dot */}
-            <span
-              className={`absolute -bottom-1 -end-1 size-5 rounded-full border-2 border-card flex items-center justify-center ${
-                isActive
-                  ? "bg-emerald-500 text-white"
-                  : isPending
-                    ? "bg-amber-500 text-white"
-                    : "bg-muted-foreground text-white"
-              }`}
-              title={
-                isActive
-                  ? t("status.active")
-                  : isPending
-                    ? t("status.pending")
-                    : t("status.inactive")
-              }
-            >
-              {isActive ? (
-                <MdCheckCircle className="size-3.5" />
-              ) : isPending ? (
-                <MdHourglassEmpty className="size-3" />
-              ) : (
-                <MdCancel className="size-3.5" />
-              )}
-            </span>
           </div>
 
           {/* Name & Bio Pills */}
@@ -163,23 +130,6 @@ export function AthleteHeroHeader({
               >
                 {athlete.fullName}
               </h1>
-
-              {/* Status Pill */}
-              <Badge
-                className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                  isActive
-                    ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/20"
-                    : isPending
-                      ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/20"
-                      : "bg-muted text-muted-foreground border-border"
-                }`}
-              >
-                {isActive
-                  ? t("status.active")
-                  : isPending
-                    ? t("status.pending")
-                    : t("status.inactive")}
-              </Badge>
             </div>
 
             <p className="text-xs text-muted-foreground">
