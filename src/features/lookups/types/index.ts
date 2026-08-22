@@ -22,6 +22,11 @@ export interface ExerciseLookupItem {
   title: string;
 }
 
+export interface TrainingPlanLookupItem {
+  id: number;
+  title: string;
+}
+
 export interface FetchExercisesLookupParams {
   search?: string;
   muscleGroup?: number | null;

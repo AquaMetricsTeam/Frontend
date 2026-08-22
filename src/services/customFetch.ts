@@ -13,10 +13,17 @@ export interface CustomFetchOptions extends RequestInit {
 let refreshAttemptInProgress: Promise<string> | null = null;
 
 // Global in-memory cache for tracking active/failed mutation request idempotency keys
-const activeIdempotencyKeys = new Map<string, { key: string; timestamp: number }>();
+const activeIdempotencyKeys = new Map<
+  string,
+  { key: string; timestamp: number }
+>();
 const KEY_TTL_MS = 5 * 60 * 1000; // 5 minutes TTL
 
-function getPayloadHash(method: string, endpoint: string, body?: BodyInit | null): string {
+function getPayloadHash(
+  method: string,
+  endpoint: string,
+  body?: BodyInit | null,
+): string {
   const bodyString = typeof body === "string" ? body : "";
   return `${method}:${endpoint}:${bodyString}`;
 }
@@ -51,7 +58,8 @@ function buildHeaders(
     ...(isFormData
       ? { Accept: "application/json" }
       : { "Content-Type": "application/json", Accept: "application/json" }),
-    "accept-language": localStorage.getItem("i18nextLng") || DEFAULT_LOCALE,
+    "accept-language":
+      localStorage.getItem("aqua-metrics-lang") || DEFAULT_LOCALE,
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
     ...(options.headers || {}),
@@ -66,7 +74,8 @@ export async function customFetch<T>(
   // Immediate offline check
   if (typeof navigator !== "undefined" && navigator.onLine === false) {
     throw {
-      message: "You are currently offline. Please check your network connection.",
+      message:
+        "You are currently offline. Please check your network connection.",
       status: 0,
     };
   }
@@ -84,7 +93,8 @@ export async function customFetch<T>(
   let idempotencyKey = options.idempotencyKey;
   if (!idempotencyKey && options.headers) {
     const headersObj = options.headers as Record<string, string>;
-    idempotencyKey = headersObj["Idempotency-Key"] || headersObj["idempotency-key"];
+    idempotencyKey =
+      headersObj["Idempotency-Key"] || headersObj["idempotency-key"];
   }
 
   // Payload-aware global idempotency key lookup & generation
@@ -138,7 +148,8 @@ export async function customFetch<T>(
       }
       if (typeof navigator !== "undefined" && navigator.onLine === false) {
         throw {
-          message: "You are currently offline. Please check your network connection.",
+          message:
+            "You are currently offline. Please check your network connection.",
           status: 0,
         };
       }
@@ -173,8 +184,7 @@ export async function customFetch<T>(
         const parsed = await response.json();
         // Some endpoints (e.g. knowledge-documents) return raw JSON-string bodies
         // like "No file was uploaded." — normalize them to { message }.
-        errorBody =
-          typeof parsed === "string" ? { message: parsed } : parsed;
+        errorBody = typeof parsed === "string" ? { message: parsed } : parsed;
       } catch {
         errorBody = {};
       }

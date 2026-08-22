@@ -4,7 +4,6 @@ import {
   MdLocalHospital,
   MdTrendingUp,
   MdBatteryChargingFull,
-  MdWarning,
 } from "react-icons/md";
 import { useMe } from "@/features/auth/hooks/useMe";
 import { DashboardGreeting } from "./DashboardGreeting";
@@ -12,6 +11,7 @@ import { DashboardStatCard } from "./DashboardStatCard";
 import { DashboardTrendChart } from "./DashboardTrendChart";
 import { DashboardScatterChart } from "./DashboardScatterChart";
 import { AdminDomainDonutChart } from "./AdminDomainDonutChart";
+import { InjuredAthletesCard } from "./InjuredAthletesCard";
 import type { AdminDashboardData } from "../types/index";
 
 interface AdminDashboardProps {
@@ -62,17 +62,9 @@ export function AdminDashboard({ data: d }: AdminDashboardProps) {
         />
       </div>
 
-      {/* Injury alert banner */}
-      {d.totalInjuries > 0 && (
-        <div className="flex items-center gap-3 rounded-2xl border border-rose-500/25 bg-rose-500/8 p-4 text-rose-700 dark:text-rose-400">
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-rose-500/15">
-            <MdWarning className="size-4 text-rose-500" />
-          </div>
-          <div className="text-xs">
-            <span className="font-bold">{d.totalInjuries} injuries</span> recorded across all sessions.
-            Review athlete medical records and adjust training loads accordingly.
-          </div>
-        </div>
+      {/* Injured Athletes List */}
+      {((d.injuredAthletes && d.injuredAthletes.length > 0) || d.totalInjuries > 0) && (
+        <InjuredAthletesCard athletes={d.injuredAthletes || []} />
       )}
 
       {/* Trend Charts Row */}

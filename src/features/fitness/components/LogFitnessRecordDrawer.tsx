@@ -89,7 +89,7 @@ export function LogFitnessRecordDrawer({
 
   // 2. Session detail → athletes + trainingPlanId
   const { data: sessionDetailRes, isLoading: sessionAthletesLoading } =
-    useTrainingSession(Number(selectedSessionId), !!selectedSessionId);
+    useTrainingSession(Number(selectedSessionId), !!selectedSessionId, true);
 
   const sessionDetail = sessionDetailRes?.data;
   const sessionAthletes = sessionDetail?.athletes ?? [];

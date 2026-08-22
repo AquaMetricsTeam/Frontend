@@ -145,7 +145,7 @@ export function LogSwimmingPerformanceDrawer({
 
   // 2. Fetch session details strictly to get athletes and plan
   const { data: sessionDetailRes, isLoading: sessionAthletesLoading } =
-    useTrainingSession(Number(selectedSessionId), !!selectedSessionId);
+    useTrainingSession(Number(selectedSessionId), !!selectedSessionId, true);
 
   const sessionDetail = sessionDetailRes?.data;
   const sessionAthletes = sessionDetail?.athletes ?? [];
