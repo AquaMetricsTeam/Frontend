@@ -9,7 +9,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { InputField } from "@/components/fields/InputField";
 import { SelectField } from "@/components/fields/SelectField";
-import { TextareaField } from "@/components/fields/TextareaField";
 import {
   updateProfileSchema,
   type UpdateProfileFormValues,
@@ -22,8 +21,8 @@ interface UpdateProfileFormProps {
 }
 
 const GENDER_OPTIONS = [
-  { value: "0", label: "Male" },
-  { value: "1", label: "Female" },
+  { value: "1", label: "Male" },
+  { value: "2", label: "Female" },
 ];
 
 export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
@@ -34,10 +33,9 @@ export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
     defaultValues: {
       phoneNumber: user.phoneNumber || "",
       emergencyContact: user.emergencyContact || "",
-      dateOfBirth: user.dateOfBirth
-        ? user.dateOfBirth.split("T")[0]
-        : "",
-      gender: user.gender !== undefined && user.gender !== null ? user.gender : 0,
+      dateOfBirth: user.dateOfBirth ? user.dateOfBirth.split("T")[0] : "",
+      gender:
+        user.gender !== undefined && user.gender !== null ? user.gender : 0,
       medicalNotes: user.medicalNotes || "",
     },
   });
@@ -80,7 +78,9 @@ export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
               name="emergencyContact"
               label="Emergency Contact"
               placeholder="+201098765432"
-              startIcon={<MdContactPhone className="size-4 text-muted-foreground" />}
+              startIcon={
+                <MdContactPhone className="size-4 text-muted-foreground" />
+              }
             />
           </div>
 
@@ -90,7 +90,9 @@ export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
               name="dateOfBirth"
               label="Date of Birth"
               type="date"
-              startIcon={<MdCalendarToday className="size-4 text-muted-foreground" />}
+              startIcon={
+                <MdCalendarToday className="size-4 text-muted-foreground" />
+              }
             />
 
             {/* Gender */}
@@ -104,12 +106,12 @@ export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
           </div>
 
           {/* Medical Notes */}
-          <TextareaField<UpdateProfileFormValues>
+          {/* <TextareaField<UpdateProfileFormValues>
             name="medicalNotes"
             label="Medical Notes / Health Conditions"
             placeholder="Any allergies, previous injuries, or medical considerations..."
             rows={3}
-          />
+          /> */}
 
           <div className="pt-2 flex justify-end">
             <Button
@@ -118,7 +120,9 @@ export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
               className="gap-2 rounded-xl px-6"
             >
               <MdSave className="size-4" />
-              <span>{mutation.isPending ? "Saving Changes..." : "Save Profile"}</span>
+              <span>
+                {mutation.isPending ? "Saving Changes..." : "Save Profile"}
+              </span>
             </Button>
           </div>
         </form>

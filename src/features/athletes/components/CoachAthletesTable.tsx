@@ -18,7 +18,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import TableLoadingAndError from "@/components/HOCs/TableLoadingAndError";
-import type { CoachAthlete, Gender, RegistrationStatus } from "../types/index";
+import type { CoachAthlete, Gender } from "../types/index";
 
 interface CoachAthletesTableProps {
   athletes: CoachAthlete[];
@@ -101,45 +101,31 @@ function getCoachesList(
 function GenderBadge({ gender }: { gender: Gender }) {
   if (gender === 1)
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 font-medium">
+      <Badge
+        variant="outline"
+        className="rounded-md font-medium text-xs gap-1 border-blue-500/20 text-blue-700 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5"
+      >
         <MdMale className="size-3.5" />
-        Male
-      </span>
+        <span>Male</span>
+      </Badge>
     );
   if (gender === 2)
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-pink-600 dark:text-pink-400 font-medium">
+      <Badge
+        variant="outline"
+        className="rounded-md font-medium text-xs gap-1 border-pink-500/20 text-pink-700 dark:text-pink-400 bg-pink-500/10 px-2 py-0.5"
+      >
         <MdFemale className="size-3.5" />
-        Female
-      </span>
-    );
-  return (
-    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-medium">
-      <MdPerson className="size-3.5" />
-      Unknown
-    </span>
-  );
-}
-
-function RegistrationBadge({ status }: { status: RegistrationStatus }) {
-  if (status === 1)
-    return (
-      <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/20 text-xs px-2.5 py-0.5 rounded-full font-medium w-fit">
-        Active
-      </Badge>
-    );
-  if (status === 2)
-    return (
-      <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/20 text-xs px-2.5 py-0.5 rounded-full font-medium w-fit">
-        Pending
+        <span>Female</span>
       </Badge>
     );
   return (
     <Badge
       variant="outline"
-      className="text-muted-foreground text-xs px-2.5 py-0.5 rounded-full font-medium w-fit"
+      className="rounded-md font-medium text-xs gap-1 text-muted-foreground px-2 py-0.5"
     >
-      Inactive
+      <MdPerson className="size-3.5" />
+      <span>Unknown</span>
     </Badge>
   );
 }
@@ -173,8 +159,8 @@ export function CoachAthletesTable({
             <TableHead className="py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t("table.coaches")}
             </TableHead>
-            <TableHead className="py-3 pe-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {t("table.registrationStatus")}
+            <TableHead className="py-3 pe-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground text-end">
+              {t("table.actions", "Actions")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -257,42 +243,39 @@ export function CoachAthletesTable({
                     )}
                   </TableCell>
 
-                  {/* Registration Status & Actions */}
+                  {/* Actions */}
                   <TableCell className="py-3.5 pe-6">
-                    <div className="flex items-center justify-between gap-3">
-                      <RegistrationBadge status={athlete.registrationStatus} />
-                      <div className="flex items-center gap-1.5">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 gap-1 px-2 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg cursor-pointer"
+                      >
+                        <Link
+                          to={`/athletes/${athlete.athleteId || athlete.id}`}
+                          className="flex items-center gap-1"
+                        >
+                          <MdVisibility className="size-3.5 text-primary" />
+                          <span>{t("table.viewProfile")}</span>
+                        </Link>
+                      </Button>
+                      {onOpenNotes && (
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="h-8 gap-1 px-2 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg cursor-pointer"
+                          className="h-8 gap-1.5 px-2 text-xs text-primary hover:text-primary hover:bg-primary/10 rounded-lg cursor-pointer"
+                          onClick={() =>
+                            onOpenNotes({
+                              id: athlete.id || athlete.athleteId || "",
+                              fullName: athlete.fullName,
+                              email: athlete.email,
+                            })
+                          }
                         >
-                          <Link
-                            to={`/athletes/${athlete.athleteId || athlete.id}`}
-                            className="flex items-center gap-1"
-                          >
-                            <MdVisibility className="size-3.5 text-primary" />
-                            <span>{t("table.viewProfile")}</span>
-                          </Link>
+                          <MdStickyNote2 className="size-4" />
+                          <span>Notes</span>
                         </Button>
-                        {onOpenNotes && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-8 gap-1.5 px-2 text-xs text-primary hover:text-primary hover:bg-primary/10 rounded-lg cursor-pointer"
-                            onClick={() =>
-                              onOpenNotes({
-                                id: athlete.id || athlete.athleteId || "",
-                                fullName: athlete.fullName,
-                                email: athlete.email,
-                              })
-                            }
-                          >
-                            <MdStickyNote2 className="size-4" />
-                            <span>Notes</span>
-                          </Button>
-                        )}
-                      </div>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

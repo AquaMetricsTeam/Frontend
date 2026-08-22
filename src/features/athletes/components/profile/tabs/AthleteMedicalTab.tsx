@@ -18,6 +18,18 @@ interface AthleteMedicalTabProps {
   athlete: AthleteOverviewResponse;
 }
 
+function formatGender(
+  gender: string | number | undefined | null,
+  t: (key: string) => string,
+): string {
+  const g = Number(gender);
+  if (g === 1 || String(gender).toLowerCase() === "male")
+    return t("gender.male");
+  if (g === 2 || String(gender).toLowerCase() === "female")
+    return t("gender.female");
+  return t("gender.unknown");
+}
+
 export function AthleteMedicalTab({ athlete }: AthleteMedicalTabProps) {
   const { t } = useTranslation("athletes");
   const [copied, setCopied] = useState(false);
@@ -199,17 +211,7 @@ export function AthleteMedicalTab({ athlete }: AthleteMedicalTabProps) {
               {t("table.gender")}
             </span>
             <div className="text-sm font-bold text-foreground">
-              {String(athlete.gender)}
-            </div>
-          </div>
-
-          {/* Registration Status */}
-          <div className="space-y-1 rounded-xl bg-muted/30 p-3.5 border border-border/40">
-            <span className="text-muted-foreground text-[11px]">
-              {t("table.status")}
-            </span>
-            <div className="text-sm font-bold text-foreground">
-              {String(athlete.registrationStatus)}
+              {formatGender(athlete.gender, t)}
             </div>
           </div>
         </div>
