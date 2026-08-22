@@ -5,7 +5,7 @@
   },
   "views": {
     "templates": "Templates",
-    "assignments": "Assigned Plans",
+    "assignments": "Assign Plans",
     "sessions": "Sessions"
   },
   "templates": {

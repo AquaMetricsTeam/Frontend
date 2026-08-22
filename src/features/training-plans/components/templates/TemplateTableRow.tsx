@@ -33,6 +33,7 @@ import { useArchiveTrainingPlan } from "../../hooks/useArchiveTrainingPlan";
 import { useRestoreTrainingPlan } from "../../hooks/useRestoreTrainingPlan";
 import { useExercisesLookup } from "@/features/lookups/hooks/useExercisesLookup";
 import { calculatePlanDuration, type TrainingPlan } from "../../types/index";
+import { cn } from "@/lib/utils";
 
 interface TemplateTableRowProps {
   plan: TrainingPlan;
@@ -59,14 +60,37 @@ export function TemplateTableRow({
   return (
     <>
       <TableRow
-        className="group cursor-pointer hover:bg-muted/50 transition-colors"
+        className={cn(
+          "group cursor-pointer transition-colors",
+          plan.isArchived
+            ? "bg-muted/20 hover:bg-muted/40 opacity-80"
+            : "hover:bg-muted/50"
+        )}
         onClick={() => onView?.(plan)}
       >
         <TableCell>
           <div className="flex flex-col gap-0.5">
-            <span className="font-medium text-foreground group-hover:text-primary transition-colors">
-              {plan.title}
-            </span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span
+                className={cn(
+                  "font-medium transition-colors",
+                  plan.isArchived
+                    ? "text-muted-foreground"
+                    : "text-foreground group-hover:text-primary"
+                )}
+              >
+                {plan.title}
+              </span>
+              {plan.isArchived && (
+                <Badge
+                  variant="outline"
+                  className="gap-1 bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30 text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0"
+                >
+                  <MdArchive className="size-3" />
+                  {t("templates.filter.archived", { defaultValue: "Archived" })}
+                </Badge>
+              )}
+            </div>
             {plan.description && (
               <span className="text-xs text-muted-foreground line-clamp-1">
                 {plan.description}
@@ -82,7 +106,12 @@ export function TemplateTableRow({
                 <Badge
                   key={ex.id ?? idx}
                   variant="secondary"
-                  className="text-[11px] font-normal bg-primary/10 text-primary border-primary/20 shrink-0"
+                  className={cn(
+                    "text-[11px] font-normal shrink-0",
+                    plan.isArchived
+                      ? "bg-muted text-muted-foreground border-transparent"
+                      : "bg-primary/10 text-primary border-primary/20"
+                  )}
                 >
                   {ex.exerciseName ||
                     exerciseMap.get(ex.exerciseId) ||
@@ -104,7 +133,12 @@ export function TemplateTableRow({
 
         <TableCell>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-            <MdTimer className="size-3.5 text-primary" />
+            <MdTimer
+              className={cn(
+                "size-3.5",
+                plan.isArchived ? "text-muted-foreground" : "text-primary"
+              )}
+            />
             <span>~{totalDuration} min</span>
           </div>
         </TableCell>

@@ -8,6 +8,8 @@ import {
   MdPerson,
   MdRefresh,
   MdVisibility,
+  MdRestaurant,
+  MdLocalFireDepartment,
 } from "react-icons/md";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,6 +24,20 @@ interface AthleteTrainingPlansTabProps {
   athleteId: string;
 }
 
+function resolvePlanSource(source?: string | number | null): string {
+  if (source === 0 || source === "0" || source === "Coach") return "Coach";
+  if (source === 1 || source === "1" || source === "AI" || source === "Ai") return "AI Generated";
+  return String(source || "Coach");
+}
+
+function resolveApprovalStatus(status?: string | number | null): string | null {
+  if (status === null || status === undefined || status === "") return null;
+  if (status === 0 || status === "0" || status === "Pending") return "Pending";
+  if (status === 1 || status === "1" || status === "Approved") return "Approved";
+  if (status === 2 || status === "2" || status === "Rejected") return "Rejected";
+  return String(status).trim();
+}
+
 export function AthleteTrainingPlansTab({
   athleteId,
 }: AthleteTrainingPlansTabProps) {
@@ -33,7 +49,11 @@ export function AthleteTrainingPlansTab({
   const { data: response, isLoading, isError, refetch } =
     useAthleteTrainingPlans(athleteId);
 
-  const plans = response?.data || [];
+  const rawData = response?.data;
+  const plans: AthleteOverviewTrainingPlanResponse[] = Array.isArray(rawData)
+    ? rawData
+    : (rawData?.trainingPlans ?? []);
+  const nutritionPlan = !Array.isArray(rawData) ? rawData?.nutritionPlan : null;
 
   const filteredPlans = plans.filter((p) => {
     const q = search.toLowerCase().trim();
@@ -41,8 +61,9 @@ export function AthleteTrainingPlansTab({
     return (
       String(p.title || "").toLowerCase().includes(q) ||
       String(p.description || "").toLowerCase().includes(q) ||
+      String(p.objectives || "").toLowerCase().includes(q) ||
       String(p.domainName || "").toLowerCase().includes(q) ||
-      String(p.planSource || "").toLowerCase().includes(q)
+      String(p.planSource || p.source || "").toLowerCase().includes(q)
     );
   });
 
@@ -50,11 +71,11 @@ export function AthleteTrainingPlansTab({
     setSelectedPlan({
       id: plan.id,
       title: plan.title,
-      description: plan.description || "",
+      description: plan.description || plan.objectives || "",
       domainId: plan.domainId || 1,
       domainName: plan.domainName || "Swimming",
-      planSource: plan.planSource || "Coach",
-      approvalStatus: String(plan.approvalStatus || ""),
+      planSource: resolvePlanSource(plan.planSource ?? plan.source),
+      approvalStatus: resolveApprovalStatus(plan.approvalStatus) || "",
       estimatedDurationMinutes: plan.estimatedDurationMinutes || 0,
       planExercises: [],
     } as unknown as TrainingPlan);
@@ -122,6 +143,61 @@ export function AthleteTrainingPlansTab({
           />
         </div>
       </div>
+
+      {/* Active Nutrition Plan Banner if present */}
+      {nutritionPlan && (
+        <div className="rounded-2xl border border-border/80 bg-card p-5 shadow-xs">
+          <div className="flex items-center justify-between gap-3 border-b border-border/60 pb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                <MdRestaurant className="size-4" />
+              </div>
+              <div>
+                <span className="text-xs font-semibold text-muted-foreground">
+                  Nutrition Plan
+                </span>
+                <h4 className="text-sm font-bold text-foreground">
+                  {nutritionPlan.title}
+                </h4>
+              </div>
+            </div>
+            <Badge
+              variant="secondary"
+              className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20 text-xs font-semibold"
+            >
+              Active
+            </Badge>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="rounded-xl bg-muted/40 p-2.5 border border-border/50">
+              <span className="text-[11px] text-muted-foreground block">Calories</span>
+              <span className="text-base font-bold text-foreground flex items-center gap-1">
+                <MdLocalFireDepartment className="size-4 text-amber-500" />
+                {nutritionPlan.dailyCalories} <span className="text-xs font-normal text-muted-foreground">kcal</span>
+              </span>
+            </div>
+            <div className="rounded-xl bg-muted/40 p-2.5 border border-border/50">
+              <span className="text-[11px] text-muted-foreground block">Protein</span>
+              <span className="text-base font-bold text-foreground">
+                {nutritionPlan.proteinGrams} <span className="text-xs font-normal text-muted-foreground">g</span>
+              </span>
+            </div>
+            <div className="rounded-xl bg-muted/40 p-2.5 border border-border/50">
+              <span className="text-[11px] text-muted-foreground block">Carbs</span>
+              <span className="text-base font-bold text-foreground">
+                {nutritionPlan.carbGrams} <span className="text-xs font-normal text-muted-foreground">g</span>
+              </span>
+            </div>
+            <div className="rounded-xl bg-muted/40 p-2.5 border border-border/50">
+              <span className="text-[11px] text-muted-foreground block">Fats</span>
+              <span className="text-base font-bold text-foreground">
+                {nutritionPlan.fatGrams} <span className="text-xs font-normal text-muted-foreground">g</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Plans Grid */}
       {filteredPlans.length === 0 ? (

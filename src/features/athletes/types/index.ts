@@ -151,15 +151,35 @@ export interface AthleteOverviewResponse {
   fitnessSessions: AthleteOverviewFitnessSessionResponse[];
 }
 
+export interface AthleteOverviewNutritionPlanResponse {
+  id: number;
+  title: string;
+  dailyCalories: number;
+  proteinGrams: number;
+  carbGrams: number;
+  fatGrams: number;
+}
+
 export interface AthleteOverviewTrainingPlanResponse {
   id: number;
   title: string;
+  objectives?: string | null;
   description?: string | null;
   estimatedDurationMinutes?: number | null;
+  source?: number | string | null;
   planSource?: string | null;
-  approvalStatus?: string | null;
+  approvalStatus?: number | string | null;
   domainId?: number;
   domainName?: string;
+  createdById?: string;
+  createdByName?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface AthleteOverviewTrainingPlansResponse {
+  trainingPlans: AthleteOverviewTrainingPlanResponse[];
+  nutritionPlan?: AthleteOverviewNutritionPlanResponse | null;
 }
 
 export interface AthleteOverviewPerformancePointResponse {

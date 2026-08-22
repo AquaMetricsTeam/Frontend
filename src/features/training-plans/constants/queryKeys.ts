@@ -12,7 +12,8 @@ export const ASSIGNMENT_KEYS = {
 export const SESSION_KEYS = {
   all: ["training-sessions"] as const,
   list: (params: object) => [...SESSION_KEYS.all, "list", params] as const,
-  detail: (id: number) => [...SESSION_KEYS.all, "detail", id] as const,
+  detail: (id: number, isPresent?: boolean) =>
+    [...SESSION_KEYS.all, "detail", id, { isPresent: Boolean(isPresent) }] as const,
 } as const;
 
 export const ATTENDANCE_KEYS = {

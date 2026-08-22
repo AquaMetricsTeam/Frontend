@@ -5,7 +5,7 @@ import Box from "@/components/layouts/Box";
 import WithPagination from "@/components/HOCs/WithPagination";
 import TableLoadingAndError from "@/components/HOCs/TableLoadingAndError";
 import { SearchInput } from "@/components/common/SearchInput";
-import { SegmentedControl } from "@/components/common/SegmentedControl";
+// import { SegmentedControl } from "@/components/common/SegmentedControl";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -29,10 +29,10 @@ import type { TrainingPlan } from "../../types/index";
 
 type ArchiveFilter = "active" | "archived";
 
-const ARCHIVE_OPTIONS: { value: ArchiveFilter; label: string }[] = [
-  { value: "active", label: "Active" },
-  { value: "archived", label: "Archived" },
-];
+// const ARCHIVE_OPTIONS: { value: ArchiveFilter; label: string }[] = [
+//   { value: "active", label: "Active" },
+//   { value: "archived", label: "Archived" },
+// ];
 
 export function TemplateListView() {
   const { t } = useTranslation("training");
@@ -40,7 +40,7 @@ export function TemplateListView() {
   const [viewPlan, setViewPlan] = useState<TrainingPlan | null>(null);
   const [assignPlan, setAssignPlan] = useState<TrainingPlan | null>(null);
   const [editPlan, setEditPlan] = useState<TrainingPlan | null>(null);
-  const [archiveFilter, setArchiveFilter] = useState<ArchiveFilter>("active");
+  const [archiveFilter] = useState<ArchiveFilter>("active");
 
   const { search, setSearch, page } = useTrainingPlansFilters();
 
@@ -64,11 +64,11 @@ export function TemplateListView() {
               onChange={setSearch}
               placeholder="Search plans..."
             />
-            <SegmentedControl
+            {/* <SegmentedControl
               options={ARCHIVE_OPTIONS}
               value={archiveFilter}
               onChange={setArchiveFilter}
-            />
+            /> */}
           </div>
           <Button
             size="sm"
