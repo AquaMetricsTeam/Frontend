@@ -1,0 +1,12 @@
+{
+  "title": "الإشعارات",
+  "markAllAsRead": "تحديد الكل كمقروء",
+  "noNotifications": "لا توجد إشعارات",
+  "allCaughtUp": "أنت متطلع على كل جديد! ستظهر الإشعارات الجديدة هنا فور تعيينها.",
+  "fetchError": "فشل تحميل الإشعارات.",
+  "retry": "إعادة المحاولة",
+  "justNow": "الآن",
+  "minutesAgo": "منذ {{count}} دقيقة",
+  "hoursAgo": "منذ {{count}} ساعة",
+  "daysAgo": "منذ {{count}} يوم"
+}

@@ -16,6 +16,7 @@ import aiPlan from "./aiPlan.json";
 import aiInbox from "./aiInbox.json";
 import aiPlanView from "./aiPlanView.json";
 import aiKnowledge from "./aiKnowledge.json";
+import notifications from "./notifications.json";
 
 export const en = {
   common,
@@ -36,6 +37,7 @@ export const en = {
   aiInbox,
   aiPlanView,
   aiKnowledge,
+  notifications,
 } as const;
 
 
