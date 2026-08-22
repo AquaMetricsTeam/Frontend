@@ -69,6 +69,7 @@
   },
   "wizard": {
     "title": "New Training Plan",
+    "editTitle": "Edit Training Plan",
     "steps": {
       "info": "Info",
       "exercises": "Exercises",
@@ -103,6 +104,21 @@
       "searchCategories": "Search categories...",
       "noExercisesFound": "No exercises found for this category.",
       "minutesEstimated": "min estimated",
+      "exercisesAdded": "{{count}} exercise added",
+      "exercisesAdded_plural": "{{count}} exercises added",
+      "dragToReorder": "• Drag to reorder",
+      "dragToReorderTooltip": "Drag to reorder",
+      "exerciseNumber": "Exercise #{{number}}",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "removeExercise": "Remove exercise",
+      "muscleGroupLabel": "Target Muscle Group",
+      "swimmingCategoryLabel": "Swimming Category",
+      "fitnessType": "Fitness",
+      "swimmingType": "Swimming",
+      "muscleGroup": "muscle group",
+      "category": "swimming category",
+      "chooseFilterFirst": "Select {{type}} first...",
       "next": "Next: Assignment",
       "back": "Back"
     },
@@ -136,6 +152,8 @@
     "step4": {
       "save": "Save Template",
       "saveTrainingPlan": "Save Training Plan",
+      "saveChanges": "Save Changes",
+      "savingChanges": "Saving Changes...",
       "saving": "Saving...",
       "back": "Back",
       "assignedTo": "Plan will be assigned to {{target}} immediately after saving.",
