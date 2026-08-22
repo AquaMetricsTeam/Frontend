@@ -1,15 +1,18 @@
+import { useTranslation } from "react-i18next";
 import aquaHero from "@/assets/aqua_hero3.png";
 import logoVertical from "@/assets/logo-horizontal.png";
 import { Users, Target, Activity } from "lucide-react";
 
 export function HeroPanel() {
+  const { t } = useTranslation("auth");
+
   return (
     <div className="relative hidden w-1/2 overflow-hidden bg-[#050b18] select-none lg:block">
       {/* Background Swimmer Image */}
       <img
         src={aquaHero}
         alt="Elite Swimming Performance"
-        className="absolute inset-0 h-full w-full object-cover object-[30%_50%]  "
+        className="absolute inset-0 h-full w-full object-cover object-[30%_50%]"
       />
 
       {/* Deep Tech Blue Radial & Linear Gradients for Text Readability */}
@@ -17,114 +20,8 @@ export function HeroPanel() {
       <div className="absolute inset-0 bg-linear-to-t from-[#070f20] via-transparent to-[#050b18]/80" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_50%,rgba(6,182,212,0.1),transparent_70%)]" />
 
-      {/* Geometric Graphic Overlay 1: Top-Right Overlapping Glowing Circles */}
-      <svg
-        className="pointer-events-none absolute -top-16 -right-16 h-[480px] w-[480px] opacity-70"
-        viewBox="0 0 500 500"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle
-          cx="320"
-          cy="180"
-          r="220"
-          fill="url(#circleGrad1)"
-          fillOpacity="0.25"
-        />
-
-        <circle
-          cx="300"
-          cy="200"
-          r="150"
-          stroke="url(#strokeGrad2)"
-          strokeWidth="1.2"
-          strokeOpacity="0.5"
-        />
-        <defs>
-          <radialGradient
-            id="circleGrad1"
-            cx="0"
-            cy="0"
-            r="1"
-            gradientUnits="userSpaceOnUse"
-            gradientTransform="translate(320 180) rotate(90) scale(220)"
-          >
-            <stop stopColor="#06b6d4" stopOpacity="0.4" />
-            <stop offset="0.7" stopColor="#0ea5e9" stopOpacity="0.1" />
-            <stop offset="1" stopColor="#050b18" stopOpacity="0" />
-          </radialGradient>
-          <linearGradient id="strokeGrad1" x1="140" y1="140" x2="520" y2="330">
-            <stop stopColor="#38bdf8" />
-            <stop offset="0.5" stopColor="#06b6d4" stopOpacity="0.3" />
-            <stop offset="1" stopColor="#3b82f6" stopOpacity="0" />
-          </linearGradient>
-          <linearGradient id="strokeGrad2" x1="150" y1="200" x2="450" y2="200">
-            <stop stopColor="#06b6d4" />
-            <stop offset="1" stopColor="#0ea5e9" stopOpacity="0.1" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      {/* Geometric Graphic Overlay 2: Top-Right Dot Matrix */}
-      <svg
-        className="pointer-events-none absolute top-12 right-12 h-28 w-28 opacity-40"
-        viewBox="0 0 100 100"
-        fill="none"
-      >
-        <pattern
-          id="dotMatrix"
-          x="0"
-          y="0"
-          width="16"
-          height="16"
-          patternUnits="userSpaceOnUse"
-        >
-          <circle cx="3" cy="3" r="1.5" fill="#38bdf8" />
-        </pattern>
-        <rect width="100" height="100" fill="url(#dotMatrix)" />
-      </svg>
-
-      {/* Geometric Graphic Overlay 3: Bottom Left & Right Laser Curved Arcs */}
-      <svg
-        className="pointer-events-none absolute bottom-0 left-0 h-64 w-64 opacity-50"
-        viewBox="0 0 300 300"
-        fill="none"
-      >
-        <path
-          d="M -50 300 C 50 250, 180 220, 300 320"
-          stroke="url(#bottomArc1)"
-          strokeWidth="1.5"
-        />
-        <defs>
-          <linearGradient id="bottomArc1" x1="0" y1="280" x2="250" y2="250">
-            <stop stopColor="#06b6d4" stopOpacity="0.8" />
-            <stop offset="1" stopColor="#080e1a" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      <svg
-        className="pointer-events-none absolute -bottom-10 -right-10 h-80 w-80 opacity-40"
-        viewBox="0 0 300 300"
-        fill="none"
-      >
-        <circle
-          cx="250"
-          cy="250"
-          r="200"
-          stroke="url(#bottomArc2)"
-          strokeWidth="1"
-        />
-        <defs>
-          <linearGradient id="bottomArc2" x1="100" y1="50" x2="300" y2="250">
-            <stop stopColor="#38bdf8" stopOpacity="0.6" />
-            <stop offset="1" stopColor="#050b18" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-      </svg>
-
       {/* Top Header Logo */}
-      <div className="absolute top-12 left-12 z-10 flex items-center justify-between ">
+      <div className="absolute top-12 start-12 z-10 flex items-center justify-between">
         <img
           src={logoVertical}
           alt="AquaMetrics"
@@ -136,18 +33,13 @@ export function HeroPanel() {
       <div className="relative z-10 flex h-full flex-col justify-end px-10 pb-12">
         <div className="max-w-xl">
           {/* Main Title */}
-          <h2 className="mb-3 text-4xl font-extrabold leading-[1.15] tracking-tight text-white xl:text-5xl">
-            Precision data
-            <br />
-            for{" "}
-            <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400 bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(6,182,212,0.3)]">
-              peak performance.
-            </span>
+          <h2 className="mb-3 text-4xl font-extrabold leading-[1.25] tracking-tight text-white xl:text-5xl">
+            {t("hero.title")}
           </h2>
 
           {/* Subtitle */}
           <p className="mb-8 max-w-md text-base leading-relaxed text-slate-300/90 font-light">
-            High-performance monitoring tools for elite swimming academies.
+            {t("hero.subtitle")}
           </p>
 
           {/* Performance Telemetry Cards */}
@@ -155,26 +47,26 @@ export function HeroPanel() {
             {[
               {
                 icon: Users,
-                value: "500+",
-                title: "Athletes Tracked",
-                subtitle: "Active roster",
-                badge: "Roster",
+                value: t("hero.cards.card1.value"),
+                title: t("hero.cards.card1.title"),
+                subtitle: t("hero.cards.card1.subtitle"),
+                badge: t("hero.cards.card1.badge"),
                 badgeStyle: "bg-cyan-500/10 text-cyan-300 border-cyan-500/20",
               },
               {
                 icon: Target,
-                value: "0.01s",
-                title: "Lap & Split Precision",
-                subtitle: "Turn & stroke timing",
-                badge: "Telemetry",
+                value: t("hero.cards.card2.value"),
+                title: t("hero.cards.card2.title"),
+                subtitle: t("hero.cards.card2.subtitle"),
+                badge: t("hero.cards.card2.badge"),
                 badgeStyle: "bg-sky-500/10 text-sky-300 border-sky-500/20",
               },
               {
                 icon: Activity,
-                value: "Live",
-                title: "Performance Stream",
-                subtitle: "Real-time analytics",
-                badge: "Active",
+                value: t("hero.cards.card3.value"),
+                title: t("hero.cards.card3.title"),
+                subtitle: t("hero.cards.card3.subtitle"),
+                badge: t("hero.cards.card3.badge"),
                 badgeStyle:
                   "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
                 isLive: true,

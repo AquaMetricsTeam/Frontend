@@ -49,6 +49,20 @@
       "settings": "Settings"
     }
   },
+  "userMenu": {
+    "profile": "Profile & Account",
+    "settings": "Settings",
+    "keyboardShortcuts": "Keyboard Shortcuts",
+    "signOut": "Sign Out"
+  },
+  "commandSearch": {
+    "placeholder": "Search pages and actions...",
+    "pages": "Pages",
+    "quickActions": "Quick Actions",
+    "checkAttendance": "Check Attendance",
+    "generateReport": "Generate Report",
+    "settings": "Settings"
+  },
   "theme": {
     "toggle": "Toggle theme",
     "light": "Light",
@@ -79,8 +93,44 @@
     "description": "The page you are looking for does not exist or has been moved.",
     "backHome": "Back to Dashboard"
   },
+  "unauthorized": {
+    "title": "Access Denied",
+    "description": "You don't have permission to view this page. Contact your administrator if you believe this is a mistake.",
+    "backHome": "Go to Dashboard"
+  },
+  "roles": {
+    "all": "All Roles",
+    "Admin": "Administrator",
+    "SwimmingCoach": "Swimming Coach",
+    "FitnessCoach": "Fitness Coach",
+    "NutritionSpecialist": "Nutrition Specialist",
+    "Athlete": "Athlete"
+  },
+  "gender": {
+    "male": "Male",
+    "female": "Female",
+    "unknown": "Unknown"
+  },
+  "all": "All",
+  "actions": "Actions",
+  "edit": "Edit",
+  "delete": "Delete",
+  "save": "Save",
+  "saveChanges": "Save Changes",
+  "saving": "Saving...",
+  "create": "Create",
+  "creating": "Creating...",
+  "deleting": "Deleting...",
+  "confirm": "Confirm",
   "close": "Close",
   "cancel": "Cancel",
+  "back": "Back",
+  "upload": "Upload",
+  "change": "Change",
+  "yes": "Yes",
+  "no": "No",
+  "active": "Active",
+  "inactive": "Inactive",
   "processing": "Processing...",
   "loading": "Loading..."
 }

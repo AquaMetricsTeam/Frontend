@@ -1,4 +1,5 @@
 import { useFormContext, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,33 +9,6 @@ import { MdDeleteOutline, MdFitnessCenter } from "react-icons/md";
 import { ComboboxSelect } from "@/components/common/ComboboxSelect";
 import type { PlanExercise } from "@/features/training-plans/types";
 import { cn } from "@/lib/utils";
-
-const STATUS_OPTIONS = [
-  {
-    value: 1,
-    label: "Completed",
-    className:
-      "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400",
-  },
-  {
-    value: 2,
-    label: "Partial",
-    className:
-      "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400",
-  },
-  {
-    value: 3,
-    label: "Skipped",
-    className:
-      "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-400",
-  },
-  {
-    value: 4,
-    label: "Modified",
-    className:
-      "bg-blue-500/10 text-blue-600 border-blue-500/20 dark:text-blue-400",
-  },
-] as const;
 
 interface ExercisePerformanceCardProps {
   index: number;
@@ -51,11 +25,39 @@ export function ExercisePerformanceCard({
   prefix = `exercisePerformances.${index}`,
   onRemove,
 }: ExercisePerformanceCardProps) {
+  const { t } = useTranslation(["fitness", "swimming", "common"]);
   const {
     control,
     setValue,
     formState: { errors },
   } = useFormContext();
+
+  const statusOptions = [
+    {
+      value: 1,
+      label: t("swimming:statuses.completed"),
+      className:
+        "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400",
+    },
+    {
+      value: 2,
+      label: t("swimming:statuses.partiallyCompleted"),
+      className:
+        "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400",
+    },
+    {
+      value: 3,
+      label: t("swimming:statuses.skipped"),
+      className:
+        "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-400",
+    },
+    {
+      value: 4,
+      label: t("swimming:statuses.modified"),
+      className:
+        "bg-blue-500/10 text-blue-600 border-blue-500/20 dark:text-blue-400",
+    },
+  ] as const;
 
   const getFieldName = (field: string) =>
     prefix ? `${prefix}.${field}` : field;
@@ -99,12 +101,12 @@ export function ExercisePerformanceCard({
             className="text-xs font-bold bg-primary/10 text-primary border-primary/20 gap-1.5"
           >
             <MdFitnessCenter className="size-3" />
-            Exercise {index + 1}
+            {t("fitness:drawer.exerciseCardTitle", { index: index + 1 })}
           </Badge>
           {selectedExercise && (
             <span className="text-xs text-muted-foreground font-medium flex items-center gap-1.5">
               <span>
-                {selectedExercise.sets}×{selectedExercise.reps} planned
+                {selectedExercise.sets}×{selectedExercise.reps}
               </span>
               {selectedExercise.duration ||
               (selectedExercise as any).durationMinutes ? (
@@ -113,14 +115,14 @@ export function ExercisePerformanceCard({
                   <span>
                     {selectedExercise.duration ||
                       (selectedExercise as any).durationMinutes}{" "}
-                    min planned
+                    min
                   </span>
                 </>
               ) : null}
               {selectedExercise.restSeconds ? (
                 <>
                   <span>•</span>
-                  <span>{selectedExercise.restSeconds}s rest</span>
+                  <span>{selectedExercise.restSeconds}s</span>
                 </>
               ) : null}
             </span>
@@ -136,7 +138,7 @@ export function ExercisePerformanceCard({
             className="h-7 text-xs text-rose-500 hover:text-rose-600 hover:bg-rose-500/10 gap-1 cursor-pointer"
           >
             <MdDeleteOutline className="size-4" />
-            Remove
+            {t("fitness:drawer.removeExercise")}
           </Button>
         )}
       </div>
@@ -144,14 +146,14 @@ export function ExercisePerformanceCard({
       <div className="space-y-4">
         {/* Plan Exercise Selector */}
         <ComboboxSelect
-          label="Plan Exercise *"
+          label={t("fitness:drawer.selectExercise") + " *"}
           placeholder={
             planExercises.length === 0
-              ? "Select a session first..."
-              : "Select exercise..."
+              ? t("fitness:drawer.selectSessionPlaceholder")
+              : t("fitness:drawer.selectExercisePlaceholder")
           }
-          searchPlaceholder="Search exercise..."
-          emptyMessage="No exercises in this plan."
+          searchPlaceholder={t("common:table.search")}
+          emptyMessage={t("common:noData.default")}
           options={exerciseOptions}
           value={currentPlanExerciseId ? String(currentPlanExerciseId) : ""}
           onValueChange={(val) => {
@@ -188,25 +190,25 @@ export function ExercisePerformanceCard({
         <div className="grid grid-cols-2 gap-3">
           <InputField
             name={getFieldName("completedSets") as never}
-            label="Completed Sets *"
+            label={t("fitness:drawer.setsLabel") + " *"}
             type="number"
             inputClassName="h-9 text-xs font-semibold"
           />
           <InputField
             name={getFieldName("completedReps") as never}
-            label="Completed Reps *"
+            label={t("fitness:drawer.repsLabel") + " *"}
             type="number"
             inputClassName="h-9 text-xs font-semibold"
           />
           <InputField
             name={getFieldName("weightUsed") as never}
-            label="Weight Used (kg)"
+            label={t("fitness:drawer.weightLabel")}
             type="number"
             inputClassName="h-9 text-xs font-semibold"
           />
           <InputField
             name={getFieldName("completedDuration") as never}
-            label="Duration (min)"
+            label={t("fitness:drawer.durationLabel")}
             type="number"
             inputClassName="h-9 text-xs font-semibold"
           />
@@ -215,10 +217,10 @@ export function ExercisePerformanceCard({
         {/* Status Chips */}
         <div className="space-y-1.5">
           <Label className="text-xs font-semibold text-foreground">
-            Status *
+            {t("fitness:table.status")} *
           </Label>
           <div className="flex flex-wrap gap-1.5">
-            {STATUS_OPTIONS.map((opt) => (
+            {statusOptions.map((opt) => (
               <button
                 key={opt.value}
                 type="button"
@@ -240,13 +242,13 @@ export function ExercisePerformanceCard({
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs">
             <Label className="font-semibold text-foreground">
-              RPE (Exertion)
+              {t("fitness:drawer.rpeLabel")}
             </Label>
             <Badge
               variant="secondary"
               className="font-bold text-xs bg-primary/10 text-primary border-primary/20"
             >
-              {rpeVal ? `${rpeVal} / 10` : "Not rated"}
+              {rpeVal ? `${rpeVal} / 10` : "—"}
             </Badge>
           </div>
           <input
@@ -257,16 +259,13 @@ export function ExercisePerformanceCard({
             onChange={(e) => setFieldValue("rpe", Number(e.target.value))}
             className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-primary bg-muted"
           />
-          <p className="text-[11px] text-muted-foreground">
-            1 = Very light effort · 10 = Maximum exertion
-          </p>
         </div>
 
         {/* Coach Comment */}
         <TextareaField
           name={getFieldName("coachComment") as never}
-          label="Coach Comment"
-          placeholder="Optional note…"
+          label={t("fitness:drawer.coachNotes")}
+          placeholder={t("fitness:drawer.coachNotesPlaceholder")}
           rows={2}
           textareaClassName="text-xs resize-none"
         />

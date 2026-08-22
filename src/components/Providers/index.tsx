@@ -15,7 +15,7 @@ function Providers({ children }: ProvidersProps) {
       <TanstackQueryProvider>
         <AuthProvider>
           <TooltipProvider>
-            <Toaster richColors position="bottom-right" />
+            <Toaster richColors position="top-center" closeButton />
             {children}
           </TooltipProvider>
         </AuthProvider>
@@ -25,4 +25,3 @@ function Providers({ children }: ProvidersProps) {
 }
 
 export default Providers;
-

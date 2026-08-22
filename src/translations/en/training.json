@@ -8,6 +8,25 @@
     "assignments": "Assign Plans",
     "sessions": "Sessions"
   },
+  "labels": {
+    "meters": "Meters",
+    "metersUnit": "m",
+    "reps": "Reps",
+    "repsUnit": "reps",
+    "totalMeters": "Total Distance",
+    "totalReps": "Total Reps",
+    "sets": "Sets",
+    "rest": "Rest",
+    "restAfter": "Rest After",
+    "duration": "Duration",
+    "minutes": "min",
+    "seconds": "s"
+  },
+  "intensity": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
   "templates": {
     "table": {
       "plan": "Plan",
@@ -38,6 +57,14 @@
     },
     "emptyArchived": {
       "title": "No archived training plans"
+    },
+    "detail": {
+      "exercisesSequence": "Exercises Sequence ({{count}})",
+      "noExercises": "No exercises added to this plan yet.",
+      "notAssignedYet": "Not assigned to any athletes or groups yet.",
+      "assignNow": "Assign Now",
+      "durationUnit": "m",
+      "secondsUnit": "s"
     }
   },
   "wizard": {
@@ -66,7 +93,16 @@
       "restAfter": "Rest After (sec)",
       "intensity": "Intensity",
       "notes": "Notes / Instructions",
+      "notesPlaceholder": "Exercise instructions or reminders (optional)...",
       "addExercise": "Add Exercise",
+      "selectMuscleGroup": "Select muscle group...",
+      "selectSwimmingCategory": "Select swimming category...",
+      "selectExercise": "Select exercise...",
+      "searchExercises": "Search exercises...",
+      "searchMuscles": "Search muscles...",
+      "searchCategories": "Search categories...",
+      "noExercisesFound": "No exercises found for this category.",
+      "minutesEstimated": "min estimated",
       "next": "Next: Assignment",
       "back": "Back"
     },
@@ -87,6 +123,10 @@
     },
     "step3": {
       "question": "How would you like to assign this plan?",
+      "saveAsTemplate": "Save as Template",
+      "saveAsTemplateDesc": "Save without assigning to any athletes yet",
+      "saveAndAssign": "Save & Assign",
+      "saveAndAssignDesc": "Assign to athletes or groups immediately",
       "draft": "Save as Draft",
       "athletes": "Athletes",
       "groups": "Groups",
@@ -95,6 +135,7 @@
     },
     "step4": {
       "save": "Save Template",
+      "saveTrainingPlan": "Save Training Plan",
       "saving": "Saving...",
       "back": "Back",
       "assignedTo": "Plan will be assigned to {{target}} immediately after saving.",
@@ -112,6 +153,28 @@
     "selectTargets": "Select targets to assign",
     "assigning": "Assigning..."
   },
+  "assignments": {
+    "trainingPlansTitle": "Training Plans",
+    "trainingPlansSubtitle": "Select a plan to manage its assigned athletes & teams",
+    "searchPlans": "Search plans...",
+    "plan": "Plan",
+    "exercises": "Exercises",
+    "currentAssignments": "Current Assignments ({{count}})",
+    "assignPlan": "Assign Plan",
+    "loadingAssignments": "Loading assignments...",
+    "failedToLoadAssignments": "Failed to load assignments.",
+    "retry": "Retry",
+    "noAssignments": "No assignments yet",
+    "noAssignmentsDesc": "This plan hasn't been assigned to any athletes or teams. Click \"Assign Plan\" to assign it now.",
+    "active": "Active",
+    "assignedOn": "Assigned {{date}}",
+    "unassign": "Unassign",
+    "confirmUnassign": "Are you sure you want to remove this assignment?",
+    "athletesTab": "Athletes",
+    "groupsTab": "Groups",
+    "noAthletesAvailable": "No available athletes",
+    "noGroupsAvailable": "No available groups"
+  },
   "sessions": {
     "table": {
       "session": "Session",
@@ -120,6 +183,8 @@
       "location": "Location"
     },
     "new": "New Session",
+    "selectSessionSubtitle": "Select a session to log attendance",
+    "searchSessionsPlaceholder": "Search sessions...",
     "form": {
       "title": "New Training Session",
       "titleLabel": "Session Title",
@@ -128,11 +193,11 @@
       "planPlaceholder": "Select a plan...",
       "dateLabel": "Date",
       "locationLabel": "Location",
-      "locationPlaceholder": "e.g. Main Pool",
+      "locationPlaceholder": "e.g. Main Gym / Pool 1",
       "startTime": "Start Time",
       "endTime": "End Time",
       "notes": "Notes (optional)",
-      "notesPlaceholder": "Any instructions or reminders...",
+      "notesPlaceholder": "Any instructions or reminders for this session...",
       "submit": "Create Session",
       "submitting": "Creating..."
     },
@@ -187,6 +252,58 @@
       "dislocation": "Dislocation",
       "fracture": "Fracture",
       "other": "Other"
+    }
+  },
+  "sessionDetail": {
+    "sessionNumber": "Session #{{id}} • {{date}}",
+    "tabs": {
+      "overview": "Details & Plan",
+      "attendance": "Attendance Tracker",
+      "swimming": "Swimming Drills",
+      "fitness": "Fitness Drills"
+    },
+    "overview": {
+      "date": "Date",
+      "time": "Time",
+      "location": "Location",
+      "assignedPlan": "Assigned Plan",
+      "planExercises": "Plan Exercises ({{count}})",
+      "noExercises": "No exercises defined in this plan template.",
+      "sets": "{{count}} sets",
+      "duration": "{{count}}m",
+      "rest": "{{count}}s rest",
+      "restAfter": "{{count}}s rest after"
+    },
+    "attendance": {
+      "notTaken": "Attendance Not Taken Yet",
+      "notTakenDesc": "No attendance records have been saved for this session.",
+      "total": "Total",
+      "present": "Present",
+      "late": "Late",
+      "absent": "Absent",
+      "searchPlaceholder": "Search athletes for attendance...",
+      "saveButton": "Save Attendance Log",
+      "saving": "Saving Attendance..."
+    },
+    "swimming": {
+      "loggedPerformances": "Logged Swimming Performances ({{count}})",
+      "logDrill": "+ Log Drill",
+      "logDrillSet": "+ Log Drill Set",
+      "noDrills": "No swimming drills logged for this session record yet.",
+      "loading": "Loading swimming drills…",
+      "best": "Best:",
+      "avg": "Avg:"
+    },
+    "fitness": {
+      "loggedRecords": "Logged Fitness Records ({{count}})",
+      "logRecord": "+ Log Fitness Record",
+      "noRecords": "No fitness performance records logged for this session yet.",
+      "noRecordsDesc": "Click \"+ Log Fitness Record\" to record workout data.",
+      "loading": "Loading fitness records…",
+      "completed": "Completed",
+      "incomplete": "Incomplete",
+      "rating": "Rating:",
+      "fatigue": "Fatigue:"
     }
   }
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Sheet,
   SheetContent,
@@ -63,6 +64,7 @@ export function SessionDetailSheet({
   open,
   onOpenChange,
 }: SessionDetailSheetProps) {
+  const { t } = useTranslation("training");
   const { hasRole } = useAuth();
   const isSwimmingCoach = hasRole("SwimmingCoach");
   const isFitnessCoach = hasRole("FitnessCoach");
@@ -80,21 +82,33 @@ export function SessionDetailSheet({
       label: string;
       icon: React.ElementType;
     }[] = [
-      { value: "overview", label: "Details & Plan", icon: MdSportsGymnastics },
-      { value: "attendance", label: "Attendance Tracker", icon: MdFactCheck },
+      {
+        value: "overview",
+        label: t("sessionDetail.tabs.overview", { defaultValue: "Details & Plan" }),
+        icon: MdSportsGymnastics,
+      },
+      {
+        value: "attendance",
+        label: t("sessionDetail.tabs.attendance", { defaultValue: "Attendance Tracker" }),
+        icon: MdFactCheck,
+      },
     ];
     if (canViewSwimming) {
-      opts.push({ value: "swimming", label: "Swimming Drills", icon: MdPool });
+      opts.push({
+        value: "swimming",
+        label: t("sessionDetail.tabs.swimming", { defaultValue: "Swimming Drills" }),
+        icon: MdPool,
+      });
     }
     if (canViewFitness) {
       opts.push({
         value: "fitness",
-        label: "Fitness Drills",
+        label: t("sessionDetail.tabs.fitness", { defaultValue: "Fitness Drills" }),
         icon: MdFitnessCenter,
       });
     }
     return opts;
-  }, [canViewSwimming, canViewFitness]);
+  }, [canViewSwimming, canViewFitness, t]);
 
   const [tab, setTab] = useState<SessionTab>("overview");
   const [search, setSearch] = useState("");
@@ -242,7 +256,11 @@ export function SessionDetailSheet({
             </Badge>
           </div>
           <SheetDescription className="text-xs text-muted-foreground mt-1">
-            Session #{session.id} • {session.sessionDate}
+            {t("sessionDetail.sessionNumber", {
+              id: session.id,
+              date: session.sessionDate,
+              defaultValue: `Session #${session.id} • ${session.sessionDate}`,
+            })}
           </SheetDescription>
         </SheetHeader>
 
@@ -261,7 +279,8 @@ export function SessionDetailSheet({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="flex flex-col gap-1 p-3 rounded-xl border border-border bg-card">
                   <span className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground uppercase">
-                    <MdCalendarToday className="size-3.5 text-primary" /> Date
+                    <MdCalendarToday className="size-3.5 text-primary" />
+                    {t("sessionDetail.overview.date", { defaultValue: "Date" })}
                   </span>
                   <span className="text-xs font-semibold text-foreground">
                     {session.sessionDate}
@@ -270,7 +289,8 @@ export function SessionDetailSheet({
 
                 <div className="flex flex-col gap-1 p-3 rounded-xl border border-border bg-card">
                   <span className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground uppercase">
-                    <MdAccessTime className="size-3.5 text-primary" /> Time
+                    <MdAccessTime className="size-3.5 text-primary" />
+                    {t("sessionDetail.overview.time", { defaultValue: "Time" })}
                   </span>
                   <span className="text-xs font-semibold text-foreground truncate">
                     {session.startTime} - {session.endTime}
@@ -279,7 +299,10 @@ export function SessionDetailSheet({
 
                 <div className="flex flex-col gap-1 p-3 rounded-xl border border-border bg-card">
                   <span className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground uppercase">
-                    <MdLocationOn className="size-3.5 text-primary" /> Location
+                    <MdLocationOn className="size-3.5 text-primary" />
+                    {t("sessionDetail.overview.location", {
+                      defaultValue: "Location",
+                    })}
                   </span>
                   <span className="text-xs font-semibold text-foreground truncate">
                     {session.location}
@@ -290,7 +313,9 @@ export function SessionDetailSheet({
               <div className="p-4 rounded-xl border border-border bg-card space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    Assigned Plan
+                    {t("sessionDetail.overview.assignedPlan", {
+                      defaultValue: "Assigned Plan",
+                    })}
                   </span>
                   <Badge variant="outline" className="text-xs font-semibold">
                     {session.trainingPlanTitle}
@@ -307,12 +332,17 @@ export function SessionDetailSheet({
               <div className="space-y-3">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                   <MdFitnessCenter className="size-4 text-primary" />
-                  Plan Exercises ({planExercises.length})
+                  {t("sessionDetail.overview.planExercises", {
+                    count: planExercises.length,
+                    defaultValue: `Plan Exercises (${planExercises.length})`,
+                  })}
                 </h4>
 
                 {planExercises.length === 0 ? (
                   <div className="p-6 rounded-xl border border-dashed border-border text-center text-xs text-muted-foreground">
-                    No exercises defined in this plan template.
+                    {t("sessionDetail.overview.noExercises", {
+                      defaultValue: "No exercises defined in this plan template.",
+                    })}
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -346,7 +376,10 @@ export function SessionDetailSheet({
                               variant="secondary"
                               className="text-[10px] px-1.5 py-0"
                             >
-                              {pe.sets} sets
+                              {t("sessionDetail.overview.sets", {
+                                count: pe.sets,
+                                defaultValue: `${pe.sets} sets`,
+                              })}
                             </Badge>
                           )}
                           {pe.reps && (
@@ -375,7 +408,10 @@ export function SessionDetailSheet({
                               variant="secondary"
                               className="text-[10px] px-1.5 py-0"
                             >
-                              {pe.duration}m
+                              {t("sessionDetail.overview.duration", {
+                                count: pe.duration,
+                                defaultValue: `${pe.duration}m`,
+                              })}
                             </Badge>
                           )}
                           {pe.restSeconds ? (
@@ -383,7 +419,10 @@ export function SessionDetailSheet({
                               variant="outline"
                               className="text-[10px] px-1.5 py-0 text-muted-foreground"
                             >
-                              {pe.restSeconds}s rest
+                              {t("sessionDetail.overview.rest", {
+                                count: pe.restSeconds,
+                                defaultValue: `${pe.restSeconds}s rest`,
+                              })}
                             </Badge>
                           ) : null}
                           {pe.restAfter ? (
@@ -391,7 +430,10 @@ export function SessionDetailSheet({
                               variant="outline"
                               className="text-[10px] px-1.5 py-0 text-sky-600 dark:text-sky-400 border-sky-500/30"
                             >
-                              {pe.restAfter}s rest after
+                              {t("sessionDetail.overview.restAfter", {
+                                count: pe.restAfter,
+                                defaultValue: `${pe.restAfter}s rest after`,
+                              })}
                             </Badge>
                           ) : null}
                         </div>
@@ -410,9 +452,15 @@ export function SessionDetailSheet({
                   <MdInfoOutline className="size-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
                   <div className="flex-1">
                     <span className="font-semibold">
-                      Attendance Not Taken Yet
+                      {t("sessionDetail.attendance.notTaken", {
+                        defaultValue: "Attendance Not Taken Yet",
+                      })}
                     </span>{" "}
-                    — No attendance records have been saved for this session.
+                    —{" "}
+                    {t("sessionDetail.attendance.notTakenDesc", {
+                      defaultValue:
+                        "No attendance records have been saved for this session.",
+                    })}
                   </div>
                 </div>
               )}
@@ -420,7 +468,9 @@ export function SessionDetailSheet({
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                 <div className="p-2.5 rounded-xl border border-border bg-card flex flex-col items-center">
                   <span className="text-[10px] uppercase font-semibold text-muted-foreground">
-                    Total
+                    {t("sessionDetail.attendance.total", {
+                      defaultValue: "Total",
+                    })}
                   </span>
                   <span className="text-sm font-bold text-foreground">
                     {stats.total}
@@ -428,7 +478,9 @@ export function SessionDetailSheet({
                 </div>
                 <div className="p-2.5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 flex flex-col items-center">
                   <span className="text-[10px] uppercase font-semibold text-emerald-500">
-                    Present
+                    {t("sessionDetail.attendance.present", {
+                      defaultValue: "Present",
+                    })}
                   </span>
                   <span className="text-sm font-bold text-emerald-500">
                     {stats.present}
@@ -436,7 +488,9 @@ export function SessionDetailSheet({
                 </div>
                 <div className="p-2.5 rounded-xl border border-amber-500/20 bg-amber-500/10 flex flex-col items-center">
                   <span className="text-[10px] uppercase font-semibold text-amber-500">
-                    Late
+                    {t("sessionDetail.attendance.late", {
+                      defaultValue: "Late",
+                    })}
                   </span>
                   <span className="text-sm font-bold text-amber-500">
                     {stats.late}
@@ -444,7 +498,9 @@ export function SessionDetailSheet({
                 </div>
                 <div className="p-2.5 rounded-xl border border-rose-500/20 bg-rose-500/10 flex flex-col items-center">
                   <span className="text-[10px] uppercase font-semibold text-rose-500">
-                    Absent
+                    {t("sessionDetail.attendance.absent", {
+                      defaultValue: "Absent",
+                    })}
                   </span>
                   <span className="text-sm font-bold text-rose-500">
                     {stats.absent}
@@ -455,7 +511,9 @@ export function SessionDetailSheet({
               <SearchInput
                 value={search}
                 onChange={setSearch}
-                placeholder="Search athletes for attendance..."
+                placeholder={t("sessionDetail.attendance.searchPlaceholder", {
+                  defaultValue: "Search athletes for attendance...",
+                })}
               />
 
               <div className="space-y-2">
@@ -492,7 +550,10 @@ export function SessionDetailSheet({
                               : "text-muted-foreground hover:bg-muted/40",
                           )}
                         >
-                          <MdCheckCircle className="size-3" /> Present
+                          <MdCheckCircle className="size-3" />
+                          {t("sessionDetail.attendance.present", {
+                            defaultValue: "Present",
+                          })}
                         </button>
                         <button
                           type="button"
@@ -504,7 +565,10 @@ export function SessionDetailSheet({
                               : "text-muted-foreground hover:bg-muted/40",
                           )}
                         >
-                          <MdSchedule className="size-3" /> Late
+                          <MdSchedule className="size-3" />
+                          {t("sessionDetail.attendance.late", {
+                            defaultValue: "Late",
+                          })}
                         </button>
                         <button
                           type="button"
@@ -516,7 +580,10 @@ export function SessionDetailSheet({
                               : "text-muted-foreground hover:bg-muted/40",
                           )}
                         >
-                          <MdCancel className="size-3" /> Absent
+                          <MdCancel className="size-3" />
+                          {t("sessionDetail.attendance.absent", {
+                            defaultValue: "Absent",
+                          })}
                         </button>
                       </div>
                     </div>
@@ -531,24 +598,37 @@ export function SessionDetailSheet({
               <div className="flex items-center justify-between">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                   <MdPool className="size-4 text-primary" />
-                  Logged Swimming Performances ({swimmingPerformances.length})
+                  {t("sessionDetail.swimming.loggedPerformances", {
+                    count: swimmingPerformances.length,
+                    defaultValue: `Logged Swimming Performances (${swimmingPerformances.length})`,
+                  })}
                 </h4>
                 <Button
                   size="sm"
                   onClick={() => setIsLogDrawerOpen(true)}
                   className="h-8 text-xs rounded-lg gap-1.5 cursor-pointer"
                 >
-                  + Log Drill
+                  {t("sessionDetail.swimming.logDrill", {
+                    defaultValue: "+ Log Drill",
+                  })}
                 </Button>
               </div>
 
               {swimmingLoading ? (
-                <Loading label="Loading swimming drills…" className="py-12" />
+                <Loading
+                  label={t("sessionDetail.swimming.loading", {
+                    defaultValue: "Loading swimming drills…",
+                  })}
+                  className="py-12"
+                />
               ) : swimmingPerformances.length === 0 ? (
                 <div className="p-8 rounded-xl border border-dashed border-border text-center space-y-2">
                   <MdPool className="size-8 text-muted-foreground/40 mx-auto" />
                   <p className="text-xs font-semibold text-foreground">
-                    No swimming drills logged for this session record yet.
+                    {t("sessionDetail.swimming.noDrills", {
+                      defaultValue:
+                        "No swimming drills logged for this session record yet.",
+                    })}
                   </p>
                   <Button
                     size="sm"
@@ -556,7 +636,9 @@ export function SessionDetailSheet({
                     onClick={() => setIsLogDrawerOpen(true)}
                     className="mt-2 text-xs rounded-lg cursor-pointer"
                   >
-                    + Log Drill Set
+                    {t("sessionDetail.swimming.logDrillSet", {
+                      defaultValue: "+ Log Drill Set",
+                    })}
                   </Button>
                 </div>
               ) : (
@@ -588,10 +670,16 @@ export function SessionDetailSheet({
                         </div>
                         <div className="flex items-center justify-between text-xs font-mono">
                           <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                            Best: {formatTimeSpanDisplay(item.bestRepTime)}
+                            {t("sessionDetail.swimming.best", {
+                              defaultValue: "Best:",
+                            })}{" "}
+                            {formatTimeSpanDisplay(item.bestRepTime)}
                           </span>
                           <span className="text-foreground">
-                            Avg: {formatTimeSpanDisplay(item.averageRepTime)}
+                            {t("sessionDetail.swimming.avg", {
+                              defaultValue: "Avg:",
+                            })}{" "}
+                            {formatTimeSpanDisplay(item.averageRepTime)}
                           </span>
                         </div>
                       </div>
@@ -607,28 +695,43 @@ export function SessionDetailSheet({
               <div className="flex items-center justify-between">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                   <MdFitnessCenter className="size-4 text-amber-500" />
-                  Logged Fitness Records ({fitnessRecords.length})
+                  {t("sessionDetail.fitness.loggedRecords", {
+                    count: fitnessRecords.length,
+                    defaultValue: `Logged Fitness Records (${fitnessRecords.length})`,
+                  })}
                 </h4>
                 <Button
                   size="sm"
                   onClick={() => setIsFitnessDrawerOpen(true)}
                   className="h-8 text-xs rounded-lg gap-1.5 cursor-pointer"
                 >
-                  + Log Fitness Record
+                  {t("sessionDetail.fitness.logRecord", {
+                    defaultValue: "+ Log Fitness Record",
+                  })}
                 </Button>
               </div>
 
               {fitnessLoading ? (
-                <Loading label="Loading fitness records…" className="py-12" />
+                <Loading
+                  label={t("sessionDetail.fitness.loading", {
+                    defaultValue: "Loading fitness records…",
+                  })}
+                  className="py-12"
+                />
               ) : fitnessRecords.length === 0 ? (
                 <div className="p-8 rounded-xl border border-dashed border-border text-center space-y-2">
                   <MdFitnessCenter className="size-8 text-muted-foreground/40 mx-auto" />
                   <p className="text-xs font-semibold text-foreground">
-                    No fitness performance records logged for this session yet.
+                    {t("sessionDetail.fitness.noRecords", {
+                      defaultValue:
+                        "No fitness performance records logged for this session yet.",
+                    })}
                   </p>
                   <p className="text-[11px] text-muted-foreground">
-                    Click &quot;+ Log Fitness Record&quot; to record workout
-                    data.
+                    {t("sessionDetail.fitness.noRecordsDesc", {
+                      defaultValue:
+                        'Click "+ Log Fitness Record" to record workout data.',
+                    })}
                   </p>
                   <Button
                     size="sm"
@@ -636,7 +739,9 @@ export function SessionDetailSheet({
                     onClick={() => setIsFitnessDrawerOpen(true)}
                     className="mt-2 text-xs rounded-lg cursor-pointer"
                   >
-                    + Log Fitness Record
+                    {t("sessionDetail.fitness.logRecord", {
+                      defaultValue: "+ Log Fitness Record",
+                    })}
                   </Button>
                 </div>
               ) : (
@@ -672,14 +777,28 @@ export function SessionDetailSheet({
                               : "bg-rose-500/10 text-rose-600 border-rose-500/30",
                           )}
                         >
-                          {item.sessionCompleted ? "Completed" : "Incomplete"}
+                          {item.sessionCompleted
+                            ? t("sessionDetail.fitness.completed", {
+                                defaultValue: "Completed",
+                              })
+                            : t("sessionDetail.fitness.incomplete", {
+                                defaultValue: "Incomplete",
+                              })}
                         </Badge>
                       </div>
                       <div className="flex items-center justify-between text-xs font-mono text-muted-foreground">
                         <span className="text-amber-600 dark:text-amber-400 font-medium">
-                          Rating: {item.performanceRating}/10
+                          {t("sessionDetail.fitness.rating", {
+                            defaultValue: "Rating:",
+                          })}{" "}
+                          {item.performanceRating}/10
                         </span>
-                        <span>Fatigue: {item.fatigueLevel}/10</span>
+                        <span>
+                          {t("sessionDetail.fitness.fatigue", {
+                            defaultValue: "Fatigue:",
+                          })}{" "}
+                          {item.fatigueLevel}/10
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -745,8 +864,12 @@ export function SessionDetailSheet({
               className="w-full cursor-pointer"
             >
               {markMutation.isPending
-                ? "Saving Attendance..."
-                : "Save Attendance Log"}
+                ? t("sessionDetail.attendance.saving", {
+                    defaultValue: "Saving Attendance...",
+                  })
+                : t("sessionDetail.attendance.saveButton", {
+                    defaultValue: "Save Attendance Log",
+                  })}
             </Button>
           </div>
         )}

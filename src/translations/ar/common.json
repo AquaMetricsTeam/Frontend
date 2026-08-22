@@ -2,36 +2,42 @@
   "error": {
     "default": "حدث خطأ",
     "description": "حاول مرة أخرى لاحقًا",
-    "retry": "حاول مجدداً"
+    "retry": "إعادة المحاولة",
+    "boundary": {
+      "title": "حدث خطأ غير متوقع",
+      "description": "يرجى تحديث الصفحة للمتابعة.",
+      "refresh": "تحديث الصفحة",
+      "backHome": "العودة إلى الرئيسية"
+    }
   },
   "noData": {
     "default": "لا توجد بيانات",
-    "description": "لا توجد سجلات للعرض"
+    "description": "لا توجد سجلات لعرضها حالياً"
   },
   "nav": {
     "groups": {
       "overview": "نظرة عامة",
       "people": "الأشخاص",
-      "programs": "البرامج",
-      "operations": "العمليات",
-      "resources": "الموارد",
-      "system": "النظام"
+      "programs": "البرامج التدريبية",
+      "operations": "العمليات والملاحظات",
+      "resources": "الموارد والتقارير",
+      "system": "النظام والإعدادات"
     },
     "items": {
       "dashboard": "لوحة التحكم",
-      "usersStaff": "المستخدمون والموظفون",
-      "athletes": "الرياضيون",
-      "athleteRegistrations": "طلبات تسجيل الرياضيين",
-      "groups": "مجموعات الرياضيين",
+      "usersStaff": "المستخدمون والمدربون",
+      "athletes": "السباحون والرياضيون",
+      "athleteRegistrations": "طلبات التسجيل",
+      "groups": "المجموعات التدريبية",
       "swimming": "أداء السباحة",
       "fitness": "أداء اللياقة البدنية",
-      "exercises": "التمارين",
+      "exercises": "مكتبة التمارين",
       "trainingPlans": "خطط التدريب",
       "trainingTemplates": "قوالب التدريب",
       "trainingAssignments": "الخطط المكلفة",
-      "trainingSessions": "جلسات التدريب",
-      "nutrition": "التغذية",
-      "attendance": "الحضور",
+      "trainingSessions": "الجلسات التدريبية",
+      "nutrition": "التغذية والأنظمة",
+      "attendance": "تسجيل الحضور",
       "coachNotes": "ملاحظات المدرب",
       "aiRecommendations": "توصيات الذكاء الاصطناعي",
       "aiChat": "محادثة الذكاء الاصطناعي",
@@ -41,6 +47,20 @@
       "reports": "التقارير والتحليلات",
       "settings": "الإعدادات"
     }
+  },
+  "userMenu": {
+    "profile": "الملف الشخصي والحساب",
+    "settings": "الإعدادات",
+    "keyboardShortcuts": "اختصارات لوحة المفاتيح",
+    "signOut": "تسجيل الخروج"
+  },
+  "commandSearch": {
+    "placeholder": "ابحث عن الصفحات والإجراءات...",
+    "pages": "الصفحات",
+    "quickActions": "إجراءات سريعة",
+    "checkAttendance": "تسجيل الحضور",
+    "generateReport": "استخراج تقرير",
+    "settings": "الإعدادات"
   },
   "theme": {
     "toggle": "تبديل المظهر",
@@ -53,8 +73,8 @@
     "ar": "العربية"
   },
   "sidebar": {
-    "collapse": "طي الشريط الجانبي",
-    "expand": "توسيع الشريط الجانبي"
+    "collapse": "طي القائمة الجانبية",
+    "expand": "توسيع القائمة الجانبية"
   },
   "pagination": {
     "previous": "السابق",
@@ -64,7 +84,7 @@
   },
   "table": {
     "search": "بحث...",
-    "noResults": "لا توجد نتائج",
+    "noResults": "لا توجد نتائج مطابقة",
     "loading": "جارٍ التحميل..."
   },
   "notFound": {
@@ -72,19 +92,44 @@
     "description": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
     "backHome": "العودة إلى لوحة التحكم"
   },
-  "error": {
-    "default": "حدث خطأ",
-    "description": "حاول مرة أخرى لاحقًا",
-    "retry": "حاول مجدداً",
-    "boundary": {
-      "title": "حدث خطأ غير متوقع",
-      "description": "يرجى تحديث الصفحة.",
-      "refresh": "تحديث الصفحة",
-      "backHome": "العودة إلى الرئيسية"
-    }
+  "unauthorized": {
+    "title": "تم رفض الوصول",
+    "description": "ليس لديك الصلاحيات الكافية لعرض هذه الصفحة. تواصل مع مدير النظام إذا كنت تعتقد أن هذا خطأ.",
+    "backHome": "الذهاب للوحة التحكم"
   },
+  "roles": {
+    "all": "جميع الأدوار",
+    "Admin": "مدير النظام",
+    "SwimmingCoach": "مدرب سباحة",
+    "FitnessCoach": "مدرب لياقة بدنية",
+    "NutritionSpecialist": "أخصائي تغذية",
+    "Athlete": "سباح / رياضي"
+  },
+  "gender": {
+    "male": "ذكر",
+    "female": "أنثى",
+    "unknown": "غير محدد"
+  },
+  "all": "الكل",
+  "actions": "الإجراءات",
+  "edit": "تعديل",
+  "delete": "حذف",
+  "save": "حفظ",
+  "saveChanges": "حفظ التغييرات",
+  "saving": "جارٍ الحفظ…",
+  "create": "إنشاء",
+  "creating": "جارٍ الإنشاء…",
+  "deleting": "جارٍ الحذف…",
+  "confirm": "تأكيد",
   "close": "إغلاق",
   "cancel": "إلغاء",
-  "processing": "جارٍ المعالجة...",
-  "loading": "جارٍ التحميل..."
+  "back": "رجوع",
+  "upload": "رفع",
+  "change": "تغيير",
+  "yes": "نعم",
+  "no": "لا",
+  "active": "نشط",
+  "inactive": "غير نشط",
+  "processing": "جارٍ المعالجة…",
+  "loading": "جارٍ التحميل…"
 }

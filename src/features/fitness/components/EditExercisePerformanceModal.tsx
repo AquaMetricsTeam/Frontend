@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import {
   Dialog,
@@ -27,29 +28,6 @@ import type { PerformanceStatus } from "@/features/swimming-performance/types";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-const STATUS_OPTIONS = [
-  {
-    value: 1,
-    label: "Completed",
-    className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
-  },
-  {
-    value: 2,
-    label: "Partial",
-    className: "bg-amber-500/10 text-amber-600 border-amber-500/20",
-  },
-  {
-    value: 3,
-    label: "Skipped",
-    className: "bg-rose-500/10 text-rose-600 border-rose-500/20",
-  },
-  {
-    value: 4,
-    label: "Modified",
-    className: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-  },
-] as const;
-
 const editExerciseSchema = z.object({
   completedSets: z.number().int().min(0),
   completedReps: z.number().int().min(0),
@@ -75,8 +53,32 @@ export function EditExercisePerformanceModal({
   open,
   onOpenChange,
 }: EditExercisePerformanceModalProps) {
+  const { t } = useTranslation(["fitness", "swimming", "common"]);
   const queryClient = useQueryClient();
   const updateMutation = useUpdateTrainingRecord(parentRecord?.id ?? 0);
+
+  const statusOptions = [
+    {
+      value: 1,
+      label: t("swimming:statuses.completed"),
+      className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+    },
+    {
+      value: 2,
+      label: t("swimming:statuses.partiallyCompleted"),
+      className: "bg-amber-500/10 text-amber-600 border-amber-500/20",
+    },
+    {
+      value: 3,
+      label: t("swimming:statuses.skipped"),
+      className: "bg-rose-500/10 text-rose-600 border-rose-500/20",
+    },
+    {
+      value: 4,
+      label: t("swimming:statuses.modified"),
+      className: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+    },
+  ] as const;
 
   const { handleSubmit, reset, watch, setValue, register, formState: { errors } } =
     useForm<EditExerciseFormValues>({
@@ -136,11 +138,11 @@ export function EditExercisePerformanceModal({
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: TRAINING_RECORD_KEYS.all });
           queryClient.invalidateQueries({ queryKey: EXERCISE_PERFORMANCE_KEYS.all });
-          toast.success("Exercise performance updated successfully");
+          toast.success(t("fitness:editModal.exerciseSuccessToast"));
           onOpenChange(false);
         },
         onError: (err: { message?: string }) => {
-          toast.error(err?.message ?? "Failed to update exercise performance");
+          toast.error(err?.message ?? t("fitness:editModal.errorToast"));
         },
       },
     );
@@ -156,7 +158,7 @@ export function EditExercisePerformanceModal({
           <div className="flex items-center gap-2">
             <MdFitnessCenter className="size-5 text-amber-500" />
             <DialogTitle className="text-base font-bold">
-              Edit Exercise — {exercisePerformance.exerciseTitle || `Exercise #${exercisePerformance.planExerciseId}`}
+              {exercisePerformance.exerciseTitle || `Exercise #${exercisePerformance.planExerciseId}`}
             </DialogTitle>
           </div>
         </DialogHeader>
@@ -166,7 +168,7 @@ export function EditExercisePerformanceModal({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label className="text-xs font-semibold text-muted-foreground uppercase">
-                Completed Sets *
+                {t("fitness:drawer.setsLabel")} *
               </Label>
               <Input
                 type="number"
@@ -181,7 +183,7 @@ export function EditExercisePerformanceModal({
 
             <div className="space-y-1">
               <Label className="text-xs font-semibold text-muted-foreground uppercase">
-                Completed Reps *
+                {t("fitness:drawer.repsLabel")} *
               </Label>
               <Input
                 type="number"
@@ -199,7 +201,7 @@ export function EditExercisePerformanceModal({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label className="text-xs font-semibold text-muted-foreground uppercase">
-                Weight Used (kg)
+                {t("fitness:drawer.weightLabel")}
               </Label>
               <Input
                 type="number"
@@ -214,7 +216,7 @@ export function EditExercisePerformanceModal({
 
             <div className="space-y-1">
               <Label className="text-xs font-semibold text-muted-foreground uppercase">
-                Duration (min)
+                {t("fitness:drawer.durationLabel")}
               </Label>
               <Input
                 type="number"
@@ -230,10 +232,10 @@ export function EditExercisePerformanceModal({
           {/* Status Chips */}
           <div className="space-y-1.5">
             <Label className="text-xs font-semibold text-foreground">
-              Status *
+              {t("fitness:table.status")} *
             </Label>
             <div className="flex flex-wrap gap-1.5">
-              {STATUS_OPTIONS.map((opt) => (
+              {statusOptions.map((opt) => (
                 <button
                   key={opt.value}
                   type="button"
@@ -255,13 +257,13 @@ export function EditExercisePerformanceModal({
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
               <Label className="font-semibold text-foreground">
-                RPE (Exertion)
+                {t("fitness:drawer.rpeLabel")}
               </Label>
               <Badge
                 variant="secondary"
                 className="font-bold text-xs bg-primary/10 text-primary border-primary/20"
               >
-                {rpeVal ? `${rpeVal} / 10` : "Not rated"}
+                {rpeVal ? `${rpeVal} / 10` : "—"}
               </Badge>
             </div>
             <input
@@ -277,11 +279,11 @@ export function EditExercisePerformanceModal({
           {/* Coach Comment */}
           <div className="space-y-1.5">
             <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-              Coach Comment
+              {t("fitness:drawer.coachNotes")}
             </Label>
             <Textarea
               {...register("coachComment")}
-              placeholder="Optional coach note..."
+              placeholder={t("fitness:drawer.coachNotesPlaceholder")}
               className="resize-none text-sm min-h-[70px]"
             />
           </div>
@@ -294,7 +296,7 @@ export function EditExercisePerformanceModal({
               onClick={() => onOpenChange(false)}
               className="h-8 text-xs cursor-pointer"
             >
-              Cancel
+              {t("common:cancel")}
             </Button>
             <Button
               type="submit"
@@ -302,7 +304,7 @@ export function EditExercisePerformanceModal({
               disabled={updateMutation.isPending}
               className="h-8 text-xs cursor-pointer"
             >
-              {updateMutation.isPending ? "Saving..." : "Save Changes"}
+              {updateMutation.isPending ? t("common:saving") : t("common:saveChanges")}
             </Button>
           </DialogFooter>
         </form>

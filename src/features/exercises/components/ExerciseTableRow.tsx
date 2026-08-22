@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import type { Exercise } from "../types/index";
-import { MUSCLE_GROUP_META } from "../constants/muscleGroups";
-import { SWIMMING_CATEGORY_META } from "../constants/swimmingCategories";
+import { MUSCLE_GROUP_META, getMuscleGroupLabel } from "../constants/muscleGroups";
+import { SWIMMING_CATEGORY_META, getSwimmingCategoryLabel } from "../constants/swimmingCategories";
 import { ExerciseActionsMenu } from "./ExerciseActionsMenu";
 
 interface ExerciseTableRowProps {
@@ -11,12 +12,21 @@ interface ExerciseTableRowProps {
 }
 
 export function ExerciseTableRow({ exercise }: ExerciseTableRowProps) {
+  const { t } = useTranslation("exercises");
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const muscleMeta = exercise.muscleGroup != null ? MUSCLE_GROUP_META[exercise.muscleGroup] : null;
   const swimMeta = exercise.category != null ? SWIMMING_CATEGORY_META[exercise.category] : null;
   const categoryMeta = muscleMeta ?? swimMeta;
+
+  const categoryLabel =
+    exercise.muscleGroup != null
+      ? getMuscleGroupLabel(exercise.muscleGroup, t)
+      : exercise.category != null
+        ? getSwimmingCategoryLabel(exercise.category, t)
+        : null;
+
 
   return (
     <TableRow className="border-border transition-colors hover:bg-muted/40">
@@ -60,7 +70,7 @@ export function ExerciseTableRow({ exercise }: ExerciseTableRowProps) {
             }}
           >
             <categoryMeta.Icon className="size-3" strokeWidth={2} />
-            {categoryMeta.label}
+            {categoryLabel}
           </Badge>
         ) : (
           <span className="italic text-muted-foreground/50 text-sm">—</span>

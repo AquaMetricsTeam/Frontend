@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -26,6 +27,7 @@ export function CreateSessionSheet({
   open,
   onOpenChange,
 }: CreateSessionSheetProps) {
+  const { t } = useTranslation("training");
   const form = useForm<SessionFormValues>({
     resolver: zodResolver(sessionSchema),
     defaultValues: {
@@ -61,7 +63,7 @@ export function CreateSessionSheet({
       <SheetContent className="w-full sm:max-w-md flex flex-col gap-0 p-0">
         <SheetHeader className="px-6 pt-6 pb-4 border-b border-border">
           <SheetTitle className="text-base font-semibold">
-            New Training Session
+            {t("sessions.form.title")}
           </SheetTitle>
         </SheetHeader>
 
@@ -72,30 +74,30 @@ export function CreateSessionSheet({
           >
             <InputField<SessionFormValues>
               name="title"
-              label="Session Title"
-              placeholder="e.g. Morning Strength Session"
+              label={t("sessions.form.titleLabel")}
+              placeholder={t("sessions.form.titlePlaceholder")}
               required
             />
 
             <SelectField<SessionFormValues>
               name="trainingPlanId"
-              label="Training Plan"
+              label={t("sessions.form.planLabel")}
               options={planOptions}
-              placeholder="Select a plan..."
+              placeholder={t("sessions.form.planPlaceholder")}
               required
             />
 
             <div className="grid grid-cols-2 gap-3">
               <InputField<SessionFormValues>
                 name="sessionDate"
-                label="Date"
+                label={t("sessions.form.dateLabel")}
                 type="date"
                 required
               />
               <InputField<SessionFormValues>
                 name="location"
-                label="Location"
-                placeholder="e.g. Main Pool"
+                label={t("sessions.form.locationLabel")}
+                placeholder={t("sessions.form.locationPlaceholder")}
                 required
               />
             </div>
@@ -103,13 +105,13 @@ export function CreateSessionSheet({
             <div className="grid grid-cols-2 gap-3">
               <InputField<SessionFormValues>
                 name="startTime"
-                label="Start Time"
+                label={t("sessions.form.startTime")}
                 type="time"
                 required
               />
               <InputField<SessionFormValues>
                 name="endTime"
-                label="End Time"
+                label={t("sessions.form.endTime")}
                 type="time"
                 required
               />
@@ -117,8 +119,8 @@ export function CreateSessionSheet({
 
             <TextareaField<SessionFormValues>
               name="notes"
-              label="Notes (optional)"
-              placeholder="Any instructions or reminders for this session..."
+              label={t("sessions.form.notes")}
+              placeholder={t("sessions.form.notesPlaceholder")}
               rows={3}
             />
 
@@ -126,9 +128,11 @@ export function CreateSessionSheet({
               <Button
                 type="submit"
                 disabled={createMutation.isPending}
-                className="w-full"
+                className="w-full cursor-pointer"
               >
-                {createMutation.isPending ? "Creating..." : "Create Session"}
+                {createMutation.isPending
+                  ? t("sessions.form.submitting")
+                  : t("sessions.form.submit")}
               </Button>
             </div>
           </form>

@@ -21,16 +21,18 @@ interface MealLibraryModalProps {
   onSelect: (meal: Omit<NutritionPlanMeal, "id">) => void;
 }
 
-function getMealTypeLabel(mealType: MealType): string {
-  const labels: Record<MealType, string> = {
-    [MealType.Breakfast]: "Breakfast",
-    [MealType.Lunch]: "Lunch",
-    [MealType.Dinner]: "Dinner",
-    [MealType.Snack]: "Snack",
-    [MealType.PreWorkout]: "Pre-Workout",
-    [MealType.PostWorkout]: "Post-Workout",
+function getMealTypeLabel(mealType: MealType, t?: (k: string) => string): string {
+  const keys: Record<MealType, string> = {
+    [MealType.Breakfast]: "mealTypes.breakfast",
+    [MealType.Lunch]: "mealTypes.lunch",
+    [MealType.Dinner]: "mealTypes.dinner",
+    [MealType.Snack]: "mealTypes.snack",
+    [MealType.PreWorkout]: "mealTypes.preWorkout",
+    [MealType.PostWorkout]: "mealTypes.postWorkout",
   };
-  return labels[mealType] || "Unknown";
+  const key = keys[mealType];
+  if (!key) return "Unknown";
+  return t ? t(key) : key;
 }
 
 function getMealTypeColor(mealType: MealType): string {
@@ -132,7 +134,7 @@ export function MealLibraryModal({
                     onClick={() => setSelectedMealType(mealType as MealType)}
                     className="text-xs cursor-pointer"
                   >
-                    {getMealTypeLabel(mealType as MealType)}
+                    {getMealTypeLabel(mealType as MealType, t)}
                   </Button>
                 ))}
             </div>
@@ -167,7 +169,7 @@ export function MealLibraryModal({
                             getMealTypeColor(meal.mealType)
                           )}
                         >
-                          {getMealTypeLabel(meal.mealType)}
+                          {getMealTypeLabel(meal.mealType, t)}
                         </Badge>
                       </div>
 

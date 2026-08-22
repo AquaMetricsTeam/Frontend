@@ -202,8 +202,19 @@
     "message": " Administrator view — nutrition plans and assignments are read-only."
   },
   "assignmentDetail": {
-    "planSnapshot": "Plan Snapshot",
-    "meals": "Meals",
-    "viewFullPlan": "View full plan"
+    "planSnapshot": "PLAN SNAPSHOT — DAILY TOTALS",
+    "meals": "{{count}} meals",
+    "viewFullPlan": "View full plan",
+    "close": "Close",
+    "individual": "Individual",
+    "assignedByCoach": "Assigned by Coach · {{date}}"
+  },
+  "mealTypes": {
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "snack": "Snack",
+    "preWorkout": "Pre-Workout",
+    "postWorkout": "Post-Workout"
   }
 }

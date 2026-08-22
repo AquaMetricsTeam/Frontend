@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   MdAdd,
   MdCalendarToday,
@@ -52,6 +53,7 @@ const STATUS_OPTIONS = [
 ];
 
 export function SessionsView() {
+  const { t } = useTranslation("training");
   const [createOpen, setCreateOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedSession, setSelectedSession] =
@@ -208,10 +210,10 @@ export function SessionsView() {
             <div className="p-4 flex items-center justify-between gap-3 border-b border-border">
               <div>
                 <h2 className="text-base font-semibold text-foreground">
-                  Sessions
+                  {t("views.sessions")}
                 </h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Select a session to log attendance
+                  {t("sessions.selectSessionSubtitle")}
                 </p>
               </div>
               <Button
@@ -220,7 +222,7 @@ export function SessionsView() {
                 className="gap-1.5 text-xs h-8 cursor-pointer"
               >
                 <MdAdd className="size-4" />
-                New Session
+                {t("sessions.new")}
               </Button>
             </div>
 
@@ -228,7 +230,7 @@ export function SessionsView() {
               <SearchInput
                 value={searchSessions}
                 onChange={setSearchSessions}
-                placeholder="Search sessions..."
+                placeholder={t("sessions.searchSessionsPlaceholder")}
               />
             </div>
 

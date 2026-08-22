@@ -1,0 +1,67 @@
+{
+  "greeting": {
+    "welcome": "أهلاً بك",
+    "morning": "صباح الخير",
+    "afternoon": "طاب يومك",
+    "evening": "مساء الخير",
+    "adminSubtitle": "نظرة عامة شاملة على أداء جميع السباحين والمدربين.",
+    "coachSubtitle": "ملخص الأداء ومستوى الإجهاد للسباحين المعينين لك.",
+    "activeSquads": "مجموعات نشطة",
+    "readyToLog": "جاهز للتسجيل",
+    "liveData": "بيانات مباشرة",
+    "systemLive": "النظام متصل",
+    "localTime": "التوقيت المحلي",
+    "today": "اليوم"
+  },
+  "kpis": {
+    "totalAthletes": "إجمالي الرياضيين",
+    "totalSessions": "إجمالي الجلسات",
+    "totalInjuries": "إجمالي الإصابات",
+    "injuryRate": "{{rate}}% من الجلسات",
+    "avgPerformance": "متوسط الأداء",
+    "avgFatigue": "مستوى الإجهاد",
+    "outOfTen": "/ 10"
+  },
+  "charts": {
+    "performanceTrend": "مؤشر تطور الأداء",
+    "performanceTrendSubtitle": "متوسط تقييم الأداء عبر الجلسات التدريبية",
+    "fatigueTrend": "منحنى الإجهاد والتعب",
+    "fatigueTrendSubtitle": "متوسط درجات الإجهاد ومتابعة الاستشفاء",
+    "injuriesOverTime": "الإصابات عبر الفترات",
+    "injuriesOverTimeSubtitle": "توزيع عدد الإصابات المسجلة",
+    "domainDistribution": "توزيع التخصصات",
+    "domainSubtitle": "توزيع الرياضيين على التخصصات التدريبية",
+    "scatterTitle": "العلاقة بين الأداء ومستوى الإجهاد",
+    "scatterSubtitle": "تأثير الإجهاد البدني على كفاءة الأداء في كل جلسة",
+    "injuriesUnit": "إصابة",
+    "noData": "لا توجد بيانات متاحة للرسم البياني",
+    "noScatterData": "لا تتوفر بيانات كافية لإظهار العلاقة بين الأداء والإجهاد."
+  },
+  "injuries": {
+    "cardTitle": "الرياضيون المصابون حالياً",
+    "cardSubtitle": "الرياضيون المسجل لهم إصابات نشطة تتطلب متابعة الاستشفاء",
+    "countBadge": "{{count}} مصاب",
+    "empty": "لا توجد أي إصابات مسجلة حالياً. ممتاز!",
+    "viewAll": "عرض الكل ({{count}})",
+    "showMore": "عرض المزيد",
+    "dialogTitle": "قائمة الرياضيين المصابين",
+    "dialogSubtitle": "السجل الكامل للرياضيين الخاضعين للمتابعة الطبية وتعديل الأحمال التدريبية",
+    "searchPlaceholder": "بحث باسم الرياضي...",
+    "noSearchMatch": "لا يوجد رياضيون مطابقون للبحث.",
+    "table": {
+      "athlete": "الرياضي",
+      "injuryType": "نوع الإصابة",
+      "bodyPart": "مكان الإصابة",
+      "sessionDate": "تاريخ الجلسة",
+      "coachComment": "ملاحظات المدرب",
+      "actions": "الإجراءات"
+    },
+    "viewProfile": "عرض الملف",
+    "viewRecord": "عرض السجل"
+  },
+  "error": {
+    "title": "تعذر تحميل بيانات لوحة التحكم",
+    "subtitle": "حدث خطأ غير متوقع أثناء جلب المؤشرات. يرجى المحاولة مرة أخرى.",
+    "retry": "إعادة المحاولة"
+  }
+}

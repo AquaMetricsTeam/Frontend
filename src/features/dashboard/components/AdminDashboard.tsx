@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   MdDirectionsRun,
   MdEvent,
@@ -19,6 +20,7 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ data: d }: AdminDashboardProps) {
+  const { t } = useTranslation("dashboard");
   const { data: meRes } = useMe();
   const displayName = meRes?.data?.fullName?.split(" ")[0];
   const injuryRate =
@@ -28,13 +30,13 @@ export function AdminDashboard({ data: d }: AdminDashboardProps) {
     <div className="space-y-6 pb-12">
       <DashboardGreeting
         name={displayName}
-        subtitle="Here's the full picture across all athletes and coaches."
+        subtitle={t("greeting.adminSubtitle")}
       />
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <DashboardStatCard
-          label="Total Athletes"
+          label={t("kpis.totalAthletes")}
           value={d.totalAthletes}
           icon={MdDirectionsRun}
           iconColor="text-primary"
@@ -42,7 +44,7 @@ export function AdminDashboard({ data: d }: AdminDashboardProps) {
           valueColor="text-primary"
         />
         <DashboardStatCard
-          label="Total Sessions"
+          label={t("kpis.totalSessions")}
           value={d.totalSessions}
           icon={MdEvent}
           iconColor="text-secondary-500"
@@ -50,9 +52,9 @@ export function AdminDashboard({ data: d }: AdminDashboardProps) {
           valueColor="text-foreground"
         />
         <DashboardStatCard
-          label="Total Injuries"
+          label={t("kpis.totalInjuries")}
           value={d.totalInjuries}
-          sub={`${injuryRate}% of sessions`}
+          sub={t("kpis.injuryRate", { rate: injuryRate })}
           icon={MdLocalHospital}
           iconColor="text-rose-500"
           iconBg="bg-rose-500/10"
@@ -71,26 +73,26 @@ export function AdminDashboard({ data: d }: AdminDashboardProps) {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <DashboardTrendChart
           data={d.performanceTrend}
-          title="Performance Trend"
-          subtitle="Average performance rating over time"
+          title={t("charts.performanceTrend")}
+          subtitle={t("charts.performanceTrendSubtitle")}
           icon={MdTrendingUp}
           iconColor="text-primary"
           iconBg="bg-primary/10"
           strokeColor="var(--primary)"
           gradientId="admin-perf-grad"
-          valueLabel="/ 10"
+          valueLabel={t("kpis.outOfTen")}
           maxValue={10}
         />
         <DashboardTrendChart
           data={d.fatigueTrend}
-          title="Fatigue Trend"
-          subtitle="Average fatigue level over time"
+          title={t("charts.fatigueTrend")}
+          subtitle={t("charts.fatigueTrendSubtitle")}
           icon={MdBatteryChargingFull}
           iconColor="text-amber-500"
           iconBg="bg-amber-500/10"
           strokeColor="#f59e0b"
           gradientId="admin-fatigue-grad"
-          valueLabel="/ 10"
+          valueLabel={t("kpis.outOfTen")}
           maxValue={10}
         />
       </div>
@@ -99,14 +101,14 @@ export function AdminDashboard({ data: d }: AdminDashboardProps) {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <DashboardTrendChart
           data={d.injuriesOverTime}
-          title="Injuries Over Time"
-          subtitle="Injury count per period"
+          title={t("charts.injuriesOverTime")}
+          subtitle={t("charts.injuriesOverTimeSubtitle")}
           icon={MdLocalHospital}
           iconColor="text-rose-500"
           iconBg="bg-rose-500/10"
           strokeColor="#f43f5e"
           gradientId="admin-injury-grad"
-          valueLabel="injuries"
+          valueLabel={t("charts.injuriesUnit")}
           maxValue={Math.max(5, ...d.injuriesOverTime.map((p) => p.value))}
         />
         <AdminDomainDonutChart data={d.athletesPerDomain} />

@@ -14,19 +14,29 @@ import { useExerciseFilters } from "@/features/exercises/hooks/useExerciseFilter
 import { ExercisesTable } from "@/features/exercises/components/ExercisesTable";
 import { CreateExerciseModal } from "@/features/exercises/components/CreateExerciseModal";
 import { MuscleGroup, SwimmingExerciseCategory } from "@/features/exercises/types/index";
-import { MUSCLE_GROUP_META } from "@/features/exercises/constants/muscleGroups";
-import { SWIMMING_CATEGORY_META } from "@/features/exercises/constants/swimmingCategories";
+import { MUSCLE_GROUP_META, getMuscleGroupLabel } from "@/features/exercises/constants/muscleGroups";
+import { SWIMMING_CATEGORY_META, getSwimmingCategoryLabel } from "@/features/exercises/constants/swimmingCategories";
 
-function resolveFilter(type: string | undefined, value: string | undefined) {
+function resolveFilter(type: string | undefined, value: string | undefined, t?: (k: string, opts?: any) => string) {
   if (type === "muscle" && value) {
     const num = Number(value) as MuscleGroup;
     const meta = MUSCLE_GROUP_META[num];
-    return { muscleGroup: num, categoryLabel: meta?.label, colorVar: meta?.colorVar, Icon: meta?.Icon };
+    return {
+      muscleGroup: num,
+      categoryLabel: getMuscleGroupLabel(num, t),
+      colorVar: meta?.colorVar,
+      Icon: meta?.Icon,
+    };
   }
   if (type === "category" && value) {
     const num = Number(value) as SwimmingExerciseCategory;
     const meta = SWIMMING_CATEGORY_META[num];
-    return { category: num, categoryLabel: meta?.label, colorVar: meta?.colorVar, Icon: meta?.Icon };
+    return {
+      category: num,
+      categoryLabel: getSwimmingCategoryLabel(num, t),
+      colorVar: meta?.colorVar,
+      Icon: meta?.Icon,
+    };
   }
   return {};
 }
@@ -38,7 +48,8 @@ export default function ExercisesPage() {
 
   const { localSearch, setLocalSearch, debouncedSearch, page } = useExerciseFilters();
 
-  const filter = resolveFilter(type, value);
+  const filter = resolveFilter(type, value, t);
+
 
   const { data, isLoading, isError, refetch } = useExercises({
     page,

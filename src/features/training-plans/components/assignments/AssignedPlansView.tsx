@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   MdPeople,
   MdPerson,
@@ -29,6 +30,7 @@ import { AssignPlanSheet } from "./AssignPlanSheet";
 import { calculatePlanDuration, type TrainingPlan } from "../../types/index";
 
 export function AssignedPlansView() {
+  const { t, i18n } = useTranslation(["training", "common"]);
   const [search, setSearch] = useState("");
   const [selectedPlan, setSelectedPlan] = useState<TrainingPlan | null>(null);
   const [assignOpen, setAssignOpen] = useState(false);
@@ -77,7 +79,7 @@ export function AssignedPlansView() {
 
   function formatDate(dateStr: string): string {
     try {
-      return new Date(dateStr).toLocaleDateString("en-US", {
+      return new Date(dateStr).toLocaleDateString(i18n.language === "ar" ? "ar-EG" : "en-US", {
         month: "short",
         day: "numeric",
         year: "numeric",
@@ -96,17 +98,17 @@ export function AssignedPlansView() {
             <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border">
               <div>
                 <h2 className="text-base font-semibold text-foreground">
-                  Training Plans
+                  {t("training:assignments.trainingPlansTitle")}
                 </h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Select a plan to manage its assigned athletes & teams
+                  {t("training:assignments.trainingPlansSubtitle")}
                 </p>
               </div>
               <div className="w-full sm:w-48">
                 <SearchInput
                   value={search}
                   onChange={setSearch}
-                  placeholder="Search plans..."
+                  placeholder={t("training:assignments.searchPlans")}
                 />
               </div>
             </div>
@@ -115,10 +117,10 @@ export function AssignedPlansView() {
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
                   <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground ps-5">
-                    Plan
+                    {t("training:assignments.plan")}
                   </TableHead>
                   <TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground text-end pe-5">
-                    Exercises
+                    {t("training:assignments.exercises")}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -138,7 +140,7 @@ export function AssignedPlansView() {
                         onClick={() => setSelectedPlan(plan)}
                         className={`cursor-pointer transition-colors ${
                           isSelected
-                            ? "bg-accent/80 font-medium border-l-2 border-primary"
+                            ? "bg-accent/80 font-medium border-l-2 rtl:border-l-0 rtl:border-r-2 border-primary"
                             : "hover:bg-accent/30"
                         }`}
                       >
@@ -186,31 +188,31 @@ export function AssignedPlansView() {
                       {selectedPlan.title}
                     </h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      Current Assignments ({assignments.length})
+                      {t("training:assignments.currentAssignments", { count: assignments.length })}
                     </p>
                   </div>
                   <Button
                     size="sm"
-                    className="gap-1.5 self-start sm:self-auto text-xs"
+                    className="gap-1.5 self-start sm:self-auto text-xs cursor-pointer"
                     onClick={() => setAssignOpen(true)}
                   >
                     <MdAdd className="size-4" />
-                    Assign Plan
+                    {t("training:assignments.assignPlan")}
                   </Button>
                 </div>
 
                 {assignmentsLoading ? (
                   <div className="py-8 text-center text-xs text-muted-foreground">
-                    Loading assignments...
+                    {t("training:assignments.loadingAssignments")}
                   </div>
                 ) : assignmentsError ? (
                   <div className="py-8 text-center text-xs text-destructive">
-                    Failed to load assignments.{" "}
+                    {t("training:assignments.failedToLoadAssignments")}{" "}
                     <button
                       onClick={() => refetchAssignments()}
-                      className="underline font-medium"
+                      className="underline font-medium cursor-pointer"
                     >
-                      Retry
+                      {t("training:assignments.retry")}
                     </button>
                   </div>
                 ) : assignments.length === 0 ? (
@@ -218,10 +220,9 @@ export function AssignedPlansView() {
                     <div className="size-10 rounded-full bg-muted flex items-center justify-center">
                       <MdAssignment className="size-5" />
                     </div>
-                    <p className="text-xs font-medium">No assignments yet</p>
+                    <p className="text-xs font-medium">{t("training:assignments.noAssignments")}</p>
                     <p className="text-[11px] max-w-xs">
-                      This plan hasn&apos;t been assigned to any athletes or
-                      teams. Click &quot;Assign Plan&quot; to assign it now.
+                      {t("training:assignments.noAssignmentsDesc")}
                     </p>
                   </div>
                 ) : (
@@ -271,7 +272,7 @@ export function AssignedPlansView() {
                                     className="gap-1 text-[10px] py-0 h-4 bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/25"
                                   >
                                     <MdPeople className="size-3" />
-                                    Group
+                                    {t("training:assignments.groupsTab")}
                                   </Badge>
                                 ) : (
                                   <Badge
@@ -279,12 +280,14 @@ export function AssignedPlansView() {
                                     className="gap-1 text-[10px] py-0 h-4 bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30 hover:bg-blue-500/25"
                                   >
                                     <MdPerson className="size-3" />
-                                    Athlete
+                                    {t("training:assignments.athletesTab")}
                                   </Badge>
                                 )}
                               </div>
                               <span className="text-[11px] text-muted-foreground">
-                                Assigned {item.assignedAt ? formatDate(item.assignedAt) : "N/A"}
+                                {item.assignedAt
+                                  ? t("training:assignments.assignedOn", { date: formatDate(item.assignedAt) })
+                                  : "—"}
                               </span>
                             </div>
                           </div>
@@ -295,20 +298,20 @@ export function AssignedPlansView() {
                                 variant="secondary"
                                 className="text-[10px] bg-zinc-500/10 text-zinc-400 border-zinc-500/20 px-2 py-0.5"
                               >
-                                Completed
+                                {t("common:status.completed", { defaultValue: "Completed" })}
                               </Badge>
                             ) : (
                               <Badge
                                 variant="secondary"
                                 className="text-[10px] bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5"
                               >
-                                Active
+                                {t("training:assignments.active")}
                               </Badge>
                             )}
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="size-7 text-muted-foreground hover:text-destructive"
+                              className="size-7 text-muted-foreground hover:text-destructive cursor-pointer"
                               disabled={deleteMutation.isPending}
                               onClick={() => deleteMutation.mutate(item.id)}
                             >
@@ -326,10 +329,9 @@ export function AssignedPlansView() {
                 <div className="size-10 rounded-full bg-muted flex items-center justify-center">
                   <MdAssignment className="size-5" />
                 </div>
-                <p className="text-xs font-medium">No Plan Selected</p>
+                <p className="text-xs font-medium">{t("training:assignments.noAssignments")}</p>
                 <p className="text-[11px]">
-                  Select a training plan from the left list to view its
-                  assignments.
+                  {t("training:assignments.trainingPlansSubtitle")}
                 </p>
               </div>
             )}

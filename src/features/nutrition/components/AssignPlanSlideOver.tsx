@@ -434,7 +434,7 @@ export function AssignPlanSlideOver({
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <Drawer open={open} onOpenChange={handleClose} direction="right" modal={true}>
+    <Drawer open={open} onOpenChange={handleClose} direction="end" modal={true}>
       <DrawerContent className="w-full sm:max-w-xl flex flex-col overflow-hidden">
 
         {/* ── Header ───────────────────────────────────────────────────── */}
