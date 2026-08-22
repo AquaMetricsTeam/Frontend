@@ -1,0 +1,12 @@
+{
+  "title": "Notifications",
+  "markAllAsRead": "Mark all as read",
+  "noNotifications": "No notifications",
+  "allCaughtUp": "You are all caught up! New notifications will appear here when assigned.",
+  "fetchError": "Failed to load notifications.",
+  "retry": "Retry",
+  "justNow": "Just now",
+  "minutesAgo": "{{count}}m ago",
+  "hoursAgo": "{{count}}h ago",
+  "daysAgo": "{{count}}d ago"
+}
