@@ -96,6 +96,7 @@ export default function CoachNotesPage() {
     athleteId: selectedAthleteId || undefined,
     pageNumber: page,
     pageSize: 12,
+    isMy: true,
   };
 
   const notesQuery = useCoachNotes(notesQueryParams, roleKnown);
