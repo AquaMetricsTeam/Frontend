@@ -30,7 +30,9 @@
     "alreadyDecided": "تمت مراجعة هذه التوصية بالفعل.",
     "backToInbox": "العودة إلى صندوق الوارد",
     "generatedPlanTitle": "الخطة المولّدة",
-    "viewGeneratedPlan": "عرض الخطة"
+    "viewGeneratedPlan": "عرض الخطة",
+    "editGeneratedPlan": "تعديل الخطة",
+    "noPlanAttached": "لا توجد خطة مولّدة مرتبطة بهذه التوصية بعد."
   },
   "warning": {
     "missingExercises": "لم يتمكن الذكاء الاصطناعي من العثور على تطابق مثالي للتمارين لبعض أجزاء هذه الخطة. راجع الملاحظات أدناه قبل الموافقة.",

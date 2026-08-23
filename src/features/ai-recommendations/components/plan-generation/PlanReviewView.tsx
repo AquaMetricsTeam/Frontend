@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import { MdChevronRight, MdDescription } from "react-icons/md";
+import { MdChevronRight, MdDescription, MdEdit } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -57,6 +57,7 @@ export default function PlanReviewView({
   const queryClient = useQueryClient();
   const [reviewed, setReviewed] = useState(false);
   const [planSheetOpen, setPlanSheetOpen] = useState(false);
+  const [planEditMode, setPlanEditMode] = useState(false);
 
   const query = useRecommendation(recommendationId);
   const rec = query.data?.data;
@@ -175,15 +176,36 @@ export default function PlanReviewView({
               <p className="text-xs text-muted-foreground">ID #{planId}</p>
             </div>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPlanSheetOpen(true)}
-            className="cursor-pointer gap-1 rounded-xl text-xs font-semibold"
-          >
-            {t("review.viewGeneratedPlan")}
-            <MdChevronRight className="size-4 rtl:rotate-180" />
-          </Button>
+          <div className="flex shrink-0 items-center gap-2">
+            {isPending && (
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={planId == null}
+                onClick={() => {
+                  setPlanEditMode(true);
+                  setPlanSheetOpen(true);
+                }}
+                className="cursor-pointer gap-1 rounded-xl text-xs font-semibold"
+                title={planId == null ? t("review.noPlanAttached") : undefined}
+              >
+                <MdEdit className="size-3.5" />
+                {t("review.editGeneratedPlan")}
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setPlanEditMode(false);
+                setPlanSheetOpen(true);
+              }}
+              className="cursor-pointer gap-1 rounded-xl text-xs font-semibold"
+            >
+              {t("review.viewGeneratedPlan")}
+              <MdChevronRight className="size-4 rtl:rotate-180" />
+            </Button>
+          </div>
         </div>
       )}
 
@@ -205,11 +227,16 @@ export default function PlanReviewView({
       )}
 
       <RecommendationPlanSheet
+        key={planSheetOpen ? (planEditMode ? "session-edit" : "session-view") : "closed"}
         domainId={rec.domainId}
         planId={planId}
-        editable={!isRejected}
+        editable={isPending}
+        initialEditMode={planEditMode}
         open={planSheetOpen}
-        onOpenChange={setPlanSheetOpen}
+        onOpenChange={(nextOpen) => {
+          setPlanSheetOpen(nextOpen);
+          if (!nextOpen) setPlanEditMode(false);
+        }}
       />
     </div>
   );
