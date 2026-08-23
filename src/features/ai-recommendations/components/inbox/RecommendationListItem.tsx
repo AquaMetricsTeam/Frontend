@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { MdHourglassTop, MdCheckCircle, MdCancel, MdSchedule, MdChevronRight } from "react-icons/md";
@@ -6,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { RecommendationStatus } from "../../constants/enums";
 import type { RecommendationListItem } from "../../types/index";
 import type { ComponentType } from "react";
+import RecommendationPlanSheet from "../plan-view/RecommendationPlanSheet";
 
 interface RecommendationListItemProps {
   item: RecommendationListItem;
@@ -47,14 +49,19 @@ export default function RecommendationListItem({
 }: RecommendationListItemProps) {
   const { t, i18n } = useTranslation("aiInbox");
   const navigate = useNavigate();
+  const [planOpen, setPlanOpen] = useState(false);
 
   const statusInfo =
     STATUS_CONFIG[item.status] ?? STATUS_CONFIG[RecommendationStatus.Pending];
   const StatusIcon = statusInfo.icon;
   const generatedDate = new Date(item.generatedAt).toLocaleDateString(i18n.language);
+  // Normalize defensively: some payloads serialize ids as strings.
+  const numericPlanId = item.planId == null ? NaN : Number(item.planId);
+  const hasPlanId = Number.isFinite(numericPlanId) && numericPlanId > 0;
 
   return (
-    <div className="group flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-sm">
+    <>
+      <div className="group flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/50 hover:shadow-sm">
       <div
         className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${statusInfo.tileClassName}`}
       >
@@ -81,17 +88,41 @@ export default function RecommendationListItem({
         </div>
       </div>
 
-      <div className="flex shrink-0 items-center">
+      <div className="flex shrink-0 items-center gap-2">
+        {hasPlanId && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPlanOpen(true)}
+            className="cursor-pointer gap-1 rounded-xl text-xs font-semibold"
+          >
+            {t("list.viewPlan")}
+            <MdChevronRight className="size-4 rtl:rotate-180" />
+          </Button>
+        )}
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate(`/ai/review/${item.id}`)}
+          onClick={() =>
+            navigate(`/ai/review/${item.id}`, {
+              state: { planId: hasPlanId ? numericPlanId : null },
+            })
+          }
           className="cursor-pointer gap-1 rounded-xl text-xs font-semibold"
         >
           {t("list.viewReview")}
           <MdChevronRight className="size-4 rtl:rotate-180" />
         </Button>
       </div>
-    </div>
+      </div>
+
+      <RecommendationPlanSheet
+        domainId={item.domainId}
+        planId={hasPlanId ? numericPlanId : null}
+        editable={item.status !== RecommendationStatus.Rejected}
+        open={planOpen}
+        onOpenChange={setPlanOpen}
+      />
+    </>
   );
 }

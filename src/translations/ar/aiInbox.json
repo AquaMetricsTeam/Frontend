@@ -16,6 +16,7 @@
     "noRecommendations": "لم يتم العثور على توصيات",
     "noRecommendationsDescription": "أنشئ خطتك الأولى بالذكاء الاصطناعي لرؤية التوصيات هنا.",
     "viewReview": "مراجعة واعتماد",
+    "viewPlan": "عرض الخطة",
     "generatedAt": "تم الإنشاء {{date}}",
     "athleteLabel": "الرياضي"
   },

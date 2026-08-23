@@ -5,6 +5,7 @@ import PlanReviewView from "@/features/ai-recommendations/components/plan-genera
 
 interface ReviewLocationState {
   missingExerciseNotes?: string | null;
+  planId?: number | null;
 }
 
 export default function AiReviewRecommendationPage() {
@@ -23,6 +24,7 @@ export default function AiReviewRecommendationPage() {
         <PlanReviewView
           recommendationId={id}
           missingExerciseNotes={state.missingExerciseNotes ?? null}
+          routePlanId={state.planId ?? null}
         />
       </Box>
     </PageWrapper>
