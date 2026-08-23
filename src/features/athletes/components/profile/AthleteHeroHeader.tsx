@@ -54,7 +54,7 @@ export function AthleteHeroHeader({
 
   const totalSessions =
     performanceData?.totalSessions ??
-    (athlete.swimmingSessions.length + athlete.fitnessSessions.length);
+    ((athlete.swimmingSessions ?? 0) + (athlete.fitnessSessions ?? 0));
   const completedSessions = performanceData?.completedSessions ?? 0;
   const injuredSessions = performanceData?.injuredSessions ?? 0;
   const avgRating = performanceData?.averagePerformanceRating;

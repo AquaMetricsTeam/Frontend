@@ -24,9 +24,11 @@ export function AthleteOverviewTab({ athlete }: AthleteOverviewTabProps) {
   const { data: performanceRes } = useAthletePerformance(athlete.id);
   const performanceData = performanceRes?.data;
 
+  const swimmingCount = athlete.swimmingSessions ?? 0;
+  const fitnessCount = athlete.fitnessSessions ?? 0;
+
   const totalSessions =
-    performanceData?.totalSessions ??
-    athlete.swimmingSessions.length + athlete.fitnessSessions.length;
+    performanceData?.totalSessions ?? (swimmingCount + fitnessCount);
   const completedSessions = performanceData?.completedSessions ?? 0;
   const injuredSessions = performanceData?.injuredSessions ?? 0;
   const avgRating = performanceData?.averagePerformanceRating ?? 0;
@@ -36,9 +38,6 @@ export function AthleteOverviewTab({ athlete }: AthleteOverviewTabProps) {
     totalSessions > 0
       ? Math.round((completedSessions / totalSessions) * 100)
       : 0;
-
-  const swimmingCount = athlete.swimmingSessions?.length ?? 0;
-  const fitnessCount = athlete.fitnessSessions?.length ?? 0;
 
   return (
     <div className="space-y-6">

@@ -147,8 +147,8 @@ export interface AthleteOverviewResponse {
   medicalNotes?: string | null;
   groups: AthleteOverviewGroupResponse[];
   coaches: AthleteOverviewCoachResponse[];
-  swimmingSessions: AthleteOverviewSwimmingSessionResponse[];
-  fitnessSessions: AthleteOverviewFitnessSessionResponse[];
+  swimmingSessions: number;
+  fitnessSessions: number;
 }
 
 export interface AthleteOverviewNutritionPlanResponse {
