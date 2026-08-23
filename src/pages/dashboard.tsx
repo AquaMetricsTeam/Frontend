@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useMe } from "@/features/auth/hooks/useMe";
+import { useAuth } from "@/components/Providers/AuthProvider";
 import { AdminDashboard } from "@/features/dashboard/components/AdminDashboard";
 import { CoachDashboard } from "@/features/dashboard/components/CoachDashboard";
 import { DashboardSkeleton } from "@/features/dashboard/components/DashboardSkeleton";
@@ -30,11 +30,15 @@ function CoachDashboardPage() {
 }
 
 export default function Dashboard() {
-  const { data: meRes, isLoading } = useMe();
-  const roles: UserRole[] = meRes?.data?.roles ?? [];
+  const { user, isLoading, isAuthenticated } = useAuth();
+  const roles: UserRole[] = user?.roles ?? [];
 
   if (isLoading) {
     return <PageWrapper><DashboardSkeleton /></PageWrapper>;
+  }
+
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" replace />;
   }
 
   if (roles.includes("Admin")) {

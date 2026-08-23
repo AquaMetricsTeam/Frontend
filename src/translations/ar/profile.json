@@ -31,6 +31,7 @@
     "newPasswordPlaceholder": "٨ أحرف على الأقل",
     "confirmPassword": "تأكيد كلمة المرور الجديدة",
     "confirmPasswordPlaceholder": "••••••••",
+    "save": "تحديث كلمة المرور",
     "submit": "تحديث كلمة المرور",
     "updating": "جارٍ تحديث كلمة المرور...",
     "successToast": "تم تغيير كلمة المرور بنجاح!",

@@ -34,10 +34,10 @@ export function ChangePasswordForm() {
     <div className="rounded-3xl border border-border/80 bg-card p-6 sm:p-7 shadow-xs">
       <div className="border-b border-border/60 pb-4 mb-6">
         <h2 className="text-base font-bold text-foreground">
-          {t("profile:changePassword.title")}
+          {t("profile:security.title")}
         </h2>
         <p className="text-xs text-muted-foreground mt-0.5">
-          {t("profile:changePassword.description")}
+          {t("profile:security.description")}
         </p>
       </div>
 
@@ -46,9 +46,11 @@ export function ChangePasswordForm() {
           {/* Current Password */}
           <InputField<ChangePasswordFormValues>
             name="currentPassword"
-            label={t("profile:changePassword.currentPassword")}
+            label={t("profile:security.currentPassword")}
             type="password"
-            placeholder="••••••••"
+            placeholder={t("profile:security.currentPasswordPlaceholder", {
+              defaultValue: "••••••••",
+            })}
             required
             startIcon={<MdLock className="size-4 text-muted-foreground" />}
           />
@@ -56,9 +58,11 @@ export function ChangePasswordForm() {
           {/* New Password */}
           <InputField<ChangePasswordFormValues>
             name="newPassword"
-            label={t("profile:changePassword.newPassword")}
+            label={t("profile:security.newPassword")}
             type="password"
-            placeholder="••••••••"
+            placeholder={t("profile:security.newPasswordPlaceholder", {
+              defaultValue: "••••••••",
+            })}
             required
             startIcon={<MdVpnKey className="size-4 text-muted-foreground" />}
           />
@@ -66,9 +70,11 @@ export function ChangePasswordForm() {
           {/* Confirm New Password */}
           <InputField<ChangePasswordFormValues>
             name="confirmPassword"
-            label={t("profile:changePassword.confirmPassword")}
+            label={t("profile:security.confirmPassword")}
             type="password"
-            placeholder="••••••••"
+            placeholder={t("profile:security.confirmPasswordPlaceholder", {
+              defaultValue: "••••••••",
+            })}
             required
             startIcon={<MdVpnKey className="size-4 text-muted-foreground" />}
           />
@@ -81,7 +87,11 @@ export function ChangePasswordForm() {
               className="gap-2 rounded-xl px-6 border-border/80 hover:border-primary/50"
             >
               <MdLockReset className="size-4 text-primary" />
-              <span>{mutation.isPending ? t("common:saving") : t("profile:changePassword.save")}</span>
+              <span>
+                {mutation.isPending
+                  ? t("common:saving")
+                  : t("profile:security.save")}
+              </span>
             </Button>
           </div>
         </form>

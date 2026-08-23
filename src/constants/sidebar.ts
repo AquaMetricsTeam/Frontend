@@ -178,13 +178,6 @@ export const NAV_GROUPS: NavGroup[] = [
         icon: MdNotifications,
         path: "/notifications",
       },
-      {
-        key: "reports",
-        labelKey: "common:nav.items.reports",
-        icon: MdBarChart,
-        path: "/reports",
-        allowedRoles: ["Admin"],
-      },
     ],
   },
   // {

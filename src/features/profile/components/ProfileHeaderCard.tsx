@@ -36,7 +36,7 @@ export function ProfileHeaderCard({ user }: ProfileHeaderCardProps) {
   };
 
   const rawRole = user.roles?.[0] ?? "Member";
-  const roleLabel = t(`common:roles.${rawRole.toLowerCase()}`, { defaultValue: rawRole });
+  const roleLabel = t(`common:roles.${rawRole}`, { defaultValue: rawRole });
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs">
@@ -70,7 +70,9 @@ export function ProfileHeaderCard({ user }: ProfileHeaderCardProps) {
             ) : (
               <>
                 <MdCameraAlt className="size-6" />
-                <span className="text-[10px] font-semibold mt-1">{t("profile:header.changePhoto")}</span>
+                <span className="text-[10px] font-semibold mt-1">
+                  {t("profile:header.changePhoto")}
+                </span>
               </>
             )}
           </button>
@@ -111,7 +113,7 @@ export function ProfileHeaderCard({ user }: ProfileHeaderCardProps) {
           </div>
 
           <p className="text-xs text-muted-foreground/80 max-w-xl pt-1">
-            {t("profile:personalInfo.description")}
+            {t("profile:header.subtitle")}
           </p>
         </div>
       </div>

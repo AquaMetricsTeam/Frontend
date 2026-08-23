@@ -21,6 +21,7 @@ const ROUTE_NAME_MAP: Record<string, string> = {
   notifications: "common:nav.items.notifications",
   reports: "common:nav.items.reports",
   settings: "common:nav.items.settings",
+  profile: "common:userMenu.profile",
 };
 
 export function Breadcrumbs({ className }: { className?: string }) {
