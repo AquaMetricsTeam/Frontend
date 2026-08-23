@@ -65,6 +65,7 @@ export interface AiRecommendationResponse {
   status: number;
   generatedAt: string;
   requestedById: string;
+  planId?: number | null;
   evidence: RecommendationEvidenceResponse[];
 }
 
@@ -85,6 +86,7 @@ export interface RecommendationListItem {
   recommendation: string;
   status: number;
   generatedAt: string;
+  planId?: number | null;
 }
 
 // ─── Current Plan ────────────────────────────────────────────────────────────

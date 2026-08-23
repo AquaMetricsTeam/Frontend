@@ -11,7 +11,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNutritionPlans } from "../hooks/useNutritionPlans";
-import { useAllPlanAssignments } from "../hooks/usePlanAssignments";
 import { MealType } from "../types/index";
 import type { NutritionPlan } from "../types/index";
 
@@ -84,44 +83,6 @@ export function PlansList({
     }
   }, [filteredPlans, selectedPlanId, onSelectPlan]);
 
-  // Fetch assignments for all filtered plans to calculate real assignment count
-  const allAssignmentsQueries = useAllPlanAssignments(
-    filteredPlans.map((p) => p.id),
-    { pageSize: 100 },
-    filteredPlans.length > 0
-  );
-
-  const planAssignmentsMap = useMemo(() => {
-    const map = new Map<string, number>();
-    filteredPlans.forEach((plan, index) => {
-      const query = allAssignmentsQueries[index];
-      if (query && query.data?.data) {
-        const assignmentsList = query.data.data;
-        // Count unique athletes assigned to this plan
-        const uniqueAthletes = new Set(
-          assignmentsList
-            .map((a) => a.athleteId)
-            .filter((id): id is string => !!id)
-        );
-        map.set(String(plan.id), uniqueAthletes.size);
-      } else {
-        map.set(String(plan.id), 0);
-      }
-    });
-    return map;
-  }, [filteredPlans, allAssignmentsQueries]);
-
-  const getActiveAssignmentsCount = (planId: string): number => {
-    return planAssignmentsMap.get(String(planId)) ?? 0;
-  };
-
-  // Attach assignments count to the filteredPlans so that when selected, the parent state carries this info
-  useMemo(() => {
-    filteredPlans.forEach((plan) => {
-      (plan as any)._activeAssignmentsCount = getActiveAssignmentsCount(String(plan.id));
-    });
-  }, [filteredPlans, planAssignmentsMap]);
-
   const formatLastEdited = (dateStr?: string): string => {
     if (!dateStr) return "Never";
     try {
@@ -189,7 +150,6 @@ export function PlansList({
           filteredPlans.map((plan) => {
             const isSelected = selectedPlanId === plan.id;
             const dailyCalories = getDailyCalories(plan);
-            const activeAssignments = getActiveAssignmentsCount(String(plan.id));
 
             return (
               <div
@@ -207,19 +167,11 @@ export function PlansList({
                   <h3 className="text-sm font-semibold text-foreground truncate flex-1">
                     {plan.name}
                   </h3>
-                  {activeAssignments > 0 && (
-                    <Badge
-                      variant="outline"
-                      className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
-                    >
-                      • <span className="font-bold text-emerald-600 dark:text-emerald-400 me-0.5">{activeAssignments}</span> assigned
-                    </Badge>
-                  )}
                 </div>
 
                 {/* Description */}
                 <p className="text-xs text-muted-foreground line-clamp-1 mb-2">
-                  {(plan as any).objective || plan.name}
+                  {plan.objective || plan.name}
                 </p>
 
                 {/* Metadata Row */}
@@ -227,7 +179,7 @@ export function PlansList({
                   <div className="flex items-center gap-2">
                     <span className="flex items-center gap-1">
                       <MdSchedule className="size-3 shrink-0" />
-                      <span className="whitespace-nowrap">{(plan as any).schedule || "Weekly plan"}</span>
+                      <span className="whitespace-nowrap">{plan.schedule || "Weekly plan"}</span>
                     </span>
                     <span className="text-muted-foreground/60">·</span>
                     <span className="whitespace-nowrap">{plan.meals?.length ?? 0} meals</span>

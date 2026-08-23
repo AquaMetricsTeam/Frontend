@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { MdAdd } from "react-icons/md";
 import PageWrapper from "@/components/layouts/PageWrapper";
@@ -14,6 +14,7 @@ import { PlanWizardSlideOver } from "@/features/nutrition/components/PlanWizardS
 import { AssignPlanSlideOver } from "@/features/nutrition/components/AssignPlanSlideOver";
 import { ActiveAssignmentsWarningDialog } from "@/features/nutrition/components/ActiveAssignmentsWarningDialog";
 import { useNutritionPageManager } from "@/features/nutrition/hooks/useNutritionPageManager";
+import { usePlanAssignments } from "@/features/nutrition/hooks/usePlanAssignments";
 import { Button } from "@/components/ui/button";
 import type { NutritionPlan, NutritionPlanAssignment } from "@/features/nutrition/types/index";
 
@@ -23,17 +24,26 @@ export default function NutritionPage() {
   const { t } = useTranslation("nutrition");
   const { hasAnyRole, isLoading } = useAuth();
   const canAccess = hasAnyRole(["NutritionSpecialist"]);
-  if (isLoading) {
-    return <FullPageLoading />;
-  }
-  if (!canAccess) {
-    return <UnauthorizedPage />;
-  }
   const [selectedPlan, setSelectedPlan] = useState<NutritionPlan | null>(null);
   const [plansSearch, setPlansSearch] = useState("");
   const [selectedAssignment, setSelectedAssignment] = useState<NutritionPlanAssignment | null>(null);
   const [assignmentDetailOpen, setAssignmentDetailOpen] = useState(false);
-  
+
+  // On-demand: fetch assignments only for the selected plan (lazy badge count)
+  const { data: selectedPlanAssignmentsRes } = usePlanAssignments(
+    selectedPlan?.id ?? "",
+    {},
+    !!selectedPlan
+  );
+  const selectedPlanAssignedAthletes = useMemo(() => {
+    const list = Array.isArray(selectedPlanAssignmentsRes?.data)
+      ? selectedPlanAssignmentsRes.data
+      : [];
+    return new Set(
+      list.map((a) => a.athleteId).filter((id): id is string => !!id)
+    ).size;
+  }, [selectedPlanAssignmentsRes]);
+
   const {
     currentTab,
     setCurrentTab,
@@ -67,11 +77,21 @@ export default function NutritionPage() {
   } = useNutritionPageManager();
 
   // Clear selected plan when the currently displayed plan is deleted
-  useEffect(() => {
-    if (isDeleteSuccess && selectedPlan && deletedPlanId === selectedPlan.id) {
-      setSelectedPlan(null);
-    }
-  }, [isDeleteSuccess, deletedPlanId, selectedPlan]);
+  if (
+    isDeleteSuccess &&
+    deletedPlanId != null &&
+    selectedPlan &&
+    String(selectedPlan.id) === String(deletedPlanId)
+  ) {
+    setSelectedPlan(null);
+  }
+
+  if (isLoading) {
+    return <FullPageLoading />;
+  }
+  if (!canAccess) {
+    return <UnauthorizedPage />;
+  }
 
   const handleAssignmentClick = (assignment: NutritionPlanAssignment) => {
     setSelectedAssignment(assignment);
@@ -170,7 +190,7 @@ export default function NutritionPage() {
                 onDuplicatePlan={canEdit ? handleDuplicatePlan : undefined}
                 onAssignPlan={canEdit ? handleAssignPlan : undefined}
                 canEdit={canEdit}
-                activeAssignments={selectedPlan ? (selectedPlan as any)._activeAssignmentsCount ?? 0 : 0}
+                activeAssignments={selectedPlan ? selectedPlanAssignedAthletes : 0}
               />
             </div>
           </div>

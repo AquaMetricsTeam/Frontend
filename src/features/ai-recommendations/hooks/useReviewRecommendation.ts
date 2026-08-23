@@ -3,7 +3,10 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { reviewRecommendation } from "../services/reviewRecommendation.service";
 import { AI_KEYS } from "../constants/queryKeys";
-import type { RecommendationReviewRequest } from "../types/index";
+import type {
+  RecommendationReviewRequest,
+  AiRecommendationResponse,
+} from "../types/index";
 
 export function useReviewRecommendation(
   recommendationId: number,
@@ -20,6 +23,24 @@ export function useReviewRecommendation(
     meta: { skipGlobalErrorToast: true },
 
     onSuccess: (response, variables) => {
+      const reviewedPlanId = response.data?.planId;
+      if (reviewedPlanId != null) {
+        queryClient.setQueryData(
+          AI_KEYS.recommendationDetail(recommendationId),
+          (prev: ApiResponse<AiRecommendationResponse> | undefined) => {
+            if (!prev?.data) return response;
+            return {
+              ...response,
+              data: {
+                ...prev.data,
+                ...response.data,
+                evidence: prev.data.evidence ?? response.data.evidence ?? [],
+              },
+            };
+          },
+        );
+      }
+
       queryClient.invalidateQueries({
         queryKey: AI_KEYS.recommendationDetail(recommendationId),
       });

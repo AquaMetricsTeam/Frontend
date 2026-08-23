@@ -28,7 +28,9 @@
     "resultApproved": "Plan approved — this is now the athlete's active plan.",
     "resultRejected": "Plan rejected — the previous plan remains active.",
     "alreadyDecided": "This recommendation has already been reviewed.",
-    "backToInbox": "Back to Inbox"
+    "backToInbox": "Back to Inbox",
+    "generatedPlanTitle": "Generated Plan",
+    "viewGeneratedPlan": "View Plan"
   },
   "warning": {
     "missingExercises": "The AI could not find perfect exercise matches for some parts of this plan. Review the notes below before approving.",

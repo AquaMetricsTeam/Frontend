@@ -33,7 +33,10 @@ export default function GeneratePlanContainer() {
   const generatePlan = useGeneratePlan((data) => {
     idempotencyKey.current = null;
     navigate(`/ai/review/${data.recommendationId}`, {
-      state: { missingExerciseNotes: data.missingExerciseNotes },
+      state: {
+        missingExerciseNotes: data.missingExerciseNotes,
+        planId: data.trainingPlanId ?? data.nutritionPlanId ?? null,
+      },
     });
   });
 
