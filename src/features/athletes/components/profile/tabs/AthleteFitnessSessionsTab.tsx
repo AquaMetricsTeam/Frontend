@@ -7,7 +7,7 @@ import {
   MdPerson,
   MdAssignment,
   MdCheckCircle,
-  MdHourglassEmpty,
+  MdCancel,
   MdNotes,
   MdRefresh,
 } from "react-icons/md";
@@ -147,20 +147,20 @@ export function AthleteFitnessSessionsTab({
                   <Badge
                     variant="outline"
                     className={`text-[11px] gap-1 font-semibold ${
-                      session.hasTrainingRecord
+                      session.attended
                         ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                        : "border-border bg-muted/50 text-muted-foreground"
+                        : "border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400"
                     }`}
                   >
-                    {session.hasTrainingRecord ? (
+                    {session.attended ? (
                       <>
                         <MdCheckCircle className="size-3.5" />
-                        <span>{t("profile.sessions.recordAvailable")}</span>
+                        <span>{t("profile.sessions.attended")}</span>
                       </>
                     ) : (
                       <>
-                        <MdHourglassEmpty className="size-3.5" />
-                        <span>{t("profile.sessions.pendingRecord")}</span>
+                        <MdCancel className="size-3.5" />
+                        <span>{t("profile.sessions.absent")}</span>
                       </>
                     )}
                   </Badge>

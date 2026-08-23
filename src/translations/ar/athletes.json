@@ -77,6 +77,7 @@
       "trainingVolume": "حجم التدريب",
       "completionRate": "نسبة الإنجاز",
       "sessionsCount": "جلسة",
+      "totalRecordedSessions": "إجمالي الجلسات المسجلة",
       "excellent": "أداء استثنائي",
       "good": "أداء جيد",
       "needsFocus": "يحتاج إلى لياقة",
@@ -151,6 +152,8 @@
       "noGroupsDesc": "لم تتم إضافة هذا الرياضي إلى أي مجموعة تدريبية بعد."
     },
     "sessions": {
+      "attended": "حاضر",
+      "absent": "غائب",
       "recordAvailable": "تم تسجيل التقرير",
       "pendingRecord": "بانتظار التسجيل",
       "recorded": "مسجلة",

@@ -53,9 +53,7 @@ export function AthleteHeroHeader({
     String(athlete.gender).toLowerCase() === "female";
 
   const totalSessions =
-    performanceData?.totalSessions ??
-    ((athlete.swimmingSessions ?? 0) + (athlete.fitnessSessions ?? 0));
-  const completedSessions = performanceData?.completedSessions ?? 0;
+    (athlete.swimmingSessions ?? 0) + (athlete.fitnessSessions ?? 0);
   const injuredSessions = performanceData?.injuredSessions ?? 0;
   const avgRating = performanceData?.averagePerformanceRating;
   const avgFatigue = performanceData?.averageFatigueLevel;
@@ -227,7 +225,7 @@ export function AthleteHeroHeader({
         </div>
 
         {/* Right: Quick Micro-KPI Glass Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 lg:w-auto">
+        <div className="grid grid-cols-3 gap-3 lg:w-auto">
           {/* Total Sessions */}
           <div className="rounded-2xl border border-border/80 bg-card/60 p-3.5 backdrop-blur-xs text-center min-w-[100px]">
             <div className="text-xl font-bold text-foreground">
@@ -235,16 +233,6 @@ export function AthleteHeroHeader({
             </div>
             <div className="text-[11px] font-medium text-muted-foreground">
               {t("profile.metrics.totalSessions")}
-            </div>
-          </div>
-
-          {/* Completed Sessions */}
-          <div className="rounded-2xl border border-border/80 bg-card/60 p-3.5 backdrop-blur-xs text-center min-w-[100px]">
-            <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
-              {completedSessions}
-            </div>
-            <div className="text-[11px] font-medium text-muted-foreground">
-              {t("profile.metrics.completed")}
             </div>
           </div>
 

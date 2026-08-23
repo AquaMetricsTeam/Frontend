@@ -2,8 +2,6 @@ import { useTranslation } from "react-i18next";
 import {
   MdOutlineCheckCircle,
   MdOutlineWarningAmber,
-  MdPool,
-  MdFitnessCenter,
   MdSpeed,
   MdBatteryChargingFull,
   MdCalendarToday,
@@ -24,19 +22,15 @@ export function AthleteOverviewTab({ athlete }: AthleteOverviewTabProps) {
   const { data: performanceRes } = useAthletePerformance(athlete.id);
   const performanceData = performanceRes?.data;
 
-  const swimmingCount = athlete.swimmingSessions ?? 0;
-  const fitnessCount = athlete.fitnessSessions ?? 0;
-
-  const totalSessions =
-    performanceData?.totalSessions ?? (swimmingCount + fitnessCount);
+  const recordedSessions = performanceData?.totalSessions ?? 0;
   const completedSessions = performanceData?.completedSessions ?? 0;
   const injuredSessions = performanceData?.injuredSessions ?? 0;
   const avgRating = performanceData?.averagePerformanceRating ?? 0;
   const avgFatigue = performanceData?.averageFatigueLevel ?? 0;
 
   const completionRate =
-    totalSessions > 0
-      ? Math.round((completedSessions / totalSessions) * 100)
+    recordedSessions > 0
+      ? Math.round((completedSessions / recordedSessions) * 100)
       : 0;
 
   return (
@@ -70,21 +64,10 @@ export function AthleteOverviewTab({ athlete }: AthleteOverviewTabProps) {
           </div>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="text-2xl font-bold tracking-tight text-foreground">
-              {totalSessions}
+              {recordedSessions}
             </span>
             <span className="text-xs text-muted-foreground">
-              {t("profile.metrics.sessionsCount")}
-            </span>
-          </div>
-          <div className="mt-3 flex items-center gap-2 border-t border-border/60 pt-3 text-[11px] text-muted-foreground">
-            <span className="inline-flex items-center gap-1 font-medium text-cyan-600 dark:text-cyan-400">
-              <MdPool className="size-3.5" /> {swimmingCount}{" "}
-              {t("profile.tabs.swimming")}
-            </span>
-            <span>•</span>
-            <span className="inline-flex items-center gap-1 font-medium text-blue-600 dark:text-blue-400">
-              <MdFitnessCenter className="size-3.5" /> {fitnessCount}{" "}
-              {t("profile.tabs.fitness")}
+              {t("profile.metrics.totalRecordedSessions")}
             </span>
           </div>
         </div>
@@ -104,7 +87,7 @@ export function AthleteOverviewTab({ athlete }: AthleteOverviewTabProps) {
               {completionRate}%
             </span>
             <span className="text-xs text-muted-foreground">
-              ({completedSessions}/{totalSessions})
+              ({completedSessions}/{recordedSessions})
             </span>
           </div>
           {/* Progress bar */}
