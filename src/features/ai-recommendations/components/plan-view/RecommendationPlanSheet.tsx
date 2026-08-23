@@ -30,6 +30,8 @@ interface RecommendationPlanSheetProps {
   planId?: number | null;
   /** When false, all Edit affordances are hidden (e.g. Rejected recommendations). */
   editable?: boolean;
+  /** When true, opening the sheet jumps straight into the plan editor (e.g. Pending recommendations). */
+  initialEditMode?: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -58,12 +60,16 @@ export default function RecommendationPlanSheet({
   domainId,
   planId,
   editable = true,
+  initialEditMode = false,
   open,
   onOpenChange,
 }: RecommendationPlanSheetProps) {
   const { t } = useTranslation("common");
   const [trainingEditPlan, setTrainingEditPlan] = useState<TrainingPlan | null>(null);
   const [wizardOpen, setWizardOpen] = useState(false);
+  // Set when the user closes an auto-opened editor so it stays closed for
+  // the rest of the open session (callers remount the sheet per session).
+  const [autoEditDismissed, setAutoEditDismissed] = useState(false);
 
   const isNutrition = domainId === DomainId.Nutrition;
   const hasPlan = typeof planId === "number" && planId > 0;
@@ -84,6 +90,14 @@ export default function RecommendationPlanSheet({
     [nutritionPlan],
   );
 
+  // Direct-edit entry is fully derived: with initialEditMode the matching
+  // editor opens as soon as it can (nutrition waits for prefill data).
+  const autoEditMode = initialEditMode && editable && hasPlan && !autoEditDismissed;
+  const nutritionEditorOpen =
+    wizardOpen || (autoEditMode && isNutrition && nutritionFormInitial !== null);
+  const trainingEditorTarget =
+    trainingEditPlan ?? (autoEditMode && !isNutrition ? trainingStub : null);
+
   const closeEditorAndReopenView = useCallback(() => {
     setWizardOpen(false);
     onOpenChange(true);
@@ -99,6 +113,7 @@ export default function RecommendationPlanSheet({
 
   const handleTrainingEditClose = (nextOpen: boolean) => {
     if (!nextOpen) {
+      if (trainingEditPlan === null) setAutoEditDismissed(true);
       setTrainingEditPlan(null);
       onOpenChange(true);
     }
@@ -106,12 +121,14 @@ export default function RecommendationPlanSheet({
 
   // Nutrition: swap the plan sheet for the edit wizard
   const handleNutritionEdit = () => {
-    onOpenChange(false);
     setWizardOpen(true);
   };
 
   const handleWizardOpenChange = (nextOpen: boolean) => {
-    if (!nextOpen) closeEditorAndReopenView();
+    if (!nextOpen) {
+      if (!wizardOpen) setAutoEditDismissed(true);
+      closeEditorAndReopenView();
+    }
   };
 
   const handleWizardSubmit = (values: NutritionPlanFormValues) => {
@@ -137,7 +154,7 @@ export default function RecommendationPlanSheet({
   if (isNutrition) {
     return (
       <>
-        <Sheet open={open} onOpenChange={onOpenChange}>
+        <Sheet open={open && !nutritionEditorOpen} onOpenChange={onOpenChange}>
           <SheetContent className="w-full sm:max-w-xl flex flex-col gap-0 p-0 overflow-hidden">
             <SheetHeader className="px-6 pt-6 pb-4 border-b border-border bg-card/60">
               <div className="flex items-start justify-between gap-3 pe-8">
@@ -200,7 +217,7 @@ export default function RecommendationPlanSheet({
         </Sheet>
 
         <PlanWizardSlideOver
-          open={wizardOpen}
+          open={nutritionEditorOpen}
           onOpenChange={handleWizardOpenChange}
           initialPlan={nutritionFormInitial}
           isLoading={isUpdating}
@@ -214,13 +231,13 @@ export default function RecommendationPlanSheet({
     <>
       <TemplateDetailSheet
         plan={trainingStub}
-        open={open}
+        open={open && trainingEditorTarget === null}
         onOpenChange={onOpenChange}
         onEdit={editable ? handleTrainingEdit : undefined}
       />
       <EditTemplateSheet
-        plan={trainingEditPlan}
-        open={trainingEditPlan !== null}
+        plan={trainingEditorTarget}
+        open={trainingEditorTarget !== null}
         onOpenChange={handleTrainingEditClose}
       />
     </>

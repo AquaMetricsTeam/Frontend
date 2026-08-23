@@ -414,7 +414,7 @@ export function TemplateDetailSheet({
             onClick={() => onOpenChange(false)}
             className="cursor-pointer"
           >
-            {t("common:actions.close", { defaultValue: "إغلاق" })}
+            {t("common:close")}
           </Button>
 
           <div className="flex items-center gap-2">

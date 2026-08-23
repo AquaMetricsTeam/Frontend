@@ -336,7 +336,7 @@ export function InjuredAthletesCard({
               onClick={() => setIsDialogOpen(false)}
               className="cursor-pointer rounded-xl px-4"
             >
-              {t("common:actions.close", { defaultValue: "Close" })}
+              {t("common:close")}
             </Button>
           </div>
         </DialogContent>

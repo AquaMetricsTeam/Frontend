@@ -1,16 +1,40 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { MdHourglassTop, MdCheckCircle, MdCancel, MdSchedule, MdChevronRight } from "react-icons/md";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { MdHourglassTop, MdCheckCircle, MdCancel, MdSchedule, MdChevronRight, MdEdit } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RecommendationStatus } from "../../constants/enums";
+import { AI_KEYS } from "../../constants/queryKeys";
+import { getRecommendation } from "../../services/getRecommendation.service";
 import type { RecommendationListItem } from "../../types/index";
 import type { ComponentType } from "react";
 import RecommendationPlanSheet from "../plan-view/RecommendationPlanSheet";
 
 interface RecommendationListItemProps {
   item: RecommendationListItem;
+}
+
+// The list payload has shifted shape across backend iterations, so resolve
+// the plan id from every field it may live under (ids can also be strings).
+function extractPlanId(source: unknown): number | null {
+  if (!source || typeof source !== "object") return null;
+  const record = source as Record<string, unknown>;
+  const nested = record.recommendation;
+  const candidates = [
+    record.planId,
+    nested && typeof nested === "object" ? (nested as Record<string, unknown>).planId : undefined,
+    record.trainingPlanId,
+    record.nutritionPlanId,
+  ];
+  for (const candidate of candidates) {
+    if (candidate == null) continue;
+    const numeric = Number(candidate);
+    if (Number.isFinite(numeric) && numeric > 0) return numeric;
+  }
+  return null;
 }
 
 const STATUS_CONFIG: Record<
@@ -49,15 +73,52 @@ export default function RecommendationListItem({
 }: RecommendationListItemProps) {
   const { t, i18n } = useTranslation("aiInbox");
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [planOpen, setPlanOpen] = useState(false);
+  const [planEditMode, setPlanEditMode] = useState(false);
+  const [onDemandPlanId, setOnDemandPlanId] = useState<number | null>(null);
+  const [isResolvingPlan, setIsResolvingPlan] = useState(false);
+
+  console.log("[RecommendationListItem] item data:", item);
 
   const statusInfo =
     STATUS_CONFIG[item.status] ?? STATUS_CONFIG[RecommendationStatus.Pending];
   const StatusIcon = statusInfo.icon;
+  const isPendingItem = item.status === RecommendationStatus.Pending;
   const generatedDate = new Date(item.generatedAt).toLocaleDateString(i18n.language);
-  // Normalize defensively: some payloads serialize ids as strings.
-  const numericPlanId = item.planId == null ? NaN : Number(item.planId);
-  const hasPlanId = Number.isFinite(numericPlanId) && numericPlanId > 0;
+  // Resolve from any payload shape first; fall back to an id fetched
+  // on demand (detail endpoint) the first time Edit Plan is clicked.
+  const resolvedPlanId = extractPlanId(item) ?? onDemandPlanId;
+
+  const openEditor = () => {
+    setPlanEditMode(true);
+    setPlanOpen(true);
+  };
+
+  const handleEditPlanClick = async () => {
+    if (resolvedPlanId != null) {
+      openEditor();
+      return;
+    }
+    setIsResolvingPlan(true);
+    try {
+      const res = await queryClient.fetchQuery({
+        queryKey: AI_KEYS.recommendationDetail(item.id),
+        queryFn: () => getRecommendation(item.id),
+      });
+      const detailPlanId = extractPlanId(res?.data);
+      if (detailPlanId != null) {
+        setOnDemandPlanId(detailPlanId);
+        openEditor();
+      } else {
+        toast.error(t("list.noPlanAttached"));
+      }
+    } catch {
+      toast.error(t("toasts.fetchError"));
+    } finally {
+      setIsResolvingPlan(false);
+    }
+  };
 
   return (
     <>
@@ -89,15 +150,30 @@ export default function RecommendationListItem({
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
-        {hasPlanId && (
+        {resolvedPlanId != null && (
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setPlanOpen(true)}
+            onClick={() => {
+              setPlanEditMode(false);
+              setPlanOpen(true);
+            }}
             className="cursor-pointer gap-1 rounded-xl text-xs font-semibold"
           >
             {t("list.viewPlan")}
             <MdChevronRight className="size-4 rtl:rotate-180" />
+          </Button>
+        )}
+        {isPendingItem && (
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isResolvingPlan}
+            onClick={handleEditPlanClick}
+            className="cursor-pointer gap-1 rounded-xl text-xs font-semibold text-primary hover:text-primary"
+          >
+            <MdEdit className="size-3.5" />
+            {t("list.editPlan")}
           </Button>
         )}
         <Button
@@ -105,7 +181,7 @@ export default function RecommendationListItem({
           size="sm"
           onClick={() =>
             navigate(`/ai/review/${item.id}`, {
-              state: { planId: hasPlanId ? numericPlanId : null },
+              state: { planId: resolvedPlanId },
             })
           }
           className="cursor-pointer gap-1 rounded-xl text-xs font-semibold"
@@ -117,11 +193,16 @@ export default function RecommendationListItem({
       </div>
 
       <RecommendationPlanSheet
+        key={planOpen ? (planEditMode ? "session-edit" : "session-view") : "closed"}
         domainId={item.domainId}
-        planId={hasPlanId ? numericPlanId : null}
-        editable={item.status !== RecommendationStatus.Rejected}
+        planId={resolvedPlanId}
+        editable={item.status === RecommendationStatus.Pending}
+        initialEditMode={planEditMode}
         open={planOpen}
-        onOpenChange={setPlanOpen}
+        onOpenChange={(nextOpen) => {
+          setPlanOpen(nextOpen);
+          if (!nextOpen) setPlanEditMode(false);
+        }}
       />
     </>
   );
