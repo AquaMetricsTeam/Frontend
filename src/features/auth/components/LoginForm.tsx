@@ -17,7 +17,7 @@ export function LoginForm() {
     mode: "onTouched",
   });
 
-  const { handleSubmit, register } = methods;
+  const { handleSubmit } = methods;
 
   const onSubmit = (values: LoginFormValues) => {
     login({

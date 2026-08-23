@@ -4,7 +4,7 @@ import {
   QueryClientProvider,
   MutationCache,
 } from "@tanstack/react-query";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,12 +16,12 @@ export const queryClient = new QueryClient({
     },
   },
   mutationCache: new MutationCache({
-    onError: (error: any, _variables, _context, mutation) => {
+    onError: (_error: any, _variables, _context, mutation) => {
       // Avoid duplicate toasts if mutation explicitly opts out via meta
       if (mutation.meta?.skipGlobalErrorToast) return;
 
-      const errorMessage =
-        error?.message || "An unexpected error occurred. Please try again.";
+      // const errorMessage =
+      //   error?.message || "An unexpected error occurred. Please try again.";
 
       // Display Sonner toast with a global "Retry" button (deduplicated by mutationId)
       // toast.error(errorMessage, {
