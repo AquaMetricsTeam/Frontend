@@ -75,18 +75,29 @@
     "description": "Update session performance metrics and exercise sets.",
     "submit": "Save Changes",
     "saving": "Saving...",
-    "successToast": "Fitness record updated successfully."
+    "successToast": "Fitness record updated successfully.",
+    "exerciseSuccessToast": "Exercise performance updated successfully.",
+    "errorToast": "Failed to update fitness record."
   },
   "detailSheet": {
     "title": "Fitness Record Details",
     "subtitle": "Record #{{id}}",
     "athleteInfo": "Athlete Information",
     "sessionDetails": "Session Details",
+    "editRecord": "Edit Record",
     "exercisePerformances": "Exercise Breakdown",
     "totalExercises": "{{count}} exercise(s) logged",
     "noExercises": "No exercise sets logged for this record.",
     "coachComment": "Coach Observations",
-    "noComment": "No coach comments recorded."
+    "noComment": "No coach comments recorded.",
+    "planned": "Planned",
+    "completed": "Completed",
+    "sets": "Sets",
+    "reps": "Reps",
+    "rest": "Rest",
+    "duration": "Duration",
+    "weight": "Weight",
+    "rpe": "RPE"
   },
   "card": {
     "sets": "Sets",

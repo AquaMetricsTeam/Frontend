@@ -34,6 +34,7 @@ import { useMarkAttendance } from "../../hooks/useMarkAttendance";
 import { useTrainingPlan } from "../../hooks/useTrainingPlan";
 import { useExercisesLookup } from "@/features/lookups/hooks/useExercisesLookup";
 import { RepsLabel } from "@/components/common/RepsLabel";
+import { isSwimmingExercise } from "../../utils/exerciseType";
 import { AttendanceStatusEnum, type TrainingSession } from "../../types/index";
 import { cn } from "@/lib/utils";
 
@@ -156,6 +157,7 @@ export function SessionDetailSheet({
   const planExercises = planRes?.data?.planExercises ?? [];
   const { data: lookupRes } = useExercisesLookup(undefined, open);
   const exerciseLookup = lookupRes?.data ?? [];
+  const lookupMap = new Map(exerciseLookup.map((e) => [e.id, e]));
   const exerciseMap = new Map(exerciseLookup.map((e) => [e.id, e.title]));
 
   // Fetch single session detail (includes athletes via GET /api/training-sessions/{id})
@@ -389,17 +391,11 @@ export function SessionDetailSheet({
                             >
                               <RepsLabel
                                 value={pe.reps}
-                                isSwimming={
-                                  isSwimmingCoach ||
-                                  pe.exerciseName?.toLowerCase().includes("swim") ||
-                                  pe.exerciseName?.toLowerCase().includes("freestyle") ||
-                                  pe.exerciseName?.toLowerCase().includes("back") ||
-                                  pe.exerciseName?.toLowerCase().includes("breast") ||
-                                  pe.exerciseName?.toLowerCase().includes("butterfly") ||
-                                  pe.exerciseName?.toLowerCase().includes("kick") ||
-                                  pe.exerciseName?.toLowerCase().includes("pull") ||
-                                  pe.exerciseName?.toLowerCase().includes("drill")
-                                }
+                                isSwimming={isSwimmingExercise(
+                                  pe,
+                                  lookupMap.get(pe.exerciseId),
+                                  isSwimmingCoach,
+                                )}
                               />
                             </Badge>
                           )}

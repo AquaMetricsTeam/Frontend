@@ -25,7 +25,15 @@ import { useAssignments } from "../../hooks/useAssignments";
 import { useExercisesLookup } from "@/features/lookups/hooks/useExercisesLookup";
 import { useMe } from "@/features/auth/hooks/useMe";
 import { RepsLabel, useRepsLabel } from "@/components/common/RepsLabel";
-import { calculatePlanDuration, type TrainingPlan } from "../../types/index";
+import {
+  calculatePlanDuration,
+  type TrainingPlan,
+} from "../../types/index";
+import {
+  isSwimmingExercise,
+  isSwimmingPlan,
+} from "../../utils/exerciseType";
+import { cn } from "@/lib/utils";
 
 interface TemplateDetailSheetProps {
   plan: TrainingPlan | null;
@@ -54,7 +62,8 @@ export function TemplateDetailSheet({
   const { data: lookupRes } = useExercisesLookup(undefined, open);
   const { data: meData } = useMe();
   const roles = meData?.data?.roles ?? [];
-  const isSwimmingCoach = roles.includes("SwimmingCoach") && !roles.includes("FitnessCoach");
+  const isSwimmingCoach =
+    roles.includes("SwimmingCoach") && !roles.includes("FitnessCoach");
 
   const exerciseLookup = lookupRes?.data ?? [];
   const lookupMap = new Map(exerciseLookup.map((e) => [e.id, e]));
@@ -63,25 +72,8 @@ export function TemplateDetailSheet({
   const assignments = assignmentsRes?.data ?? [];
   const exercises = activePlan?.planExercises ?? [];
 
-  const isSwimmingPlan =
-    isSwimmingCoach ||
-    exercises.some((ex) => {
-      const lookup = lookupMap.get(ex.exerciseId);
-      const title = ex.exerciseName || lookup?.title || "";
-      return (
-        (ex as any).category != null ||
-        title.toLowerCase().includes("swim") ||
-        title.toLowerCase().includes("freestyle") ||
-        title.toLowerCase().includes("backstroke") ||
-        title.toLowerCase().includes("breaststroke") ||
-        title.toLowerCase().includes("butterfly") ||
-        title.toLowerCase().includes("kick") ||
-        title.toLowerCase().includes("pull") ||
-        title.toLowerCase().includes("drill")
-      );
-    });
-
-  const planRepsMeta = useRepsLabel({ isSwimming: isSwimmingPlan });
+  const isPlanSwim = isSwimmingPlan(exercises, lookupMap, isSwimmingCoach);
+  const planRepsMeta = useRepsLabel({ isSwimming: isPlanSwim });
 
   if (!activePlan) return null;
 
@@ -181,7 +173,7 @@ export function TemplateDetailSheet({
                   </span>
                   <span className="text-sm font-bold text-foreground mt-0.5">
                     {totalReps}
-                    {isSwimmingPlan ? ` ${t("training:labels.metersUnit")}` : ` ${t("training:labels.repsUnit")}`}
+                    {isPlanSwim ? ` ${t("training:labels.metersUnit")}` : ` ${t("training:labels.repsUnit")}`}
                   </span>
                 </div>
               </div>
@@ -207,17 +199,7 @@ export function TemplateDetailSheet({
                         lookup?.title ||
                         `Exercise #${ex.exerciseId}`;
 
-                      const isSwimEx =
-                        isSwimmingCoach ||
-                        (ex as any).category != null ||
-                        exerciseTitle.toLowerCase().includes("swim") ||
-                        exerciseTitle.toLowerCase().includes("freestyle") ||
-                        exerciseTitle.toLowerCase().includes("backstroke") ||
-                        exerciseTitle.toLowerCase().includes("breaststroke") ||
-                        exerciseTitle.toLowerCase().includes("butterfly") ||
-                        exerciseTitle.toLowerCase().includes("kick") ||
-                        exerciseTitle.toLowerCase().includes("pull") ||
-                        exerciseTitle.toLowerCase().includes("drill");
+                      const isSwimEx = isSwimmingExercise(ex, lookup, isSwimmingCoach);
 
                       return (
                         <div

@@ -64,10 +64,8 @@ export function FitnessRecordDetailSheet({
   };
 
   // 1. Fetch training record overall detail
-  const { data: detailRes, isLoading: isRecordLoading } = useTrainingRecordDetail(
-    record?.id ?? 0,
-    open && (record?.id ?? 0) > 0,
-  );
+  const { data: detailRes, isLoading: isRecordLoading } =
+    useTrainingRecordDetail(record?.id ?? 0, open && (record?.id ?? 0) > 0);
 
   // 2. Fetch exercise performances directly from /Exercise-Performance/training-record/{id}
   const { data: exerciseRes, isLoading: isExerciseLoading } =
@@ -178,7 +176,7 @@ export function FitnessRecordDetailSheet({
                 {/* Session Evaluation Card */}
                 {detail && (
                   <div className="p-4 rounded-xl border border-border bg-card space-y-3 shadow-xs">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between flex-wrap">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         {t("fitness:detailSheet.sessionDetails")}
                       </h4>
@@ -187,13 +185,15 @@ export function FitnessRecordDetailSheet({
                           variant="secondary"
                           className="bg-primary/10 text-primary border-primary/20 font-bold"
                         >
-                          {t("fitness:drawer.ratingLabel")}: {detail.performanceRating} / 10
+                          {t("fitness:drawer.ratingLabel")}:{" "}
+                          {detail.performanceRating} / 10
                         </Badge>
                         <Badge
                           variant="secondary"
                           className="bg-amber-500/10 text-amber-600 border-amber-500/20 font-bold"
                         >
-                          {t("fitness:drawer.fatigueLabel")}: {detail.fatigueLevel} / 10
+                          {t("fitness:drawer.fatigueLabel")}:{" "}
+                          {detail.fatigueLevel} / 10
                         </Badge>
                       </div>
                     </div>
@@ -213,7 +213,9 @@ export function FitnessRecordDetailSheet({
                     injuryBodyPart={
                       detail?.injuryBodyPart ?? record.injuryBodyPart
                     }
-                    injuryComment={detail?.injuryComment ?? record.injuryComment}
+                    injuryComment={
+                      detail?.injuryComment ?? record.injuryComment
+                    }
                   />
                 )}
 
@@ -222,7 +224,8 @@ export function FitnessRecordDetailSheet({
                   <div className="space-y-3">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
                       <MdFitnessCenter className="size-4" />
-                      {t("fitness:detailSheet.exercisePerformances")} ({exercisePerformances.length})
+                      {t("fitness:detailSheet.exercisePerformances")} (
+                      {exercisePerformances.length})
                     </h4>
 
                     {exercisePerformances.map((ex, idx) => {
@@ -235,7 +238,10 @@ export function FitnessRecordDetailSheet({
                           {/* Exercise header */}
                           <div className="flex items-center justify-between border-b border-border/60 pb-2">
                             <span className="font-bold text-foreground text-sm">
-                              {ex.exerciseTitle || `Plan Exercise #${ex.planExerciseId || ex.id || idx + 1}`}
+                              {ex.exerciseTitle ||
+                                (ex as any).exerciseName ||
+                                (ex as any).title ||
+                                `Exercise #${ex.planExerciseId || ex.id || idx + 1}`}
                             </span>
                             <div className="flex items-center gap-2">
                               {statusMeta && (
@@ -280,22 +286,24 @@ export function FitnessRecordDetailSheet({
                                     {ex.plannedReps ?? 0}
                                   </strong>
                                 </span>
-                                {ex.plannedDuration != null && ex.plannedDuration > 0 && (
-                                  <span>
-                                    {t("fitness:drawer.durationLabel")}:{" "}
-                                    <strong className="text-foreground">
-                                      {ex.plannedDuration}m
-                                    </strong>
-                                  </span>
-                                )}
-                                {ex.plannedRestSeconds != null && ex.plannedRestSeconds > 0 && (
-                                  <span>
-                                    {t("fitness:detailSheet.rest")}:{" "}
-                                    <strong className="text-foreground">
-                                      {ex.plannedRestSeconds}s
-                                    </strong>
-                                  </span>
-                                )}
+                                {ex.plannedDuration != null &&
+                                  ex.plannedDuration > 0 && (
+                                    <span>
+                                      {t("fitness:detailSheet.duration")}:{" "}
+                                      <strong className="text-foreground">
+                                        {ex.plannedDuration}m
+                                      </strong>
+                                    </span>
+                                  )}
+                                {ex.plannedRestSeconds != null &&
+                                  ex.plannedRestSeconds > 0 && (
+                                    <span>
+                                      {t("fitness:detailSheet.rest")}:{" "}
+                                      <strong className="text-foreground">
+                                        {ex.plannedRestSeconds}s
+                                      </strong>
+                                    </span>
+                                  )}
                               </div>
                             </div>
                             <div className="space-y-1.5">
@@ -315,53 +323,48 @@ export function FitnessRecordDetailSheet({
                                     {ex.completedReps ?? 0}
                                   </strong>
                                 </span>
-                                {ex.completedDuration != null && ex.completedDuration > 0 && (
-                                  <span>
-                                    {t("fitness:drawer.durationLabel")}:{" "}
-                                    <strong className="text-foreground">
-                                      {ex.completedDuration}m
-                                    </strong>
-                                  </span>
-                                )}
+                                {ex.completedDuration != null &&
+                                  ex.completedDuration > 0 && (
+                                    <span>
+                                      {t("fitness:detailSheet.duration")}:{" "}
+                                      <strong className="text-foreground">
+                                        {ex.completedDuration}m
+                                      </strong>
+                                    </span>
+                                  )}
                               </div>
                             </div>
                           </div>
 
                           {/* Extra fields */}
-                          <div className="flex flex-wrap gap-3 text-muted-foreground pt-1 border-t border-border/40">
-                            {ex.weightUsed != null && (
-                              <span>
-                                {t("fitness:drawer.weightLabel")}:{" "}
-                                <strong className="text-foreground">
-                                  {ex.weightUsed} kg
-                                </strong>
-                              </span>
-                            )}
-                            {ex.completedDuration != null && (
-                              <span>
-                                {t("fitness:drawer.durationLabel")}:{" "}
-                                <strong className="text-foreground">
-                                  {ex.completedDuration} min
-                                </strong>
-                              </span>
-                            )}
-                            {ex.rpe != null && (
-                              <span>
-                                {t("fitness:drawer.rpeLabel")}:{" "}
-                                <strong
-                                  className={cn(
-                                    ex.rpe >= 8
-                                      ? "text-rose-600"
-                                      : ex.rpe >= 5
-                                        ? "text-amber-600"
-                                        : "text-emerald-600",
-                                  )}
-                                >
-                                  {ex.rpe} / 10
-                                </strong>
-                              </span>
-                            )}
-                          </div>
+                          {(ex.weightUsed != null || ex.rpe != null) && (
+                            <div className="flex flex-wrap gap-3 text-muted-foreground pt-1 border-t border-border/40">
+                              {ex.weightUsed != null && (
+                                <span>
+                                  {t("fitness:detailSheet.weight")}:{" "}
+                                  <strong className="text-foreground">
+                                    {ex.weightUsed} kg
+                                  </strong>
+                                </span>
+                              )}
+                              {ex.rpe != null && (
+                                <span>
+                                  {t("fitness:detailSheet.rpe")}:{" "}
+                                  <strong
+                                    className={cn(
+                                      ex.rpe >= 8
+                                        ? "text-rose-600"
+                                        : ex.rpe >= 5
+                                          ? "text-amber-600"
+                                          : "text-emerald-600",
+                                    )}
+                                  >
+                                    {ex.rpe} / 10
+                                  </strong>
+                                </span>
+                              )}
+                            </div>
+                          )}
 
                           {ex.coachComment && (
                             <p className="text-[11px] italic text-muted-foreground bg-muted/30 p-2 rounded-lg border border-border/50">

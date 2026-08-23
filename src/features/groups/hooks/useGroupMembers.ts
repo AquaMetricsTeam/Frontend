@@ -7,5 +7,7 @@ export function useGroupMembers(groupId: number, enabled = true) {
     queryKey: GROUP_KEYS.members(groupId),
     queryFn: () => fetchGroupMembers(groupId),
     enabled: enabled && groupId > 0,
+    staleTime: 0,
+    gcTime: 0,
   });
 }

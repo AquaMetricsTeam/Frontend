@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { deleteGroup } from "../services/deleteGroup.service";
 import { GROUP_KEYS } from "../constants/queryKeys";
+import { LOOKUP_QUERY_KEYS } from "@/features/lookups/constants/queryKeys";
 
 export function useDeleteGroup(onSuccess?: () => void) {
   const queryClient = useQueryClient();
@@ -11,6 +12,7 @@ export function useDeleteGroup(onSuccess?: () => void) {
 
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: GROUP_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: LOOKUP_QUERY_KEYS.all });
       toast.success(response.message ?? "Group deleted successfully.");
       onSuccess?.();
     },

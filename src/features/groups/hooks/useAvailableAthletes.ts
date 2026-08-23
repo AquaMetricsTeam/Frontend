@@ -7,5 +7,7 @@ export function useAvailableAthletes(enabled = true) {
     queryKey: GROUP_KEYS.availableAthletes,
     queryFn: fetchAvailableAthletes,
     enabled,
+    staleTime: 0,
+    gcTime: 0,
   });
 }

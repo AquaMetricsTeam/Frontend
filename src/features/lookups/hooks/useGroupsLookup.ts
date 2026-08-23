@@ -7,6 +7,7 @@ export function useGroupsLookup(enabled: boolean = true) {
     queryKey: LOOKUP_QUERY_KEYS.groups(),
     queryFn: fetchGroupsLookup,
     enabled,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
+    gcTime: 0,
   });
 }

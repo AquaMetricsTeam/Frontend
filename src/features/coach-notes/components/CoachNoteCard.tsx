@@ -26,12 +26,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useDeleteCoachNote } from "../hooks/useDeleteCoachNote";
+import { useMe } from "@/features/auth/hooks/useMe";
 import type { CoachNote } from "../types/index";
 
 interface CoachNoteCardProps {
   note: CoachNote;
   currentUserId?: string;
   athleteName?: string;
+  showCoachName?: boolean;
   onEdit?: (note: CoachNote) => void;
 }
 
@@ -54,16 +56,21 @@ export function CoachNoteCard({
   note,
   currentUserId,
   athleteName,
+  showCoachName,
   onEdit,
 }: CoachNoteCardProps) {
   const { t } = useTranslation("coachNotes");
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  // Author check or fallback (author can edit/delete)
-  const isAuthor =
-    !currentUserId ||
-    !note.authorId ||
-    currentUserId.toLowerCase() === note.authorId.toLowerCase();
+  const { data: meData } = useMe();
+  const authUserId = currentUserId || meData?.data?.userId;
+
+  // Actions only visible if the note was written by the current logged-in coach
+  const isAuthor = Boolean(
+    authUserId &&
+      note.authorId &&
+      authUserId.toLowerCase() === note.authorId.toLowerCase(),
+  );
 
   const deleteMutation = useDeleteCoachNote(() => {
     setIsDeleteOpen(false);
@@ -74,6 +81,11 @@ export function CoachNoteCard({
   }
 
   const isEdited = note.updatedAt && note.updatedAt !== note.createdAt;
+  const coachName =
+    note.authorName ||
+    (note as any).coachName ||
+    (note as any).author?.fullName ||
+    (note as any).author;
 
   return (
     <>
@@ -82,20 +94,27 @@ export function CoachNoteCard({
         <MdFormatQuote className="absolute -bottom-2 -end-2 size-24 text-muted/30 pointer-events-none select-none" />
 
         <div className="relative z-10 space-y-3">
-          {/* Top Bar: Athlete Badge (if available) + Date + Actions Menu */}
+          {/* Top Bar: Coach Badge / Athlete Badge + Date + Actions Menu */}
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 flex-wrap">
+              {showCoachName && coachName && (
+                <div className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                  <MdPerson className="size-3.5" />
+                  <span>{coachName}</span>
+                </div>
+              )}
+
               {athleteName ? (
-                <div className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
+                <div className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
                   <MdPerson className="size-3.5" />
                   <span>{athleteName}</span>
                 </div>
-              ) : (
-                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                  <MdSchedule className="size-3.5 text-primary" />
-                  <span>{formatDate(note.createdAt)}</span>
-                </div>
-              )}
+              ) : null}
+
+              <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                <MdSchedule className="size-3.5 text-primary" />
+                <span>{formatDate(note.createdAt)}</span>
+              </div>
             </div>
 
             {/* Actions Menu */}

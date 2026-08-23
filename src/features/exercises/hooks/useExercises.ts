@@ -7,5 +7,7 @@ export function useExercises(params: FetchExercisesParams) {
   return useQuery({
     queryKey: EXERCISE_KEYS.list(params),
     queryFn: () => fetchExercises(params),
+    staleTime: 0,
+    gcTime: 0,
   });
 }

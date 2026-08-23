@@ -7,5 +7,7 @@ export function useGroup(id: number) {
     queryKey: GROUP_KEYS.detail(id),
     queryFn: () => fetchGroup(id),
     enabled: id > 0,
+    staleTime: 0,
+    gcTime: 0,
   });
 }

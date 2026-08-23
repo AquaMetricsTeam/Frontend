@@ -28,5 +28,7 @@ export function useGroups(params: FetchGroupsParams) {
         includeArchived,
         onlyArchived,
       }),
+    staleTime: 0,
+    gcTime: 0,
   });
 }

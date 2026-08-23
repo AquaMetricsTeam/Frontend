@@ -79,17 +79,26 @@ export function ExercisePerformanceCard({
   const getExerciseId = (ex: PlanExercise) =>
     ex.planExerciseId ?? ex.id ?? ex.exerciseId;
 
+  const getExerciseTitle = (ex: PlanExercise) =>
+    (ex as any).exerciseTitle ||
+    ex.title ||
+    ex.exerciseName ||
+    `Exercise #${ex.exerciseId ?? getExerciseId(ex)}`;
+
   const exerciseOptions = planExercises.map((ex) => {
     const id = getExerciseId(ex);
     return {
       value: String(id),
-      label: ex.exerciseName ?? `Exercise #${ex.exerciseId ?? id}`,
+      label: getExerciseTitle(ex),
     };
   });
 
   const selectedExercise = planExercises.find(
     (ex) => getExerciseId(ex) === Number(currentPlanExerciseId),
   );
+  const selectedExerciseTitle = selectedExercise
+    ? getExerciseTitle(selectedExercise)
+    : "";
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5 space-y-4 shadow-xs">
@@ -101,7 +110,10 @@ export function ExercisePerformanceCard({
             className="text-xs font-bold bg-primary/10 text-primary border-primary/20 gap-1.5"
           >
             <MdFitnessCenter className="size-3" />
-            {t("fitness:drawer.exerciseCardTitle", { index: index + 1 })}
+            <span>
+              {selectedExerciseTitle ||
+                t("fitness:drawer.exerciseCardTitle", { index: index + 1 })}
+            </span>
           </Badge>
           {selectedExercise && (
             <span className="text-xs text-muted-foreground font-medium flex items-center gap-1.5">
