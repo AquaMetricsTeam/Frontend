@@ -24,17 +24,17 @@ export const queryClient = new QueryClient({
         error?.message || "An unexpected error occurred. Please try again.";
 
       // Display Sonner toast with a global "Retry" button (deduplicated by mutationId)
-      toast.error(errorMessage, {
-        id: `mutation-error-${mutation.mutationId}`,
-        duration: 8000,
-        action: {
-          label: "Retry",
-          onClick: () => {
-            // Re-executes the exact mutation with its original variables & same Idempotency-Key
-            mutation.execute(mutation.state.variables);
-          },
-        },
-      });
+      // toast.error(errorMessage, {
+      //   id: `mutation-error-${mutation.mutationId}`,
+      //   duration: 8000,
+      //   action: {
+      //     label: "Retry",
+      //     onClick: () => {
+      //       // Re-executes the exact mutation with its original variables & same Idempotency-Key
+      //       mutation.execute(mutation.state.variables);
+      //     },
+      //   },
+      // });
     },
   }),
 });

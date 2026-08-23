@@ -33,9 +33,7 @@ export function LoginForm() {
           <h1 className="mb-1.5 text-2xl font-bold text-foreground">
             {t("login.title")}
           </h1>
-          <p className="text-sm text-muted-foreground">
-            {t("login.subtitle")}
-          </p>
+          <p className="text-sm text-muted-foreground">{t("login.subtitle")}</p>
         </div>
 
         <form
@@ -61,7 +59,7 @@ export function LoginForm() {
             startIcon={<MdLock className="size-4" />}
           />
 
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <label className="flex cursor-pointer items-center gap-2.5 text-sm text-muted-foreground select-none">
               <input
                 id="rememberMe"
@@ -77,7 +75,7 @@ export function LoginForm() {
             >
               {t("login.forgotPassword")}
             </button>
-          </div>
+          </div> */}
 
           <Button
             size="lg"
@@ -102,7 +100,9 @@ export function LoginForm() {
         </form>
 
         <p className="mt-8 text-center text-xs text-muted-foreground">
-          {t("login.poweredBy")} <span className="text-cyan-500 font-semibold">AquaMetrics</span> v2.4.1
+          {t("login.poweredBy")}{" "}
+          <span className="text-cyan-500 font-semibold">AquaMetrics</span>{" "}
+          v2.4.1
         </p>
       </div>
     </FormProvider>

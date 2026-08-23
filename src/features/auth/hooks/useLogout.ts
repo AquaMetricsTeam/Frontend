@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { logoutService } from "../services/logout.service";
@@ -6,6 +7,7 @@ import { AUTH_QUERY_KEYS } from "../constants/queryKeys";
 
 export function useLogout() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const logout = () => {
     const refreshToken = getStoredRefreshToken();
@@ -15,7 +17,8 @@ export function useLogout() {
 
     clearAllTokens();
     queryClient.setQueryData(AUTH_QUERY_KEYS.me(), null);
-    queryClient.removeQueries({ queryKey: AUTH_QUERY_KEYS.me() });
+    queryClient.clear();
+    navigate("/login", { replace: true });
     toast.success("Logged out successfully!");
   };
 
