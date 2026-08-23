@@ -25,15 +25,8 @@ import { useAssignments } from "../../hooks/useAssignments";
 import { useExercisesLookup } from "@/features/lookups/hooks/useExercisesLookup";
 import { useMe } from "@/features/auth/hooks/useMe";
 import { RepsLabel, useRepsLabel } from "@/components/common/RepsLabel";
-import {
-  calculatePlanDuration,
-  type TrainingPlan,
-} from "../../types/index";
-import {
-  isSwimmingExercise,
-  isSwimmingPlan,
-} from "../../utils/exerciseType";
-import { cn } from "@/lib/utils";
+import { calculatePlanDuration, type TrainingPlan } from "../../types/index";
+import { isSwimmingExercise, isSwimmingPlan } from "../../utils/exerciseType";
 
 interface TemplateDetailSheetProps {
   plan: TrainingPlan | null;
@@ -143,7 +136,10 @@ export function TemplateDetailSheet({
                     {t("training:templates.table.duration")}
                   </span>
                   <span className="text-sm font-bold text-foreground mt-0.5">
-                    {totalDuration} {t("training:templates.detail.durationUnit", { defaultValue: "د" })}
+                    {totalDuration}{" "}
+                    {t("training:templates.detail.durationUnit", {
+                      defaultValue: "د",
+                    })}
                   </span>
                 </div>
 
@@ -173,7 +169,9 @@ export function TemplateDetailSheet({
                   </span>
                   <span className="text-sm font-bold text-foreground mt-0.5">
                     {totalReps}
-                    {isPlanSwim ? ` ${t("training:labels.metersUnit")}` : ` ${t("training:labels.repsUnit")}`}
+                    {isPlanSwim
+                      ? ` ${t("training:labels.metersUnit")}`
+                      : ` ${t("training:labels.repsUnit")}`}
                   </span>
                 </div>
               </div>
@@ -182,7 +180,9 @@ export function TemplateDetailSheet({
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    {t("training:templates.detail.exercisesSequence", { count: exercises.length })}
+                    {t("training:templates.detail.exercisesSequence", {
+                      count: exercises.length,
+                    })}
                   </h3>
                 </div>
 
@@ -199,7 +199,11 @@ export function TemplateDetailSheet({
                         lookup?.title ||
                         `Exercise #${ex.exerciseId}`;
 
-                      const isSwimEx = isSwimmingExercise(ex, lookup, isSwimmingCoach);
+                      const isSwimEx = isSwimmingExercise(
+                        ex,
+                        lookup,
+                        isSwimmingCoach,
+                      );
 
                       return (
                         <div
@@ -222,7 +226,10 @@ export function TemplateDetailSheet({
                                 className="text-xs font-medium shrink-0 bg-muted/60"
                               >
                                 <MdTimer className="size-3 me-1 text-primary" />
-                                {ex.duration} {t("training:templates.detail.durationUnit", { defaultValue: "د" })}
+                                {ex.duration}{" "}
+                                {t("training:templates.detail.durationUnit", {
+                                  defaultValue: "د",
+                                })}
                               </Badge>
                             )}
                           </div>
@@ -240,34 +247,64 @@ export function TemplateDetailSheet({
                                 <RepsLabel isSwimming={isSwimEx} />:
                               </span>{" "}
                               {ex.reps}
-                              {isSwimEx ? ` ${t("training:labels.metersUnit")}` : ` ${t("training:labels.repsUnit")}`}
+                              {isSwimEx
+                                ? ` ${t("training:labels.metersUnit")}`
+                                : ` ${t("training:labels.repsUnit")}`}
                             </span>
-                            {ex.restSeconds !== undefined && ex.restSeconds !== null && ex.restSeconds > 0 && (
-                              <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
-                                <span className="font-normal opacity-80">
-                                  {t("training:labels.rest", { defaultValue: "الراحة" })}:
-                                </span>{" "}
-                                {ex.restSeconds} {t("training:templates.detail.secondsUnit", { defaultValue: "ث" })}
-                              </span>
-                            )}
-                            {ex.restAfter !== undefined && ex.restAfter !== null && ex.restAfter > 0 && (
-                              <span className="inline-flex items-center gap-1 rounded-md bg-sky-500/10 px-2 py-1 text-xs font-medium text-sky-600 dark:text-sky-400">
-                                <span className="font-normal opacity-80">
-                                  {t("training:labels.restAfter", { defaultValue: "الراحة البينية" })}:
-                                </span>{" "}
-                                {ex.restAfter} {t("training:templates.detail.secondsUnit", { defaultValue: "ث" })}
-                              </span>
-                            )}
+                            {ex.restSeconds !== undefined &&
+                              ex.restSeconds !== null &&
+                              ex.restSeconds > 0 && (
+                                <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                                  <span className="font-normal opacity-80">
+                                    {t("training:labels.rest", {
+                                      defaultValue: "الراحة",
+                                    })}
+                                    :
+                                  </span>{" "}
+                                  {ex.restSeconds}{" "}
+                                  {t("training:templates.detail.secondsUnit", {
+                                    defaultValue: "ث",
+                                  })}
+                                </span>
+                              )}
+                            {ex.restAfter !== undefined &&
+                              ex.restAfter !== null &&
+                              ex.restAfter > 0 && (
+                                <span className="inline-flex items-center gap-1 rounded-md bg-sky-500/10 px-2 py-1 text-xs font-medium text-sky-600 dark:text-sky-400">
+                                  <span className="font-normal opacity-80">
+                                    {t("training:labels.restAfter", {
+                                      defaultValue: "الراحة البينية",
+                                    })}
+                                    :
+                                  </span>{" "}
+                                  {ex.restAfter}{" "}
+                                  {t("training:templates.detail.secondsUnit", {
+                                    defaultValue: "ث",
+                                  })}
+                                </span>
+                              )}
                             {ex.intensity ? (
                               <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-600 dark:text-amber-400">
                                 <span className="font-normal opacity-80">
-                                  {t("training:wizard.step2.intensity", { defaultValue: "الشدة" })}:
+                                  {t("training:wizard.step2.intensity", {
+                                    defaultValue: "الشدة",
+                                  })}
+                                  :
                                 </span>{" "}
-                                {ex.intensity === 1 || String(ex.intensity).toLowerCase() === "low"
-                                  ? t("training:intensity.low", { defaultValue: "منخفضة" })
-                                  : ex.intensity === 3 || String(ex.intensity).toLowerCase() === "high"
-                                    ? t("training:intensity.high", { defaultValue: "عالية" })
-                                    : t("training:intensity.medium", { defaultValue: "متوسطة" })}
+                                {ex.intensity === 1 ||
+                                String(ex.intensity).toLowerCase() === "low"
+                                  ? t("training:intensity.low", {
+                                      defaultValue: "منخفضة",
+                                    })
+                                  : ex.intensity === 3 ||
+                                      String(ex.intensity).toLowerCase() ===
+                                        "high"
+                                    ? t("training:intensity.high", {
+                                        defaultValue: "عالية",
+                                      })
+                                    : t("training:intensity.medium", {
+                                        defaultValue: "متوسطة",
+                                      })}
                               </span>
                             ) : null}
                           </div>
@@ -276,7 +313,9 @@ export function TemplateDetailSheet({
                           {ex.notes && (
                             <div className="mt-2.5 flex items-start gap-1.5 rounded-lg bg-muted/40 p-2 text-xs text-muted-foreground border border-border/40">
                               <MdNotes className="size-3.5 shrink-0 mt-0.5 text-muted-foreground/70" />
-                              <span className="leading-relaxed">{ex.notes}</span>
+                              <span className="leading-relaxed">
+                                {ex.notes}
+                              </span>
                             </div>
                           )}
                         </div>
@@ -290,7 +329,9 @@ export function TemplateDetailSheet({
               <div className="space-y-3 pt-2 border-t border-border">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    {t("training:assignments.currentAssignments", { count: assignments.length })}
+                    {t("training:assignments.currentAssignments", {
+                      count: assignments.length,
+                    })}
                   </h3>
                 </div>
 
