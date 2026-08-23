@@ -16,6 +16,7 @@
     "noRecommendations": "No recommendations found",
     "noRecommendationsDescription": "Generate your first AI plan to see recommendations here.",
     "viewReview": "View & Review",
+    "viewPlan": "View Plan",
     "generatedAt": "Generated {{date}}",
     "athleteLabel": "Athlete"
   },
