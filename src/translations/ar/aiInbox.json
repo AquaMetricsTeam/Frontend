@@ -17,6 +17,8 @@
     "noRecommendationsDescription": "أنشئ خطتك الأولى بالذكاء الاصطناعي لرؤية التوصيات هنا.",
     "viewReview": "مراجعة واعتماد",
     "viewPlan": "عرض الخطة",
+    "editPlan": "تعديل الخطة",
+    "noPlanAttached": "لا توجد خطة مولّدة مرتبطة بهذه التوصية بعد.",
     "generatedAt": "تم الإنشاء {{date}}",
     "athleteLabel": "الرياضي"
   },

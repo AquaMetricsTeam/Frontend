@@ -17,6 +17,8 @@
     "noRecommendationsDescription": "Generate your first AI plan to see recommendations here.",
     "viewReview": "View & Review",
     "viewPlan": "View Plan",
+    "editPlan": "Edit Plan",
+    "noPlanAttached": "No generated plan is attached to this recommendation yet.",
     "generatedAt": "Generated {{date}}",
     "athleteLabel": "Athlete"
   },
