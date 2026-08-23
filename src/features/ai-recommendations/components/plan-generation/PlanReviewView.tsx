@@ -1,26 +1,62 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { MdChevronRight, MdDescription } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import ErrorMessage from "@/components/feedbacks/ErrorMessage";
 import { useRecommendation } from "../../hooks/useRecommendation";
+import { AI_KEYS } from "../../constants/queryKeys";
 import { RecommendationStatus } from "../../constants/enums";
+import type { RecommendationListItem } from "../../types/index";
 import ReviewActions from "./ReviewActions";
 import ReviewResultBanner from "./ReviewResultBanner";
 import MissingExerciseWarning from "./MissingExerciseWarning";
 import EvidenceSources from "./EvidenceSources";
+import RecommendationPlanSheet from "../plan-view/RecommendationPlanSheet";
+
+function toNumericPlanId(value: unknown): number | null {
+  const numeric = value == null ? NaN : Number(value);
+  return Number.isFinite(numeric) && numeric > 0 ? numeric : null;
+}
+
+function findCachedListPlanId(
+  queryClient: ReturnType<typeof useQueryClient>,
+  recommendationId: number,
+): number | null {
+  const snapshots = queryClient.getQueriesData<unknown>({
+    queryKey: AI_KEYS.recommendations(),
+  });
+  for (const [, snapshot] of snapshots) {
+    const items = (
+      snapshot as { data?: { items?: RecommendationListItem[] } } | undefined
+    )?.data?.items;
+    if (!Array.isArray(items)) continue;
+    const match = items.find((entry) => entry.id === recommendationId);
+    const planId = toNumericPlanId(match?.planId);
+    if (planId != null) return planId;
+  }
+  return null;
+}
 
 interface PlanReviewViewProps {
   recommendationId: number;
   missingExerciseNotes?: string | null;
+  routePlanId?: number | null;
 }
 
-export default function PlanReviewView({ recommendationId, missingExerciseNotes }: PlanReviewViewProps) {
+export default function PlanReviewView({
+  recommendationId,
+  missingExerciseNotes,
+  routePlanId,
+}: PlanReviewViewProps) {
   const { t } = useTranslation("aiPlan");
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [reviewed, setReviewed] = useState(false);
+  const [planSheetOpen, setPlanSheetOpen] = useState(false);
 
   const query = useRecommendation(recommendationId);
   const rec = query.data?.data;
@@ -64,6 +100,14 @@ export default function PlanReviewView({ recommendationId, missingExerciseNotes 
   };
 
   const statusInfo = statusConfig[rec.status] ?? statusConfig[RecommendationStatus.Pending];
+
+  // planId priority: detail payload (API) > cached list item > route state.
+  // Normalized defensively: some payloads serialize ids as strings.
+  const rawPlanId =
+    rec.planId != null
+      ? rec.planId
+      : (findCachedListPlanId(queryClient, recommendationId) ?? routePlanId ?? null);
+  const planId = toNumericPlanId(rawPlanId);
 
   return (
     <div className="space-y-6">
@@ -118,6 +162,31 @@ export default function PlanReviewView({ recommendationId, missingExerciseNotes 
         </div>
       </div>
 
+      {planId != null && (
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/30 p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <MdDescription className="size-5" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                {t("review.generatedPlanTitle")}
+              </p>
+              <p className="text-xs text-muted-foreground">ID #{planId}</p>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPlanSheetOpen(true)}
+            className="cursor-pointer gap-1 rounded-xl text-xs font-semibold"
+          >
+            {t("review.viewGeneratedPlan")}
+            <MdChevronRight className="size-4 rtl:rotate-180" />
+          </Button>
+        </div>
+      )}
+
       {rec.evidence.length > 0 && <EvidenceSources evidence={rec.evidence} />}
 
       {missingExerciseNotes && (
@@ -134,6 +203,14 @@ export default function PlanReviewView({ recommendationId, missingExerciseNotes 
           }}
         />
       )}
+
+      <RecommendationPlanSheet
+        domainId={rec.domainId}
+        planId={planId}
+        editable={!isRejected}
+        open={planSheetOpen}
+        onOpenChange={setPlanSheetOpen}
+      />
     </div>
   );
 }
