@@ -8,7 +8,6 @@ import {
   MdAutoAwesome,
   MdMenuBook,
   MdNotifications,
-  MdBarChart,
   MdGroup,
   MdSportsGymnastics,
   MdRestaurant,
