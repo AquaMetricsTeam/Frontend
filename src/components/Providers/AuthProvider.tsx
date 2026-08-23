@@ -7,7 +7,6 @@ import {
 import { useMe } from "@/features/auth/hooks/useMe";
 import type { AuthUser, UserRole } from "@/features/auth/types";
 
-
 interface AuthContextValue {
   user: AuthUser | null;
   isLoading: boolean;
@@ -22,16 +21,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { data, isLoading } = useMe();
 
   const user = data?.data ?? null;
-  const isAuthenticated = !!user;
+  const isAuthenticated = Boolean(user);
 
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
       isLoading,
       isAuthenticated,
-      hasRole: (role) => user?.roles.includes(role) ?? false,
+      hasRole: (role) => user?.roles?.includes(role) ?? false,
       hasAnyRole: (roles) =>
-        roles.some((r) => user?.roles.includes(r)) ?? false,
+        roles.some((r) => user?.roles?.includes(r)) ?? false,
     }),
     [user, isLoading, isAuthenticated],
   );

@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { loginService } from "../services/login.service";
+import { getMeService } from "../services/me.service";
 import { saveTokenPair } from "@/utils/authStorage";
 import { AUTH_QUERY_KEYS } from "../constants/queryKeys";
 import type { LoginPayload } from "../types";
@@ -18,25 +19,19 @@ export function useLogin() {
       rememberMe?: boolean;
     }) => loginService(payload),
 
-    onSuccess: (response, variables) => {
+    onSuccess: async (response, variables) => {
       const { accessToken, refreshToken } = response.data;
       const rememberMe = variables.rememberMe ?? true;
 
       saveTokenPair(accessToken, refreshToken, rememberMe);
 
-      queryClient.setQueryData(AUTH_QUERY_KEYS.me(), {
-        data: {
-          userId: response.data.userId,
-          fullName: response.data.fullName,
-          email: response.data.email,
-          roles: response.data.roles,
-        },
-        success: true,
-        message: "Login successful",
+      const meResponse = await queryClient.fetchQuery({
+        queryKey: AUTH_QUERY_KEYS.me(),
+        queryFn: getMeService,
       });
 
       toast.success(response.message || "Logged in successfully!");
-      const userRoles = response.data.roles || [];
+      const userRoles = meResponse?.data?.roles || response.data.roles || [];
       const isNutritionOnly =
         userRoles.includes("NutritionSpecialist") &&
         !userRoles.some((r) => ["Admin", "SwimmingCoach", "FitnessCoach"].includes(r));

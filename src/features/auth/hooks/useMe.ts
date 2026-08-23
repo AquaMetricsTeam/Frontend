@@ -6,8 +6,11 @@ import { AUTH_QUERY_KEYS } from "../constants/queryKeys";
 export function useMe(options?: { staleTime?: number }) {
   return useQuery({
     queryKey: AUTH_QUERY_KEYS.me(),
-    queryFn: getMeService,
-    enabled: !!getStoredToken(),
+    queryFn: async () => {
+      const token = getStoredToken();
+      if (!token) return null;
+      return getMeService();
+    },
     staleTime: options?.staleTime ?? Infinity,
     retry: false,
   });

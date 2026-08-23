@@ -31,6 +31,7 @@
     "newPasswordPlaceholder": "Min. 8 characters",
     "confirmPassword": "Confirm New Password",
     "confirmPasswordPlaceholder": "••••••••",
+    "save": "Update Password",
     "submit": "Update Password",
     "updating": "Updating Password...",
     "successToast": "Password updated successfully!",

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { Navigate } from "react-router-dom";
 import { MdAdd } from "react-icons/md";
 import PageWrapper from "@/components/layouts/PageWrapper";
 import Box from "@/components/layouts/Box";
@@ -21,10 +22,13 @@ type Tab = "plans" | "assignments";
 
 export default function NutritionPage() {
   const { t } = useTranslation("nutrition");
-  const { hasAnyRole, isLoading } = useAuth();
+  const { hasAnyRole, isLoading, isAuthenticated } = useAuth();
   const canAccess = hasAnyRole(["NutritionSpecialist"]);
   if (isLoading) {
     return <FullPageLoading />;
+  }
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
   }
   if (!canAccess) {
     return <UnauthorizedPage />;
