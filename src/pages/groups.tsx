@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MdAdd, MdGroup, MdFilterList } from "react-icons/md";
+import { MdAdd, MdGroup } from "react-icons/md";
 import PageWrapper from "@/components/layouts/PageWrapper";
 import WithPagination from "@/components/HOCs/WithPagination";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,6 @@ export default function GroupsPage() {
     setLocalSearch,
     debouncedSearch,
     onlyArchived,
-    setOnlyArchived,
     pageNumber,
   } = useGroupFilters();
 
@@ -81,7 +80,7 @@ export default function GroupsPage() {
             />
 
             {/* Archive filter toggle */}
-            <button
+            {/* <button
               type="button"
               onClick={() => setOnlyArchived(!onlyArchived)}
               className={`flex h-9 items-center gap-1.5 rounded-lg border px-3 text-sm font-medium transition-colors ${
@@ -92,7 +91,7 @@ export default function GroupsPage() {
             >
               <MdFilterList className="size-4" />
               {t("groups:filter.archived")}
-            </button>
+            </button> */}
           </div>
 
           <Button
