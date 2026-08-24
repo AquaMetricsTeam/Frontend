@@ -127,7 +127,15 @@ export function AthleteFitnessSessionsTab({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredSessions.map((session) => (
+          {filteredSessions.map((session) => {
+            // Attendance/status badges are meaningless before a session happens
+            const sessionStart = new Date(session.sessionDate);
+            sessionStart.setHours(0, 0, 0, 0);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const isFutureSession = sessionStart.getTime() > today.getTime();
+
+            return (
             <div
               key={session.id}
               className="relative flex flex-col justify-between rounded-2xl border border-border bg-card p-5 shadow-xs hover:border-blue-500/40 hover:shadow-md transition-all group"
@@ -144,26 +152,28 @@ export function AthleteFitnessSessionsTab({
                     })}
                   </span>
 
-                  <Badge
-                    variant="outline"
-                    className={`text-[11px] gap-1 font-semibold ${
-                      session.hasTrainingRecord
-                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                        : "border-border bg-muted/50 text-muted-foreground"
-                    }`}
-                  >
-                    {session.hasTrainingRecord ? (
-                      <>
-                        <MdCheckCircle className="size-3.5" />
-                        <span>{t("profile.sessions.recordAvailable")}</span>
-                      </>
-                    ) : (
-                      <>
-                        <MdHourglassEmpty className="size-3.5" />
-                        <span>{t("profile.sessions.pendingRecord")}</span>
-                      </>
-                    )}
-                  </Badge>
+                  {!isFutureSession && (
+                    <Badge
+                      variant="outline"
+                      className={`text-[11px] gap-1 font-semibold ${
+                        session.hasTrainingRecord
+                          ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                          : "border-border bg-muted/50 text-muted-foreground"
+                      }`}
+                    >
+                      {session.hasTrainingRecord ? (
+                        <>
+                          <MdCheckCircle className="size-3.5" />
+                          <span>{t("profile.sessions.recordAvailable")}</span>
+                        </>
+                      ) : (
+                        <>
+                          <MdHourglassEmpty className="size-3.5" />
+                          <span>{t("profile.sessions.pendingRecord")}</span>
+                        </>
+                      )}
+                    </Badge>
+                  )}
                 </div>
 
                 {/* Session Title & Description */}
@@ -240,7 +250,8 @@ export function AthleteFitnessSessionsTab({
                 )}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
