@@ -8,6 +8,10 @@
     "queryPlaceholder": "Describe what you want the plan to focus on, e.g. '4-week taper for a 100m freestyle sprinter'",
     "generateButton": "Generate Plan",
     "generating": "Generating plan...",
+    "generatingBackground": "Generating AI Plan...",
+    "generatingNotice": "AI Plan generation is in progress in the background. You can freely navigate away; we will notify you once it is ready.",
+    "generatingFor": "Generating for {{name}}...",
+    "viewPlan": "View Plan",
     "domainLabel": "Domain"
   },
   "review": {

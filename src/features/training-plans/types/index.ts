@@ -162,6 +162,7 @@ export interface FetchTrainingPlansParams {
   pageSize?: number;
   search?: string;
   isArchived?: boolean;
+  onlyArchived?: boolean;
 }
 
 export interface FetchSessionsParams {

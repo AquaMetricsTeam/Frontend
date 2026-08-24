@@ -115,7 +115,7 @@ export interface AthleteOverviewSwimmingSessionResponse {
   trainingPlanTitle: string;
   coachId: string;
   coachName: string;
-  hasTrainingRecord: boolean;
+  attended: boolean;
 }
 
 export interface AthleteOverviewFitnessSessionResponse {
@@ -131,7 +131,7 @@ export interface AthleteOverviewFitnessSessionResponse {
   trainingPlanTitle: string;
   coachId: string;
   coachName: string;
-  hasTrainingRecord: boolean;
+  attended: boolean;
 }
 
 export interface AthleteOverviewResponse {
@@ -147,8 +147,8 @@ export interface AthleteOverviewResponse {
   medicalNotes?: string | null;
   groups: AthleteOverviewGroupResponse[];
   coaches: AthleteOverviewCoachResponse[];
-  swimmingSessions: AthleteOverviewSwimmingSessionResponse[];
-  fitnessSessions: AthleteOverviewFitnessSessionResponse[];
+  swimmingSessions: number;
+  fitnessSessions: number;
 }
 
 export interface AthleteOverviewNutritionPlanResponse {

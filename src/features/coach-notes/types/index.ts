@@ -23,6 +23,7 @@ export interface FetchCoachNotesParams {
   pageNumber?: number;
   pageSize?: number;
   search?: string;
+  isMy?: boolean;
 }
 
 export interface CreateCoachNotePayload {

@@ -1,7 +1,7 @@
 import { MdPool } from "react-icons/md";
 import { BurgerButton } from "./BurgerButton";
 import { Breadcrumbs } from "./Breadcrumbs";
-import { CommandSearch } from "./CommandSearch";
+// import { CommandSearch } from "./CommandSearch";
 import { NotificationBell } from "./NotificationBell";
 import { ThemeToggle } from "./ThemeToggle";
 import { LangToggle } from "./LangToggle";
@@ -38,7 +38,7 @@ function Navbar({ onBurgerClick }: NavbarProps) {
       <div className="flex-1" />
 
       {/* Center/Right: Search */}
-      <CommandSearch />
+      {/* <CommandSearch /> */}
 
       {/* Right actions */}
       <div className="flex items-center gap-1">

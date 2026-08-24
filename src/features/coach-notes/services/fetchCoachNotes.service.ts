@@ -16,7 +16,8 @@ export async function fetchCoachNotes(
     query.set("pageSize", String(params.pageSize));
 
   const queryString = query.toString();
-  const endpoint = `/coachnotes${queryString ? `?${queryString}` : ""}`;
+  const basePath = params.isMy ? "/coachnotes/my" : "/coachnotes";
+  const endpoint = `${basePath}${queryString ? `?${queryString}` : ""}`;
 
   return customFetch<ApiResponse<CoachNotesPaginatedResponse>>(endpoint);
 }

@@ -77,6 +77,7 @@
       "trainingVolume": "Training Volume",
       "completionRate": "Completion Rate",
       "sessionsCount": "sessions",
+      "totalRecordedSessions": "total recorded sessions",
       "excellent": "Peak Performance",
       "good": "Solid Performance",
       "needsFocus": "Needs Conditioning",
@@ -151,6 +152,8 @@
       "noGroupsDesc": "This athlete has not been added to any squad groups yet."
     },
     "sessions": {
+      "attended": "Attended",
+      "absent": "Absent",
       "recordAvailable": "Record Logged",
       "pendingRecord": "Pending Record",
       "recorded": "Recorded",

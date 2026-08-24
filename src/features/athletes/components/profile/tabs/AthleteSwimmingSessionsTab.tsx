@@ -7,7 +7,7 @@ import {
   MdPerson,
   MdAssignment,
   MdCheckCircle,
-  MdHourglassEmpty,
+  MdCancel,
   MdNotes,
   MdRefresh,
 } from "react-icons/md";
@@ -31,8 +31,12 @@ export function AthleteSwimmingSessionsTab({
   const [selectedPlan, setSelectedPlan] = useState<TrainingPlan | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
-  const { data: response, isLoading, isError, refetch } =
-    useAthleteSwimmingSessions(athleteId);
+  const {
+    data: response,
+    isLoading,
+    isError,
+    refetch,
+  } = useAthleteSwimmingSessions(athleteId);
 
   const sessions = response?.data || [];
 
@@ -40,10 +44,18 @@ export function AthleteSwimmingSessionsTab({
     const q = search.toLowerCase().trim();
     if (!q) return true;
     return (
-      String(s.title || "").toLowerCase().includes(q) ||
-      String(s.coachName || "").toLowerCase().includes(q) ||
-      String(s.trainingPlanTitle || "").toLowerCase().includes(q) ||
-      String(s.location || "").toLowerCase().includes(q)
+      String(s.title || "")
+        .toLowerCase()
+        .includes(q) ||
+      String(s.coachName || "")
+        .toLowerCase()
+        .includes(q) ||
+      String(s.trainingPlanTitle || "")
+        .toLowerCase()
+        .includes(q) ||
+      String(s.location || "")
+        .toLowerCase()
+        .includes(q)
     );
   });
 
@@ -136,120 +148,126 @@ export function AthleteSwimmingSessionsTab({
             const isFutureSession = sessionStart.getTime() > today.getTime();
 
             return (
-            <div
-              key={session.id}
-              className="relative flex flex-col justify-between rounded-2xl border border-border bg-card p-5 shadow-xs hover:border-cyan-500/40 hover:shadow-md transition-all group"
-            >
-              <div>
-                {/* Header: Date + Record Badge */}
-                <div className="flex items-center justify-between gap-2 border-b border-border/60 pb-3">
-                  <span className="text-xs font-bold text-foreground">
-                    {new Date(session.sessionDate).toLocaleDateString(undefined, {
-                      weekday: "short",
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
-
-                  {!isFutureSession && (
-                    <Badge
-                      variant="outline"
-                      className={`text-[11px] gap-1 font-semibold ${
-                        session.hasTrainingRecord
-                          ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                          : "border-border bg-muted/50 text-muted-foreground"
-                      }`}
-                    >
-                      {session.hasTrainingRecord ? (
-                        <>
-                          <MdCheckCircle className="size-3.5" />
-                          <span>{t("profile.sessions.recordAvailable")}</span>
-                        </>
-                      ) : (
-                        <>
-                          <MdHourglassEmpty className="size-3.5" />
-                          <span>{t("profile.sessions.pendingRecord")}</span>
-                        </>
+              <div
+                key={session.id}
+                className="relative flex flex-col justify-between rounded-2xl border border-border bg-card p-5 shadow-xs hover:border-cyan-500/40 hover:shadow-md transition-all group"
+              >
+                <div>
+                  {/* Header: Date + Record Badge */}
+                  <div className="flex items-center justify-between gap-2 border-b border-border/60 pb-3">
+                    <span className="text-xs font-bold text-foreground">
+                      {new Date(session.sessionDate).toLocaleDateString(
+                        undefined,
+                        {
+                          weekday: "short",
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        },
                       )}
-                    </Badge>
-                  )}
-                </div>
-
-                {/* Session Title & Description */}
-                <div className="mt-3 space-y-1">
-                  <h4 className="text-base font-bold text-foreground group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
-                    {session.title}
-                  </h4>
-                  {session.description && (
-                    <p className="text-xs text-muted-foreground line-clamp-2">
-                      {session.description}
-                    </p>
-                  )}
-                </div>
-
-                {/* Meta details list */}
-                <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                  {/* Time */}
-                  <div className="flex items-center gap-1.5">
-                    <MdAccessTime className="size-4 text-cyan-500 shrink-0" />
-                    <span>
-                      {session.startTime.substring(0, 5)} - {session.endTime.substring(0, 5)}
                     </span>
+
+                    {!isFutureSession && (
+                      <Badge
+                        variant="outline"
+                        className={`text-[11px] gap-1 font-semibold ${
+                          session.hasTrainingRecord
+                            ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                            : "border-border bg-muted/50 text-muted-foreground"
+                        }`}
+                      >
+                        {session.hasTrainingRecord ? (
+                          <>
+                            <MdCheckCircle className="size-3.5" />
+                            <span>{t("profile.sessions.recordAvailable")}</span>
+                          </>
+                        ) : (
+                          <>
+                            <MdHourglassEmpty className="size-3.5" />
+                            <span>{t("profile.sessions.pendingRecord")}</span>
+                          </>
+                        )}
+                      </Badge>
+                    )}
                   </div>
 
-                  {/* Location */}
-                  {session.location && (
+                  {/* Session Title & Description */}
+                  <div className="mt-3 space-y-1">
+                    <h4 className="text-base font-bold text-foreground group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+                      {session.title}
+                    </h4>
+                    {session.description && (
+                      <p className="text-xs text-muted-foreground line-clamp-2">
+                        {session.description}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Meta details list */}
+                  <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                    {/* Time */}
                     <div className="flex items-center gap-1.5">
-                      <MdLocationOn className="size-4 text-cyan-500 shrink-0" />
-                      <span className="truncate">{session.location}</span>
+                      <MdAccessTime className="size-4 text-cyan-500 shrink-0" />
+                      <span>
+                        {session.startTime.substring(0, 5)} -{" "}
+                        {session.endTime.substring(0, 5)}
+                      </span>
+                    </div>
+
+                    {/* Location */}
+                    {session.location && (
+                      <div className="flex items-center gap-1.5">
+                        <MdLocationOn className="size-4 text-cyan-500 shrink-0" />
+                        <span className="truncate">{session.location}</span>
+                      </div>
+                    )}
+
+                    {/* Coach */}
+                    <div className="flex items-center gap-1.5">
+                      <MdPerson className="size-4 text-primary shrink-0" />
+                      <span className="truncate">{session.coachName}</span>
+                    </div>
+
+                    {/* Training Plan */}
+                    {session.trainingPlanTitle && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedPlan({
+                            id: session.trainingPlanId,
+                            title: session.trainingPlanTitle,
+                            description: "",
+                            domainId: 1,
+                            domainName: "Swimming",
+                            planSource: "Coach",
+                            approvalStatus: "Approved",
+                            estimatedDurationMinutes: 0,
+                            planExercises: [],
+                          } as unknown as TrainingPlan);
+                          setIsDetailOpen(true);
+                        }}
+                        className="flex items-center gap-1.5 hover:text-primary transition-colors text-start cursor-pointer group/plan truncate"
+                        title={session.trainingPlanTitle}
+                      >
+                        <MdAssignment className="size-4 text-primary shrink-0" />
+                        <span className="truncate underline decoration-dashed decoration-primary/40 underline-offset-2">
+                          {session.trainingPlanTitle}
+                        </span>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Notes if any */}
+                  {session.notes && (
+                    <div className="mt-3.5 flex items-start gap-1.5 rounded-xl bg-muted/40 p-2.5 text-xs text-muted-foreground border border-border/40">
+                      <MdNotes className="size-4 text-primary shrink-0 mt-0.5" />
+                      <p className="text-[11px] leading-relaxed">
+                        {session.notes}
+                      </p>
                     </div>
                   )}
-
-                  {/* Coach */}
-                  <div className="flex items-center gap-1.5">
-                    <MdPerson className="size-4 text-primary shrink-0" />
-                    <span className="truncate">{session.coachName}</span>
-                  </div>
-
-                  {/* Training Plan */}
-                  {session.trainingPlanTitle && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedPlan({
-                          id: session.trainingPlanId,
-                          title: session.trainingPlanTitle,
-                          description: "",
-                          domainId: 1,
-                          domainName: "Swimming",
-                          planSource: "Coach",
-                          approvalStatus: "Approved",
-                          estimatedDurationMinutes: 0,
-                          planExercises: [],
-                        } as unknown as TrainingPlan);
-                        setIsDetailOpen(true);
-                      }}
-                      className="flex items-center gap-1.5 hover:text-primary transition-colors text-start cursor-pointer group/plan truncate"
-                      title={session.trainingPlanTitle}
-                    >
-                      <MdAssignment className="size-4 text-primary shrink-0" />
-                      <span className="truncate underline decoration-dashed decoration-primary/40 underline-offset-2">
-                        {session.trainingPlanTitle}
-                      </span>
-                    </button>
-                  )}
                 </div>
-
-                {/* Notes if any */}
-                {session.notes && (
-                  <div className="mt-3.5 flex items-start gap-1.5 rounded-xl bg-muted/40 p-2.5 text-xs text-muted-foreground border border-border/40">
-                    <MdNotes className="size-4 text-primary shrink-0 mt-0.5" />
-                    <p className="text-[11px] leading-relaxed">{session.notes}</p>
-                  </div>
-                )}
               </div>
-            </div>
             );
           })}
         </div>

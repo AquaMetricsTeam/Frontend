@@ -5,7 +5,7 @@ import Box from "@/components/layouts/Box";
 import WithPagination from "@/components/HOCs/WithPagination";
 import TableLoadingAndError from "@/components/HOCs/TableLoadingAndError";
 import { SearchInput } from "@/components/common/SearchInput";
-// import { SegmentedControl } from "@/components/common/SegmentedControl";
+import { SegmentedControl } from "@/components/common/SegmentedControl";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -29,26 +29,34 @@ import type { TrainingPlan } from "../../types/index";
 
 type ArchiveFilter = "active" | "archived";
 
-// const ARCHIVE_OPTIONS: { value: ArchiveFilter; label: string }[] = [
-//   { value: "active", label: "Active" },
-//   { value: "archived", label: "Archived" },
-// ];
-
 export function TemplateListView() {
   const { t } = useTranslation("training");
   const [createOpen, setCreateOpen] = useState(false);
   const [viewPlan, setViewPlan] = useState<TrainingPlan | null>(null);
   const [assignPlan, setAssignPlan] = useState<TrainingPlan | null>(null);
   const [editPlan, setEditPlan] = useState<TrainingPlan | null>(null);
-  const [archiveFilter] = useState<ArchiveFilter>("active");
 
-  const { search, setSearch, page } = useTrainingPlansFilters();
+  const { search, setSearch, page, isArchived, setArchived } =
+    useTrainingPlansFilters();
+
+  const archiveFilter: ArchiveFilter = isArchived ? "archived" : "active";
+
+  const archiveOptions: { value: ArchiveFilter; label: string }[] = [
+    {
+      value: "active",
+      label: t("templates.filter.active", { defaultValue: "Active" }),
+    },
+    {
+      value: "archived",
+      label: t("templates.filter.archived", { defaultValue: "Archived" }),
+    },
+  ];
 
   const { data, isLoading, isError, refetch } = useTrainingPlans({
     pageNumber: page,
     pageSize: 15,
     search,
-    isArchived: archiveFilter === "archived",
+    onlyArchived: isArchived,
   });
 
   const plans = data?.data?.items ?? [];
@@ -58,17 +66,17 @@ export function TemplateListView() {
     <>
       <Box>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3 flex-1">
             <SearchInput
               value={search}
               onChange={setSearch}
               placeholder={t("assignments.searchPlans")}
             />
-            {/* <SegmentedControl
-              options={ARCHIVE_OPTIONS}
+            <SegmentedControl
+              options={archiveOptions}
               value={archiveFilter}
-              onChange={setArchiveFilter}
-            /> */}
+              onChange={(val) => setArchived(val === "archived")}
+            />
           </div>
           <Button
             size="sm"

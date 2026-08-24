@@ -141,6 +141,7 @@ export function AthleteNotesSheet({
                   key={note.id}
                   note={note}
                   currentUserId={currentUserId}
+                  showCoachName={true}
                   onEdit={(n) => setEditingNote(n)}
                 />
               ))}

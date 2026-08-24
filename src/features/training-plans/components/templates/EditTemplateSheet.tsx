@@ -14,6 +14,7 @@ import ErrorMessage from "@/components/feedbacks/ErrorMessage";
 import Spinner from "@/components/feedbacks/Spinner";
 import { useTrainingPlan } from "../../hooks/useTrainingPlan";
 import { useUpdateTrainingPlan } from "../../hooks/useUpdateTrainingPlan";
+import { isSwimmingExercise } from "../../utils/exerciseType";
 import type { TrainingPlan } from "../../types/index";
 import type {
   PlanInfoFormValues,
@@ -31,7 +32,7 @@ export function EditTemplateSheet({
   open,
   onOpenChange,
 }: EditTemplateSheetProps) {
-  const { t } = useTranslation("training");
+  const { t } = useTranslation(["training", "common"]);
   const planId = plan?.id ?? 0;
   const STEPS = useMemo(
     () => [
@@ -69,12 +70,13 @@ export function EditTemplateSheet({
                   typeof ex.category === "number" && ex.category > 0;
                 const hasMuscleGroup =
                   typeof ex.muscleGroup === "number" && ex.muscleGroup > 0;
-                const filterType: "swimming" | "fitness" | undefined =
-                  hasCategory
-                    ? "swimming"
-                    : hasMuscleGroup
-                      ? "fitness"
-                      : undefined;
+                const filterType: "swimming" | "fitness" = hasCategory
+                  ? "swimming"
+                  : hasMuscleGroup
+                    ? "fitness"
+                    : isSwimmingExercise(ex)
+                      ? "swimming"
+                      : "fitness";
 
                 return {
                   planExerciseId: ex.planExerciseId ?? ex.id,

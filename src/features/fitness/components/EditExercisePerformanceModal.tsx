@@ -102,6 +102,12 @@ export function EditExercisePerformanceModal({
 
   if (!exercisePerformance || !parentRecord) return null;
 
+  const exerciseTitle =
+    exercisePerformance.exerciseTitle ||
+    (exercisePerformance as any).exerciseName ||
+    (exercisePerformance as any).title ||
+    `Exercise #${exercisePerformance.planExerciseId}`;
+
   function onSubmit(values: EditExerciseFormValues) {
     if (!exercisePerformance || !parentRecord) return;
 
@@ -158,7 +164,7 @@ export function EditExercisePerformanceModal({
           <div className="flex items-center gap-2">
             <MdFitnessCenter className="size-5 text-amber-500" />
             <DialogTitle className="text-base font-bold">
-              {exercisePerformance.exerciseTitle || `Exercise #${exercisePerformance.planExerciseId}`}
+              {exerciseTitle}
             </DialogTitle>
           </div>
         </DialogHeader>

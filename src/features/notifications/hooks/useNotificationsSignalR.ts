@@ -6,7 +6,10 @@ import {
 } from "@microsoft/signalr";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { BACKEND_BASE_URL, SOCKET_BASE_URL } from "@/constants/backendAPIsConfig";
+import {
+  BACKEND_BASE_URL,
+  SOCKET_BASE_URL,
+} from "@/constants/backendAPIsConfig";
 import { getStoredToken } from "@/utils/authStorage";
 import { NOTIFICATION_KEYS } from "../constants/queryKeys";
 import type {
@@ -72,9 +75,7 @@ export function useNotificationsSignalR(enabled: boolean = true) {
         );
 
         // 3. Optimistically prepend new notification to cached lists
-        queryClient.setQueriesData<
-          ApiResponse<NotificationsPaginatedResponse>
-        >(
+        queryClient.setQueriesData<ApiResponse<NotificationsPaginatedResponse>>(
           { queryKey: NOTIFICATION_KEYS.lists() },
           (old) => {
             if (!old?.data?.items) return old;
@@ -99,7 +100,7 @@ export function useNotificationsSignalR(enabled: boolean = true) {
       queryClient.invalidateQueries({ queryKey: NOTIFICATION_KEYS.all });
     });
 
-    connection.start().catch((err) => {
+    connection.start().catch((err: unknown) => {
       console.error("SignalR Notification Hub Connection Error:", err);
     });
 

@@ -11,6 +11,7 @@ export function useExercisesLookup(
     queryKey: LOOKUP_QUERY_KEYS.exercises(params),
     queryFn: () => fetchExercisesLookup(params),
     enabled,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
+    gcTime: 0,
   });
 }

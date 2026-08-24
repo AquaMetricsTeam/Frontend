@@ -13,8 +13,10 @@ export async function fetchTrainingPlans(
   if (params.pageSize !== undefined)
     query.set("pageSize", String(params.pageSize));
   if (params.search) query.set("search", params.search);
-  if (params.isArchived !== undefined)
-    query.set("onlyArchived", String(params.isArchived));
+  const archived = params.onlyArchived ?? params.isArchived;
+  if (archived !== undefined) {
+    query.set("onlyArchived", String(archived));
+  }
   return customFetch<ApiResponse<TrainingPlansPaginatedResponse>>(
     `/training-plans?${query.toString()}`,
   );

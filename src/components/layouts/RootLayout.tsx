@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { Outlet } from "react-router";
 import { useTranslation } from "react-i18next";
 import { LANG_DIR } from "@/constants/i18nConfig";
+import { AiGenerationProvider } from "@/features/ai-recommendations/context/AiGenerationContext";
+import { GlobalAiGeneratingWidget } from "@/features/ai-recommendations/components/plan-generation/GlobalAiGeneratingWidget";
 
 const RootLayout = () => {
   const { i18n } = useTranslation();
@@ -13,7 +15,12 @@ const RootLayout = () => {
     document.documentElement.lang = i18n.language;
   }, [langDir, i18n.language]);
 
-  return <Outlet />;
+  return (
+    <AiGenerationProvider>
+      <Outlet />
+      <GlobalAiGeneratingWidget />
+    </AiGenerationProvider>
+  );
 };
 
 export default RootLayout;

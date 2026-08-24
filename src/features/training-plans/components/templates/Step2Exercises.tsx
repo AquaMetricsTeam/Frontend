@@ -168,7 +168,7 @@ export function Step2Exercises({
             {t("wizard.step2.back")}
           </Button>
           <Button type="submit" className="min-w-32 cursor-pointer">
-            {t("wizard.step2.next")}
+            {t("wizard.step2.next", { defaultValue: "Next" })}
           </Button>
         </div>
       </form>

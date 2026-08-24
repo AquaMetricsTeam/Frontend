@@ -195,15 +195,26 @@ export function TemplateTableRow({
       <AlertDialog open={confirmArchive} onOpenChange={setConfirmArchive}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Archive Training Plan?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("templates.archive.confirmTitle", {
+                defaultValue: "Archive Training Plan?",
+              })}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              This plan will be hidden from active lists. You can restore it later.
+              {t("templates.archive.confirmDescription", {
+                defaultValue:
+                  "This plan will be hidden from active lists. You can restore it later.",
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t("common:actions.cancel", { defaultValue: "Cancel" })}
+            </AlertDialogCancel>
             <AlertDialogAction onClick={() => archiveMutation.mutate(plan.id)}>
-              Archive
+              {t("templates.archive.confirmAction", {
+                defaultValue: "Archive",
+              })}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
